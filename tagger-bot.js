@@ -22,19 +22,25 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 
 // tags everyone in my group
 bot.onText(/\/meena/, async(msg, match) => {
-    const chatId = msg.chat.id;
-    const user = msg.from.id;
-    const member = await bot.getChatMember(chatId, user);
+    //const user = msg.from.id;
+    //const member = await bot.getChatMember(chatId, user);
     //console.log(member);
-    const telegramUsers = process.env.TELEGRAM_GROUP_USERS;
-    //console.log(telegramUsers);
-    bot.sendMessage(chatId, telegramUsers);
+    bot.sendMessage(msg.chat.id, process.env.TELEGRAM_GROUP_USERS);
 })
 
 // rolls a die
-bot.onText(/\/roll/, (msg, match) => {
-  const chatId = msg.chat.id;
+bot.onText(/^\/roll( [0-9]*)?$/, (msg, match) => {
+  let threshold = match[0].split(' ')[1]; // grabs optional parameter defined by user i.e: /roll 100
+  
+  if(!threshold) {
+    threshold = 6; // default die roll
+  }
 
-  let randomNum = Math.floor(Math.random() * 6) + 1;
-  bot.sendMessage(chatId, `Random Number: ${randomNum}!`);
+  bot.sendMessage(msg.chat.id, `Random Number: ${Math.floor(Math.random() * threshold) + 1}!`);
+})
+
+bot.onText(/(\/flip)/, (msg, match) => {
+  let coin = Math.round(Math.random());
+  console.log(coin)
+  bot.sendMessage(msg.chat.id, coin === 0 ? 'Heads' : 'Tails');
 })
