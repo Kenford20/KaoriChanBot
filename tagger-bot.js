@@ -20,8 +20,19 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
   bot.sendMessage(chatId, resp);
 });
 
+
+bot.onText(/(^\/taskete$)|(^\/h(e|a)lp$)/, async(msg, match) => {
+  
+  bot.sendMessage(msg.chat.id, `
+/roll  |      rolls a die by default, 
+/roll #  |   gives a random number up to the number you input
+/meena  |   tags everyone in the group
+/flip  |       flips a coin
+  `);
+})
+
 // tags everyone in my group
-bot.onText(/\/meena/, async(msg, match) => {
+bot.onText(/^\/meena$/, async(msg, match) => {
     //const user = msg.from.id;
     //const member = await bot.getChatMember(chatId, user);
     //console.log(member);
