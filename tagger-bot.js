@@ -73,3 +73,7 @@ bot.onText(/^\/(calc|convert) .+$/, async(msg, match) => {
 bot.onText(/weeb/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, `Y-y.. yes... sen..p-pai..?`);
 });
+
+bot.onText(/senpai/i, (msg, match) => {
+  bot.sendMessage(msg.chat.id, `Y-y.. yes... Mas..t-ter..?`);
+});
