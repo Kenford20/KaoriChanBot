@@ -30,6 +30,7 @@ bot.onText(/(^\/taskete$)|(^\/h(e|a)lp$)/, async(msg, match) => {
 /flip = flips a coin
 /calc # (op) # = calculator
 /convert (unit) to (unit) = general units conversion
+and some weeb stuff
   `);
 });
 
