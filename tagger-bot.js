@@ -1,5 +1,6 @@
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
+const math = require('mathjs');
 
 // replace the value below with the Telegram token you receive from @BotFather
 const token = process.env.TAGGER_BOT_TOKEN;
@@ -52,25 +53,23 @@ bot.onText(/^\/roll( [0-9]*)?$/, (msg, match) => {
 
 bot.onText(/(\/flip)/, (msg, match) => {
   let coin = Math.round(Math.random());
-  console.log(coin)
   bot.sendMessage(msg.chat.id, coin === 0 ? 'Heads' : 'Tails');
 });
 
-bot.onText(/^\/calc \d+ ?(\+|\-|\*|\/){1} ?\d+$/, (msg, match) => {
-  let operand1 = parseInt(match[0].split(' ')[1]);
-  let operand2 = parseInt(match[0].split(' ')[3]);
-  let operation = match[0].split(' ')[2];
-  let result;
-  console.log(match);
+// bot.onText(/^\/calc \d+ ?(\+|\-|\*|\/){1} ?\d+$/, (msg, match) => {
+//   let result = math.eval(match[0].slice(5));
+//   console.log(result);
+
+//   bot.sendMessage(msg.chat.id, `Result: ${result}`);
+// });
+
+bot.onText(/^\/(calc|convert) .+$/, async(msg, match) => {
   console.log(match[0]);
-
-  switch(operation) {
-    case '+': result = operand1 + operand2; break;
-    case '-': result = oprand1 - operand2; break;
-    case '*': result = operand1 * operand2; break;
-    case '/': result = operand1 / operand2; break;
-    default: result = 'Something is wrong with your input! Be sure to add spaces between numbers.'; break;
+  try {
+    let result = await math.eval(match[0].slice(match[0].indexOf(' ')));
+    bot.sendMessage(msg.chat.id, `Result: ${result}`);
+  } catch(err) {
+    console.log(err);
+    bot.sendMessage(msg.chat.id, `Something went wrong. Double check your inputs bro!`);
   }
-
-  bot.sendMessage(msg.chat.id, `Result: ${result}`);
 });
