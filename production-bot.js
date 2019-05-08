@@ -163,12 +163,16 @@ bot.onText(/\bsenpai\b/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, `Y-y.. yes... Mas..t-ter..?`);
 });
 
-bot.onText(/\b(tits?)|(deek)|(dick)|(boobs?)|(cawk)|(pussy)|(vaginas?)|(nips?)|(nipples?)|(penis)|(ass)|(booty)|(butt)|(nuts)|(balls)|(testicles)\b/i, (msg, match) => {
-  bot.sendMessage(msg.chat.id, `K-kono.... h-hen..tai! *blush* Kimi wa dirty desu senpai~`);
+bot.onText(/\b(tits?)|(deek)|(dick)|(boobs?)|(cawk)|(pussy)|(vaginas?)|(nips?)|(nipples?)|(penis)|(ass)|(booty)|(butt)|(nuts)|(balls)|(testicles)\b/i, async(msg, match) => {
+  const user = msg.from.id
+  const member = await bot.getChatMember(msg.chat.id, user);
+  console.log(member)
+  bot.sendMessage(msg.chat.id, `K-kono.... h-hen..tai! \u{1F633} \n Kimi wa dirty desu ${member.user.first_name}-senpai~`);
 });
 
 bot.onText(/\b(fags?)|(faggot)|(asshole)|(fuck)|(fucker)|(bitch)|(shit)|(prick)|(cunt)\b/i, async(msg, match) => {
-  const member = await bot.getChatMember(chatId, user);
+  const user = msg.from.id
+  const member = await bot.getChatMember(msg.chat.id, user);
   console.log(member)
-  bot.sendMessage(msg.chat.id, `K-ko..wai-desu~ You're mean master sama`);
+  bot.sendMessage(msg.chat.id, `K-ko..wai-desu~ You're mean ${member.user.first_name}-sama \u{1F61E}`);
 });
