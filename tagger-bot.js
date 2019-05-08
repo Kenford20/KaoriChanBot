@@ -8,6 +8,8 @@ const token = process.env.TAGGER_BOT_TOKEN;
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, {polling: true});
 
+//https://api.telegram.org/bot{my_bot_token}/setWebhook?url={url_to_send_updates_to}
+
 // Matches "/echo [whatever]"
 bot.onText(/\/echo (.+)/, (msg, match) => {
   // 'msg' is the received Message from Telegram
@@ -68,6 +70,35 @@ bot.onText(/^\/(calc|convert) .+$/, async(msg, match) => {
   } catch(err) {
     console.log(err);
     bot.sendMessage(msg.chat.id, `Something went wrong. Double check your inputs bro!`);
+  }
+});
+
+bot.onText(/^\/weather .+$/i, async(msg, match) => {
+  const fetch = require('node-fetch');
+  const city = match[0].slice(match[0].indexOf(' '));
+
+  if(city.includes(' ')) {
+    city.replace(/\s/g, '+');
+  }
+  console.log(city);
+
+  const weatherAPI = `http://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=${process.env.WEATHER_API_KEY}&units=imperial`; // units=imperial converts temperature to Fahrenheit
+
+  try {
+    let response = await fetch(weatherAPI, {
+      method: "POST",
+      header: { "Content-Type": "application/json" }
+    });
+    let data = await response.json();
+    console.log((data));
+    bot.sendMessage(msg.chat.id, `
+      Current weather in ${data.name}, ${data.sys.country}: \n
+      Temp is ${data.main.temp}${String.fromCharCode(176)}F, (${data.main.temp_max}${String.fromCharCode(176)}F high and ${data.main.temp_min}${String.fromCharCode(176)}F low)\n
+      Forecast is ${data.weather[0].main} and ${data.weather[0].description}
+    `);
+  } catch(err) {
+      console.log(err);
+      bot.sendMessage(msg.chat.id, 'Could not fetch weather, double check the city name!');
   }
 });
 
