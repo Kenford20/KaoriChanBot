@@ -53,7 +53,7 @@ bot.onText(/^\/roll( [0-9]*)?$/, (msg, match) => {
     threshold = 6; // default die roll
   }
 
-  bot.sendMessage(msg.chat.id, `Random Number: ${Math.floor(Math.random() * threshold) + 1}!`);
+  bot.sendMessage(msg.chat.id, `Random Number: ${Math.floor(Math.random() * threshold) + 1}`);
 });
 
 // flips a coin
@@ -108,6 +108,7 @@ bot.onText(/^\/weather .+$/i, async(msg, match) => {
       header: { "Content-Type": "application/json" }
     });
     const data = await response.json();
+    console.log(data);
     const weatherCode = data.weather[0].id;
     const temperatureEmoji = data.main.temp > 50 ? emojis.fire : emojis.snowman;
     let weatherEmoji;
@@ -126,8 +127,8 @@ bot.onText(/^\/weather .+$/i, async(msg, match) => {
     }
 
     bot.sendMessage(msg.chat.id, `
-      Current weather in ${data.name},  (${data.sys.country}): \n
-      ${temperatureEmoji} Temp is ${data.main.temp}${String.fromCharCode(176)}F, (${data.main.temp_max}${String.fromCharCode(176)}F high and ${data.main.temp_min}${String.fromCharCode(176)}F low)\n
+      Current weather in ${data.name},  (${data.sys.country}): 
+      ${temperatureEmoji} Temp is ${data.main.temp}${String.fromCharCode(176)}F, (${data.main.temp_max}${String.fromCharCode(176)}F high and ${data.main.temp_min}${String.fromCharCode(176)}F low)
       ${weatherEmoji} Forecast is ${data.weather[0].main} and ${data.weather[0].description}
     `);
   } catch(err) {

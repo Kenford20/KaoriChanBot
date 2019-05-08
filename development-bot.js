@@ -53,7 +53,7 @@ bot.onText(/^\/roll( [0-9]*)?$/, (msg, match) => {
     threshold = 6; // default die roll
   }
 
-  bot.sendMessage(msg.chat.id, `Random Number: ${Math.floor(Math.random() * threshold) + 1}!`);
+  bot.sendMessage(msg.chat.id, `Random Number: ${Math.floor(Math.random() * threshold) + 1}`);
 });
 
 // flips a coin
