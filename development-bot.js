@@ -7,6 +7,13 @@ const token = process.env.DEVELOPMENT_BOT_TOKEN;
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, {polling: true});
+const botTag = '@qqm_development_bot';
+
+// handles command autocompletion through the commands list (adds the bot's tag name to the regexp)
+// i.e: /help@bot_tag_name
+function generateRegExp(reg) {
+  return new RegExp(`${reg}(${botTag})?$`);
+}
 
 //https://api.telegram.org/bot{my_bot_token}/setWebhook?url={url_to_send_updates_to}
 
@@ -23,14 +30,14 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
   bot.sendMessage(chatId, resp);
 });
 
-
-bot.onText(/(^\/taskete$)|(^\/h(e|a)lp$)/, async(msg, match) => {
+// sends user a list of commands
+bot.onText(/(^\/taskete(@qqm_development_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
   bot.sendMessage(msg.chat.id, `
 /roll = rolls a die by default, 
-/roll # = gives a random number up to the number you input
+/roll (number) = gives a random number up to the number you input
 /meena = tags everyone in the group
 /flip = flips a coin
-/calc # (op) # = calculator
+/calc (expression) = calculator
 /convert (unit) to (unit) = general units conversion
 /weather (city) = gives you the weather in the city you specify
 and some weeb stuff
@@ -38,7 +45,7 @@ and some weeb stuff
 });
 
 // tags everyone in my group
-bot.onText(/^\/meena$/, async(msg, match) => {
+bot.onText(generateRegExp('^\/meena'), (msg, match) => {
     //const user = msg.from.id;
     //const member = await bot.getChatMember(chatId, user);
     //console.log(member);
@@ -46,9 +53,9 @@ bot.onText(/^\/meena$/, async(msg, match) => {
   });
 
 // rolls a die
-bot.onText(/^\/roll( [0-9]*)?$/, (msg, match) => {
+bot.onText(generateRegExp('^\/roll( [0-9]*)?'), (msg, match) => {
   let threshold = match[0].split(' ')[1]; // grabs optional parameter defined by user i.e: /roll 100
-  
+  //generateRegExp('^\/roll( [0-9]*)?');
   if(!threshold) {
     threshold = 6; // default die roll
   }
@@ -57,12 +64,17 @@ bot.onText(/^\/roll( [0-9]*)?$/, (msg, match) => {
 });
 
 // flips a coin
-bot.onText(/^\/flip$/, (msg, match) => {
+bot.onText(generateRegExp('^\/flip'), (msg, match) => {
   let coin = Math.round(Math.random());
   let smiley = '\u{1F604}';
   let peach = '\u{1F351}';
 
   bot.sendMessage(msg.chat.id, coin === 0 ? `Heads ${smiley}` : `Tails ${peach}`);
+});
+
+bot.onText(generateRegExp('^\/(calc|convert)'), (msg, match) => {
+  let input = /calc/.test(match[0]) ? 'expression' : 'conversion';
+  bot.sendMessage(msg.chat.id, `Enter an ${input} with the command! Onigaishimasu~`);
 });
 
 // uses mathjs library to do mathematical calculations and unit conversions
@@ -73,8 +85,12 @@ bot.onText(/^\/(calc|convert) .+$/, async(msg, match) => {
     bot.sendMessage(msg.chat.id, `Result: ${result}`);
   } catch(err) {
     console.log(err);
-    bot.sendMessage(msg.chat.id, `Something went wrong. Double check your inputs bro!`);
+    bot.sendMessage(msg.chat.id, `Double check your expression ya konoyero!`);
   }
+});
+
+bot.onText(generateRegExp('^\/weather'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, 'Oni..g-gai, enter a city name with the command, senpai~');
 });
 
 // makes a post request to openweathermap API and sends the user the weather of a specified city
@@ -135,14 +151,18 @@ bot.onText(/^\/weather .+$/i, async(msg, match) => {
     `);
   } catch(err) {
       console.log(err);
-      bot.sendMessage(msg.chat.id, 'Could not fetch weather, double check the city name!');
+      bot.sendMessage(msg.chat.id, 'Go..m-men n-nasai.. double check the city name ya bakayero!');
   }
 });
 
-bot.onText(/weeb/i, (msg, match) => {
+bot.onText(/\bweeb\b/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, `Y-y.. yes... sen..p-pai..?`);
 });
 
-bot.onText(/senpai/i, (msg, match) => {
+bot.onText(/\bsenpai\b/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, `Y-y.. yes... Mas..t-ter..?`);
+});
+
+bot.onText(/\b(tits?)|(deek)|(dick)|(boobs?)|(cawk)|(pussy)|(vaginas?)|(nips?)|(nipples?)|(penis)\b/i, (msg, match) => {
+  bot.sendMessage(msg.chat.id, `K-kono.... h-hen..tai! *blush* Kimi wa dirty desu senpai~`);
 });
