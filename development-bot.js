@@ -104,6 +104,7 @@ bot.onText(/^\/weather .+$/i, async(msg, match) => {
   }
 
   // # Openweathermap Weather codes and corresponding emojis
+  // emoji codes here: https://apps.timwhitlock.info/emoji/tables/unicode
   const emojis = {
     thunderstorm: '\u{1F4A8}',    // # Code: 200's, thunderstorms
     droplet: '\u{1F4A7}',         // # Code: 300's drizzle
@@ -163,6 +164,16 @@ bot.onText(/\bsenpai\b/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, `Y-y.. yes... Mas..t-ter..?`);
 });
 
-bot.onText(/\b(tits?)|(deek)|(dick)|(boobs?)|(cawk)|(pussy)|(vaginas?)|(nips?)|(nipples?)|(penis)\b/i, (msg, match) => {
-  bot.sendMessage(msg.chat.id, `K-kono.... h-hen..tai! *blush* Kimi wa dirty desu senpai~`);
+bot.onText(/\b(tits?)|(deek)|(dick)|(boobs?)|(cawk)|(pussy)|(vaginas?)|(nips?)|(nipples?)|(penis)|(ass)|(booty)|(butt)|(nuts)|(balls)|(testicles)\b/i, async(msg, match) => {
+  const user = msg.from.id
+  const member = await bot.getChatMember(msg.chat.id, user);
+  console.log(member)
+  bot.sendMessage(msg.chat.id, `K-kono.... h-hen..tai! \u{1F633} \n Kimi wa dirty desu ${member.user.first_name}-senpai~`);
+});
+
+bot.onText(/\b(fags?)|(faggot)|(asshole)|(fuck)|(fucker)|(bitch)|(shit)|(prick)|(cunt)\b/i, async(msg, match) => {
+  const user = msg.from.id
+  const member = await bot.getChatMember(msg.chat.id, user);
+  console.log(member)
+  bot.sendMessage(msg.chat.id, `K-ko..wai-desu~ You're mean ${member.user.first_name}-sama \u{1F61E}`);
 });

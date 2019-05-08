@@ -163,7 +163,12 @@ bot.onText(/\bsenpai\b/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, `Y-y.. yes... Mas..t-ter..?`);
 });
 
-
-bot.onText(/\b(tits?)|(deek)|(dick)|(boobs?)|(cawk)|(pussy)|(vaginas?)|(nips?)|(nipples?)|(penis)\b/i, (msg, match) => {
+bot.onText(/\b(tits?)|(deek)|(dick)|(boobs?)|(cawk)|(pussy)|(vaginas?)|(nips?)|(nipples?)|(penis)|(ass)|(booty)|(butt)|(nuts)|(balls)|(testicles)\b/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, `K-kono.... h-hen..tai! *blush* Kimi wa dirty desu senpai~`);
+});
+
+bot.onText(/\b(fags?)|(faggot)|(asshole)|(fuck)|(fucker)|(bitch)|(shit)|(prick)|(cunt)\b/i, async(msg, match) => {
+  const member = await bot.getChatMember(chatId, user);
+  console.log(member)
+  bot.sendMessage(msg.chat.id, `K-ko..wai-desu~ You're mean master sama`);
 });
