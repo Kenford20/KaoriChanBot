@@ -99,6 +99,8 @@ bot.onText(/^\/weather .+$/i, async(msg, match) => {
     sunCloud: '\u{026C5}',        // # Code: 801/802 partly cloudly (11-50%)
     cloud: '\u{02601}',           // # Code: 803/804 cloudy (50-100%)
     fire: '\u{1F525}',            // # Code: 904
+    arrowUp: '\u{2B06}',
+    arrowDown: '\u{2B07}',
     defaultEmoji: '\u{1F300}'     // # default emojis
   };
 
@@ -127,7 +129,8 @@ bot.onText(/^\/weather .+$/i, async(msg, match) => {
 
     bot.sendMessage(msg.chat.id, `
       Current weather in ${data.name},  (${data.sys.country}): \n
-      ${temperatureEmoji} Temp is ${data.main.temp}${String.fromCharCode(176)}F, (${data.main.temp_max}${String.fromCharCode(176)}F high and ${data.main.temp_min}${String.fromCharCode(176)}F low)\n
+      ${temperatureEmoji} Temp is ${data.main.temp}${String.fromCharCode(176)}F
+      ${emojis.arrowUp} ${data.main.temp_max}${String.fromCharCode(176)}F high and ${emojis.arrowDown} ${data.main.temp_min}${String.fromCharCode(176)}F low
       ${weatherEmoji} Forecast is ${data.weather[0].main} and ${data.weather[0].description}
     `);
   } catch(err) {
