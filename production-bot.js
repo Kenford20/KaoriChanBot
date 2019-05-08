@@ -3,7 +3,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const math = require('mathjs');
 
 // replace the value below with the Telegram token you receive from @BotFather
-const token = process.env.TAGGER_BOT_TOKEN;
+const token = process.env.PRODUCTION_BOT_TOKEN;
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, {polling: true});
@@ -77,6 +77,7 @@ bot.onText(/^\/(calc|convert) .+$/, async(msg, match) => {
   }
 });
 
+// makes a post request to openweathermap API and sends the user the weather of a specified city
 bot.onText(/^\/weather .+$/i, async(msg, match) => {
   const fetch = require('node-fetch');
   const city = match[0].slice(match[0].indexOf(' '));

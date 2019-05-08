@@ -1,2 +1,2 @@
-require('./tagger-bot');
+require('./production-bot');
 require('./server');
