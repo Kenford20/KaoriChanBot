@@ -14,7 +14,6 @@ const botTag = '@qqm_development_bot';
 function generateRegExp(reg) {
   return new RegExp(`${reg}(${botTag})?$`);
 }
-
 // # Openweathermap Weather codes and corresponding emojis
 // emoji codes here: https://apps.timwhitlock.info/emoji/tables/unicode
 const emojis = {
@@ -37,6 +36,7 @@ const emojis = {
   madFace: '\u{1F620}',
   redMadFace: '\u{1F621}',
   smiley: '\u{1F604}',
+  blushSmiley: '\u{1F60A}',
   peach: '\u{1F351}',
   winkyTongueFace: '\u{1F61C}',
   blushFace: '\u{1F633}',
@@ -61,7 +61,7 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 });
 
 // sends user a list of commands
-bot.onText(/(^\/taskete(@qqm_development_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
+bot.onText(/(^\/taskete(@qqm_weeb_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
   bot.sendMessage(msg.chat.id, `
 /roll = rolls a die by default, 
 /roll (number) = gives a random number up to the number you input
@@ -178,6 +178,10 @@ bot.onText(/\bkaori( ?-?chan)?\b/i, async(msg, match) => {
   const user = msg.from.id
   const member = await bot.getChatMember(msg.chat.id, user);
   bot.sendMessage(msg.chat.id, `H-a.. hai... ${member.user.first_name}-sama?`);
+});
+
+bot.onText(/\bwaifu\b/i, (msg, match) => {
+  bot.sendMessage(msg.chat.id, `W-wata..shi?? K-kimi no waifu?! ${emojis.blushFace}`);
 });
 
 bot.onText(/\b(^tits?$)|(^deek$)|(^dick$)|(^boobs?$)|(^cock$)|(^cawk$)|(^pussy$)|(^vaginas?$)|(^nips?$)|(^nipples?$)|(^penis$)|(^ass$)|(^booty$)|(^butt$)|(^nuts$)|(^balls$)|(^testicles$)\b/i, async(msg, match) => {

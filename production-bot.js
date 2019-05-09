@@ -37,6 +37,7 @@ const emojis = {
   madFace: '\u{1F620}',
   redMadFace: '\u{1F621}',
   smiley: '\u{1F604}',
+  blushSmiley: '\u{1F60A}',
   peach: '\u{1F351}',
   winkyTongueFace: '\u{1F61C}',
   blushFace: '\u{1F633}',
@@ -174,10 +175,14 @@ bot.onText(/\bsenpai\b/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, `Y-y.. yes... Mas..t-ter..?`);
 });
 
-bot.onText(/\bkaori( ?-?chan)?\b/, async(msg, match) => {
+bot.onText(/\bkaori( ?-?chan)?\b/i, async(msg, match) => {
   const user = msg.from.id
   const member = await bot.getChatMember(msg.chat.id, user);
   bot.sendMessage(msg.chat.id, `H-a.. hai... ${member.user.first_name}-sama?`);
+});
+
+bot.onText(/\bwaifu\b/i, (msg, match) => {
+  bot.sendMessage(msg.chat.id, `W-wata..shi?? K-kimi no waifu?! ${emojis.blushFace}`);
 });
 
 bot.onText(/\b(^tits?$)|(^deek$)|(^dick$)|(^boobs?$)|(^cock$)|(^cawk$)|(^pussy$)|(^vaginas?$)|(^nips?$)|(^nipples?$)|(^penis$)|(^ass$)|(^booty$)|(^butt$)|(^nuts$)|(^balls$)|(^testicles$)\b/i, async(msg, match) => {
