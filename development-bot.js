@@ -15,6 +15,30 @@ function generateRegExp(reg) {
   return new RegExp(`${reg}(${botTag})?$`);
 }
 
+// # Openweathermap Weather codes and corresponding emojis
+// emoji codes here: https://apps.timwhitlock.info/emoji/tables/unicode
+const emojis = {
+  thunderstorm: '\u{1F4A8}',    // # Code: 200's, thunderstorms
+  droplet: '\u{1F4A7}',         // # Code: 300's drizzle
+  rain: '\u{02614}',            // # Code: 500's rain
+  snowflake: '\u{02744}',       // # Code: 600's snow
+  snowman: '\u{026C4}',         // # Code: 600's snowman
+  atmosphere: '\u{1F301}',      // # Code: 700's atmosphere (mist, smoke, haze, fog, dust, sand)
+  sun: '\u{02600}',             // # Code: 800 clear sky
+  sunCloud: '\u{026C5}',        // # Code: 801/802 partly cloudly (11-50%)
+  cloud: '\u{02601}',           // # Code: 803/804 cloudy (50-100%)
+  fire: '\u{1F525}',            // # Code: 904
+  arrowUp: '\u{2B06}',
+  arrowDown: '\u{2B07}',
+  sadFace: '\u{1F61E}',
+  sadFace2: '\u{1F614}',
+  cryFace: '\u{1F62D}',
+  cryFace2: '\u{1F622}',
+  madFace: '\u{1F620}',
+  redMadFace: '\u{1F621}',
+  defaultEmoji: '\u{1F300}'     // # default emojis
+};
+
 //https://api.telegram.org/bot{my_bot_token}/setWebhook?url={url_to_send_updates_to}
 
 // Matches "/echo [whatever]"
@@ -103,24 +127,6 @@ bot.onText(/^\/weather .+$/i, async(msg, match) => {
     city.replace(/\s/g, '+'); // handles queries for cities with spaces (i.e san franscisco)
   }
 
-  // # Openweathermap Weather codes and corresponding emojis
-  // emoji codes here: https://apps.timwhitlock.info/emoji/tables/unicode
-  const emojis = {
-    thunderstorm: '\u{1F4A8}',    // # Code: 200's, thunderstorms
-    droplet: '\u{1F4A7}',         // # Code: 300's drizzle
-    rain: '\u{02614}',            // # Code: 500's rain
-    snowflake: '\u{02744}',       // # Code: 600's snow
-    snowman: '\u{026C4}',         // # Code: 600's snowman
-    atmosphere: '\u{1F301}',      // # Code: 700's atmosphere (mist, smoke, haze, fog, dust, sand)
-    sun: '\u{02600}',             // # Code: 800 clear sky
-    sunCloud: '\u{026C5}',        // # Code: 801/802 partly cloudly (11-50%)
-    cloud: '\u{02601}',           // # Code: 803/804 cloudy (50-100%)
-    fire: '\u{1F525}',            // # Code: 904
-    arrowUp: '\u{2B06}',
-    arrowDown: '\u{2B07}',
-    defaultEmoji: '\u{1F300}'     // # default emojis
-  };
-
   try {
     const response = await fetch(weatherAPI, {
       method: "POST",
@@ -171,9 +177,17 @@ bot.onText(/\b(tits?)|(deek)|(dick)|(boobs?)|(cawk)|(pussy)|(vaginas?)|(nips?)|(
   bot.sendMessage(msg.chat.id, `K-kono.... h-hen..tai! \u{1F633} \n Kimi wa dirty desu ${member.user.first_name}-senpai~`);
 });
 
-bot.onText(/\b(fags?)|(faggot)|(asshole)|(fuck)|(fucker)|(bitch)|(shit)|(prick)|(cunt)\b/i, async(msg, match) => {
+bot.onText(/\b(fags?)|(faggot)|(asshole)|(fuck)|(fucker)|(bitch)|(shit)|(prick)|(cunt)|(slut)\b/i, async(msg, match) => {
   const user = msg.from.id
   const member = await bot.getChatMember(msg.chat.id, user);
-  console.log(member)
-  bot.sendMessage(msg.chat.id, `K-ko..wai-desu~ You're mean ${member.user.first_name}-sama \u{1F61E}`);
+
+  const profanityReplies = [
+    `K-ko..wai-desu~ You're mean ${member.user.first_name}-sama ${emojis.sadFace}`,
+    `${member.user.first_name}-sama... you're gonna make me kanashi ${emojis.cryFace}`,
+    `Y-yamete ${member.user.first_name}-kun.. ${emojis.sadFace2} \nThat's a warui thing to say..`,
+    `${emojis.redMadFace} Don't say that senpai! Sore wa yokunai ne!`,
+    `Ureshikunai.. ${emojis.redMadFace}\nKaori-chan will get angry if you say that ${emojis.madFace}`,
+  ];
+  
+  bot.sendMessage(msg.chat.id, profanityReplies[Math.floor(Math.random()*(profanityReplies.length-1))]);
 });

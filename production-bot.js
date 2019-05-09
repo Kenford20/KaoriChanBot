@@ -46,11 +46,8 @@ and some weeb stuff
 
 // tags everyone in my group
 bot.onText(generateRegExp('^\/meena'), (msg, match) => {
-    //const user = msg.from.id;
-    //const member = await bot.getChatMember(chatId, user);
-    //console.log(member);
-    bot.sendMessage(msg.chat.id, process.env.TELEGRAM_GROUP_USERS);
-  });
+  bot.sendMessage(msg.chat.id, process.env.TELEGRAM_GROUP_USERS);
+});
 
 // rolls a die
 bot.onText(generateRegExp('^\/roll( [0-9]*)?'), (msg, match) => {
@@ -74,7 +71,7 @@ bot.onText(generateRegExp('^\/flip'), (msg, match) => {
 
 bot.onText(generateRegExp('^\/(calc|convert)'), (msg, match) => {
   let input = /calc/.test(match[0]) ? 'expression' : 'conversion';
-  bot.sendMessage(msg.chat.id, `Please enter an ${input} with the command!`);
+  bot.sendMessage(msg.chat.id, `Enter an ${input} with the command! Onigaishimasu~`);
 });
 
 // uses mathjs library to do mathematical calculations and unit conversions
@@ -85,12 +82,12 @@ bot.onText(/^\/(calc|convert) .+$/, async(msg, match) => {
     bot.sendMessage(msg.chat.id, `Result: ${result}`);
   } catch(err) {
     console.log(err);
-    bot.sendMessage(msg.chat.id, `Something went wrong. Double check your inputs bro!`);
+    bot.sendMessage(msg.chat.id, `Double check your expression ya konoyero!`);
   }
 });
 
 bot.onText(generateRegExp('^\/weather'), (msg, match) => {
-  bot.sendMessage(msg.chat.id, 'Please enter a city name with the command!');
+  bot.sendMessage(msg.chat.id, 'Oni..g-gai, enter a city name with the command, senpai~');
 });
 
 // makes a post request to openweathermap API and sends the user the weather of a specified city
@@ -104,6 +101,7 @@ bot.onText(/^\/weather .+$/i, async(msg, match) => {
   }
 
   // # Openweathermap Weather codes and corresponding emojis
+  // emoji codes here: https://apps.timwhitlock.info/emoji/tables/unicode
   const emojis = {
     thunderstorm: '\u{1F4A8}',    // # Code: 200's, thunderstorms
     droplet: '\u{1F4A7}',         // # Code: 300's drizzle
@@ -151,7 +149,7 @@ bot.onText(/^\/weather .+$/i, async(msg, match) => {
     `);
   } catch(err) {
       console.log(err);
-      bot.sendMessage(msg.chat.id, 'Could not fetch weather, double check the city name!');
+      bot.sendMessage(msg.chat.id, 'Go..m-men n-nasai.. double check the city name ya bakayero!');
   }
 });
 
@@ -170,7 +168,7 @@ bot.onText(/\b(tits?)|(deek)|(dick)|(boobs?)|(cawk)|(pussy)|(vaginas?)|(nips?)|(
   bot.sendMessage(msg.chat.id, `K-kono.... h-hen..tai! \u{1F633} \n Kimi wa dirty desu ${member.user.first_name}-senpai~`);
 });
 
-bot.onText(/\b(fags?)|(faggot)|(asshole)|(fuck)|(fucker)|(bitch)|(shit)|(prick)|(cunt)\b/i, async(msg, match) => {
+bot.onText(/\b(fags?)|(faggot)|(asshole)|(fuck)|(fucker)|(bitch)|(shit)|(prick)|(cunt)|(slut)\b/i, async(msg, match) => {
   const user = msg.from.id
   const member = await bot.getChatMember(msg.chat.id, user);
   console.log(member)
