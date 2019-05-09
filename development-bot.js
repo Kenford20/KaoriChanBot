@@ -97,7 +97,7 @@ bot.onText(generateRegExp('^\/roll( [0-9]*)?'), (msg, match) => {
 bot.onText(generateRegExp('^\/flip'), (msg, match) => {
   let coin = Math.round(Math.random());
 
-  bot.sendMessage(msg.chat.id, coin === 0 ? `Heads ${emojies.smiley}` : `Tails ${emojispeach}`);
+  bot.sendMessage(msg.chat.id, coin === 0 ? `Heads ${emojis.smiley}` : `Tails ${emojis.peach}`);
 });
 
 bot.onText(generateRegExp('^\/(calc|convert)'), (msg, match) => {
@@ -174,7 +174,7 @@ bot.onText(/\bsenpai\b/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, `Y-y.. yes... Mas..t-ter..?`);
 });
 
-bot.onText(/^kaori( ?-?chan)?$/, async(msg, match) => {
+bot.onText(/\bkaori( ?-?chan)?\b/i, async(msg, match) => {
   const user = msg.from.id
   const member = await bot.getChatMember(msg.chat.id, user);
   bot.sendMessage(msg.chat.id, `H-a.. hai... ${member.user.first_name}-sama?`);
