@@ -36,6 +36,12 @@ const emojis = {
   cryFace2: '\u{1F622}',
   madFace: '\u{1F620}',
   redMadFace: '\u{1F621}',
+  smiley: '\u{1F604}',
+  peach: '\u{1F351}',
+  winkyTongueFace: '\u{1F61C}',
+  blushFace: '\u{1F633}',
+  monkeyBlockingEyes: '\u1F648',
+  blueScreamingFace: '\u1F631',
   defaultEmoji: '\u{1F300}'     // # default emojis
 };
 
@@ -90,10 +96,8 @@ bot.onText(generateRegExp('^\/roll( [0-9]*)?'), (msg, match) => {
 // flips a coin
 bot.onText(generateRegExp('^\/flip'), (msg, match) => {
   let coin = Math.round(Math.random());
-  let smiley = '\u{1F604}';
-  let peach = '\u{1F351}';
 
-  bot.sendMessage(msg.chat.id, coin === 0 ? `Heads ${smiley}` : `Tails ${peach}`);
+  bot.sendMessage(msg.chat.id, coin === 0 ? `Heads ${emojies.smiley}` : `Tails ${emojispeach}`);
 });
 
 bot.onText(generateRegExp('^\/(calc|convert)'), (msg, match) => {
@@ -170,14 +174,28 @@ bot.onText(/\bsenpai\b/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, `Y-y.. yes... Mas..t-ter..?`);
 });
 
-bot.onText(/\b(tits?)|(deek)|(dick)|(boobs?)|(cawk)|(pussy)|(vaginas?)|(nips?)|(nipples?)|(penis)|(ass)|(booty)|(butt)|(nuts)|(balls)|(testicles)\b/i, async(msg, match) => {
+bot.onText(/^kaori( ?-?chan)?$/, async(msg, match) => {
   const user = msg.from.id
   const member = await bot.getChatMember(msg.chat.id, user);
-  console.log(member)
-  bot.sendMessage(msg.chat.id, `K-kono.... h-hen..tai! \u{1F633} \n Kimi wa dirty desu ${member.user.first_name}-senpai~`);
+  bot.sendMessage(msg.chat.id, `H-a.. hai... ${member.user.first_name}-sama?`);
 });
 
-bot.onText(/\b(fags?)|(faggot)|(asshole)|(fuck)|(fucker)|(bitch)|(shit)|(prick)|(cunt)|(slut)\b/i, async(msg, match) => {
+bot.onText(/\b(^tits?$)|(^deek$)|(^dick$)|(^boobs?$)|(^cock$)|(^cawk$)|(^pussy$)|(^vaginas?$)|(^nips?$)|(^nipples?$)|(^penis$)|(^ass$)|(^booty$)|(^butt$)|(^nuts$)|(^balls$)|(^testicles$)\b/i, async(msg, match) => {
+  const user = msg.from.id
+  const member = await bot.getChatMember(msg.chat.id, user);
+  
+  const naughtyReplies = [
+    `K-kono.... h-hen..tai! ${emojis.blushFace} \n Kimi wa dirty desu ${member.user.first_name}-senpai~`,
+    `You're so naughty ${member.user.first_name}-sama! ${emojis.winkyTongueFace}`,
+    `S-senpai...! Hazukashi desu~ ${emojis.monkeyBlockingEyes}`,
+    `${emojis.blushFace} ${member.user.first_name}-kun na-n..ni  o i-itte iru..!`,
+    `${emojis.blueScreamingFace} ${member.user.first_name}-senpai! w..what are you s-say..ing?`
+  ];
+
+  bot.sendMessage(msg.chat.id, naughtyReplies[Math.floor(Math.random()*(naughtyReplies.length-1))]);
+});
+
+bot.onText(/\b(^fags?$)|(^faggot$)|(^asshole$)|(^fuck$)|(^fucker$)|(^bitch$)|(^shit$)|(^prick$)|(^cunt$)|(^slut$)\b/i, async(msg, match) => {
   const user = msg.from.id
   const member = await bot.getChatMember(msg.chat.id, user);
 
