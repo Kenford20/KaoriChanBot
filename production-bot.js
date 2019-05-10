@@ -41,8 +41,8 @@ const emojis = {
   peach: '\u{1F351}',
   winkyTongueFace: '\u{1F61C}',
   blushFace: '\u{1F633}',
-  monkeyBlockingEyes: '\u1F648',
-  blueScreamingFace: '\u1F631',
+  monkeyBlockingEyes: '\u{1F648}',
+  blueScreamingFace: '\u{1F631}',
   defaultEmoji: '\u{1F300}'     // # default emojis
 };
 
@@ -185,7 +185,7 @@ bot.onText(/\bwaifu\b/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, `W-wata..shi?? K-kimi no waifu?! ${emojis.blushFace}`);
 });
 
-bot.onText(/\b(^tits?$)|(^deek$)|(^dick$)|(^boobs?$)|(^cock$)|(^cawk$)|(^pussy$)|(^vaginas?$)|(^nips?$)|(^nipples?$)|(^penis$)|(^ass$)|(^booty$)|(^butt$)|(^nuts$)|(^balls$)|(^testicles$)\b/i, async(msg, match) => {
+bot.onText(/\b(tits?|deek|dick|boobs?|cock|cawk|pussy|vaginas?|nips?|nipples?|penis|ass|booty|butt|nuts|balls|testicles|69)\b/i, async(msg, match) => {
   const user = msg.from.id
   const member = await bot.getChatMember(msg.chat.id, user);
   
@@ -200,7 +200,7 @@ bot.onText(/\b(^tits?$)|(^deek$)|(^dick$)|(^boobs?$)|(^cock$)|(^cawk$)|(^pussy$)
   bot.sendMessage(msg.chat.id, naughtyReplies[Math.floor(Math.random()*(naughtyReplies.length-1))]);
 });
 
-bot.onText(/\b(^fags?$)|(^faggot$)|(^asshole$)|(^fuck$)|(^fucker$)|(^bitch$)|(^shit$)|(^prick$)|(^cunt$)|(^slut$)\b/i, async(msg, match) => {
+bot.onText(/\b(fags?|faggot|asshole|fuck|fucker|bitch|shit|prick|cunt|slut)\b/i, async(msg, match) => {
   const user = msg.from.id
   const member = await bot.getChatMember(msg.chat.id, user);
 
