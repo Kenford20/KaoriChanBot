@@ -8,6 +8,7 @@ const token = process.env.PRODUCTION_BOT_TOKEN;
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, {polling: true});
 const botTag = '@qqm_weeb_bot';
+let profanityMode = false;
 
 // handles command autocompletion through the commands list (adds the bot's tag name to the regexp)
 // i.e: /help@bot_tag_name
