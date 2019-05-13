@@ -8,6 +8,7 @@ const token = process.env.DEVELOPMENT_BOT_TOKEN;
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, {polling: true});
 const botTag = '@qqm_development_bot';
+let profanityMode = false;
 
 // handles command autocompletion through the commands list (adds the bot's tag name to the regexp)
 // i.e: /help@bot_tag_name
@@ -38,6 +39,7 @@ const emojis = {
   redMadFace: '\u{1F621}',
   smiley: '\u{1F604}',
   blushSmiley: '\u{1F60A}',
+  kissFaceHeart: '\u{1F618}',
   peach: '\u{1F351}',
   winkyTongueFace: '\u{1F61C}',
   blushFace: '\u{1F633}',
@@ -167,6 +169,12 @@ bot.onText(/^\/weather .+$/i, async(msg, match) => {
   }
 });
 
+bot.onText(generateRegExp('^\/filter'), (msg, match) => {
+  profanityMode = !profanityMode;
+  console.log(`profanity mode is: ${profanityMode}`);
+  bot.sendMessage(msg.chat.id, profanityMode ? `Kaori chan filter enabled! Arigato senpai ${emojis.kissFaceHeart}` : `Kaori chan filter disabled. Watashi wa kanashi ${emojis.sadFace2}`);
+});
+
 bot.onText(/\bweeb\b/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, `Y-y.. yes... sen..p-pai..?`);
 });
@@ -186,31 +194,37 @@ bot.onText(/\bwaifu\b/i, (msg, match) => {
 });
 
 bot.onText(/\b(tits?|deek|dick|boobs?|cock|cawk|pussy|vaginas?|nips?|nipples?|penis|ass|booty|butt|nuts|balls|testicles|69)\b/i, async(msg, match) => {
-  const user = msg.from.id
-  const member = await bot.getChatMember(msg.chat.id, user);
-  
-  const naughtyReplies = [
-    `K-kono.... h-hen..tai! ${emojis.blushFace} \n Kimi wa dirty desu ${member.user.first_name}-senpai~`,
-    `You're so naughty ${member.user.first_name}-sama! ${emojis.winkyTongueFace}`,
-    `S-senpai...! Hazukashi desu~ ${emojis.monkeyBlockingEyes}`,
-    `${emojis.blushFace} ${member.user.first_name}-kun na-n..ni  o i-itte iru..!`,
-    `${emojis.blueScreamingFace} ${member.user.first_name}-senpai! w..what are you s-say..ing?`
-  ];
+  if(profanityMode) {
+    const user = msg.from.id
+    const member = await bot.getChatMember(msg.chat.id, user);
+    
+    const naughtyReplies = [
+      `K-kono.... h-hen..tai! ${emojis.blushFace} \n Kimi wa dirty desu ${member.user.first_name}-senpai~`,
+      `You're so naughty ${member.user.first_name}-sama! ${emojis.winkyTongueFace}`,
+      `S-senpai...! Hazukashi desu~ ${emojis.monkeyBlockingEyes}`,
+      `${emojis.blushFace} ${member.user.first_name}-kun na-n..ni  o i-itte iru..!`,
+      `${emojis.blueScreamingFace} ${member.user.first_name}-senpai! w..what are you s-say..ing?`
+    ];
 
-  bot.sendMessage(msg.chat.id, naughtyReplies[Math.floor(Math.random()*(naughtyReplies.length-1))]);
+    bot.sendMessage(msg.chat.id, naughtyReplies[Math.floor(Math.random()*(naughtyReplies.length-1))]);
+  }
 });
 
-bot.onText(/\b(fags?|faggot|asshole|fuck|fucker|bitch|shit|prick|cunt|slut)\b/i, async(msg, match) => {
-  const user = msg.from.id
-  const member = await bot.getChatMember(msg.chat.id, user);
 
-  const profanityReplies = [
-    `K-ko..wai-desu~ You're mean ${member.user.first_name}-sama ${emojis.sadFace}`,
-    `${member.user.first_name}-sama... you're gonna make me kanashi ${emojis.cryFace}`,
-    `Y-yamete ${member.user.first_name}-kun.. ${emojis.sadFace2} \nThat's a warui thing to say..`,
-    `${emojis.redMadFace} Don't say that senpai! Sore wa yokunai ne!`,
-    `Ureshikunai.. ${emojis.redMadFace}\nKaori-chan will get angry if you say that ${emojis.madFace}`,
-  ];
-  
-  bot.sendMessage(msg.chat.id, profanityReplies[Math.floor(Math.random()*(profanityReplies.length-1))]);
+bot.onText(/\b(fags?|faggot|asshole|fuck|fucker|bitch|shit|prick|cunt|slut)\b/i, async(msg, match) => {
+  console.log('profane')
+  if(profanityMode) {
+    const user = msg.from.id
+    const member = await bot.getChatMember(msg.chat.id, user);
+
+    const profanityReplies = [
+      `K-ko..wai-desu~ You're mean ${member.user.first_name}-sama ${emojis.sadFace}`,
+      `${member.user.first_name}-sama... you're gonna make me kanashi ${emojis.cryFace}`,
+      `Y-yamete ${member.user.first_name}-kun.. ${emojis.sadFace2} \nThat's a warui thing to say..`,
+      `${emojis.redMadFace} Don't say that senpai! Sore wa yokunai ne!`,
+      `Ureshikunai.. ${emojis.redMadFace}\nKaori-chan will get angry if you say that ${emojis.madFace}`,
+    ];
+    
+    bot.sendMessage(msg.chat.id, profanityReplies[Math.floor(Math.random()*(profanityReplies.length-1))]);
+  }
 });
