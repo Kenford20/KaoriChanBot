@@ -232,7 +232,7 @@ bot.onText(generateRegExp('^\/spotify'), (msg, match) => {
 });
 
 
-let accessToken = "BQCY4Hj09HNaSCxPXSbKE22IP_f05QUGp12Bb1CvcmcWpv1bXL2elOSW6ncxnPJ43j7pK_FiUxgpGyqTnCc";
+let accessToken = "BQAow_dPXan6fNNCXii1YoWrZbhifGJjP7jvAqiHNoInpkfZi84XamSIRZxicII-RiyjAoRTHUP_TPYgrVc";
 bot.onText(/^\/spotify .+$/i, (msg, match) => {
   const songQuery = match[0].slice(match[0].indexOf(' ')).replace(/\/s/g, '+');
 
@@ -251,7 +251,7 @@ bot.onText(/^\/spotify .+$/i, (msg, match) => {
 
   bot.on('callback_query', async(queryType) => {
     bot.sendMessage(msg.chat.id, `You clicked: ${queryType.data}`);
-    const spotifyAPI = `https://api.spotify.com/v1/search?q=${(songQuery).toLowerCase()}&type=${(queryType.data).toLowerCase()}&access_token=${accessToken}`
+    const spotifyAPI = `https://api.spotify.com/v1/search?q=${(songQuery).toLowerCase()}&type=${(queryType.data).toLowerCase()}&limit=5&access_token=${accessToken}`
     //bot.editMessageReplyMarkup({reply_markup: []}, {chat_id: msg.chat.id, message_id: queryType.message.message_id});
 
     try {
@@ -259,15 +259,15 @@ bot.onText(/^\/spotify .+$/i, (msg, match) => {
         method: "GET",
         header: {"Content-Type": "application/json"}
       });
-      const data = await response.json();
+      const spotifyData = await response.json();
 
-      if(data.error) {
+      if(spotifyData.error) {
         console.log('theres a spotify error!')
-        console.log(data.error);
+        console.log(spotifyData.error);
         let errResponseMsg;
 
         // 401 = access token expired, so generate new one. (they expire every hour)
-        if(data.error.status === 401) {
+        if(spotifyData.error.status === 401) {
           errResponseMsg = 'Spotify access token expired, generating a new one! Choto mottay and try again in a few seconds! '
           console.log('creating a new token!');
           axios({
@@ -297,53 +297,41 @@ bot.onText(/^\/spotify .+$/i, (msg, match) => {
       } 
       else {
         switch(queryType.data) {
-          //case 'Track': break;
-          //case 'Album': break;
-          case 'Artist': {
-            console.log(data.artists.items[0]);
+          case 'Track': {
             bot.sendMessage(msg.chat.id, `
-Here's a profile: ${data.artists.items[0].external_urls.spotify} \n
-${data.artists.items[0].name} has ${data.artists.items[0].followers.total} followers! \n
-Artist's genres: ${data.artists.items[0].genres.join(' ')} \n
+Here's the track: ${spotifyData.tracks.items[0].external_urls.spotify} 
+Track album: ${spotifyData.tracks.items[0].album.name}, which has ${spotifyData.tracks.items[0].album.total_tracks} tracks
+Album release: ${spotifyData.tracks.items[0].album.release_date}
+If you don't have a spotify account, here's a preview fam dw: ${spotifyData.tracks.items[0].preview_url}
             `);
           } break;
-          //case 'Playlist': break;
-          default: {
-            console.log(data.artists.items[0]);
+          case 'Album': {
             bot.sendMessage(msg.chat.id, `
-Here's a profile: ${data.artists.items[0].external_urls.spotify} \n
-${data.artists.items[0].name} has ${data.artists.items[0].followers.total} followers! \n
-Artist's genres: ${data.artists.items[0].genres.join(' ')} \n
+Here's the album: ${spotifyData.albums.items[0].external_urls.spotify} 
+Album is called ${spotifyData.albums.items[0].name} has ${spotifyData.albums.items[0].total_tracks} tracks.
+Album release: ${spotifyData.albums.items[0].release_date}
             `);
-          }
+          } break;
+          case 'Artist': {
+            bot.sendMessage(msg.chat.id, `
+Here's a profile: ${spotifyData.artists.items[0].external_urls.spotify} 
+${spotifyData.artists.items[0].name} has ${spotifyData.artists.items[0].followers.total} followers! 
+Artist's genres: ${spotifyData.artists.items[0].genres.join(' ')} 
+            `);
+          } break;
+          case 'Playlist': {
+            bot.sendMessage(msg.chat.id, `
+Here's the playlist: ${spotifyData.playlists.items[0].external_urls.spotify} 
+Playlist is called: ${spotifyData.playlists.items[0].name}
+Created by: ${spotifyData.playlists.items[0].owner.display_name}
+You can view more of his/her stuff at: ${spotifyData.playlists.items[0].owner.external_urls.spotify}
+            `);
+          } break;
+          default: bot.sendMessage(msg.chat.id, 'Something went wrong, try again oof'); break;
         }
-        
       }
     } catch(fetchErr) {
       console.log(fetchErr);
     }
   });
 });
-
-
-// try { 
-//   console.log('generating new token');
-//   const spotifyAuth = new Buffer(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64');
-//   const response = await fetch('https://accounts.spotify.com/api/token', {
-//     method: "POST",
-//     header: {
-//       "Content-Type": "application/x-www-form-urlencoded",
-//       'Accept':'application/json',
-//       "Authorization": `Basic ${spotifyAuth}`
-//     },
-//     data: { grant_type: "client_credentials" }
-//   });
-//   console.log(response);
-//   const token = await response.text();
-//   //const token = await JSON.parse(response);
-//   console.log('token is creating!!!');
-//   console.log(token);
-// } catch(tokenErr) {
-//   console.log(`token err: ${tokenErr}`);
-//   bot.sendMessage(msg.chat.id, 'Failed to generate a new access token for some reason, look into it Kenford!!');
-// }

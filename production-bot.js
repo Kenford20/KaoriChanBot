@@ -251,7 +251,7 @@ bot.onText(/^\/spotify .+$/i, (msg, match) => {
 
   bot.on('callback_query', async(queryType) => {
     bot.sendMessage(msg.chat.id, `You clicked: ${queryType.data}`);
-    const spotifyAPI = `https://api.spotify.com/v1/search?q=${(songQuery).toLowerCase()}&type=${(queryType.data).toLowerCase()}&access_token=${accessToken}`
+    const spotifyAPI = `https://api.spotify.com/v1/search?q=${(songQuery).toLowerCase()}&type=${(queryType.data).toLowerCase()}&limit=5&access_token=${accessToken}`
     //bot.editMessageReplyMarkup({reply_markup: []}, {chat_id: msg.chat.id, message_id: queryType.message.message_id});
 
     try {
