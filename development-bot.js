@@ -1,6 +1,7 @@
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const math = require('mathjs');
+const axios = require('axios');
 
 // replace the value below with the Telegram token you receive from @BotFather
 const token = process.env.DEVELOPMENT_BOT_TOKEN;
@@ -8,6 +9,7 @@ const token = process.env.DEVELOPMENT_BOT_TOKEN;
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, {polling: true});
 const botTag = '@qqm_development_bot';
+const fetch = require('node-fetch');
 let profanityMode = false;
 
 // handles command autocompletion through the commands list (adds the bot's tag name to the regexp)
@@ -73,6 +75,7 @@ bot.onText(/(^\/taskete(@qqm_development_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) =
 /calc (expression) = calculator
 /convert (unit) to (unit) = general units conversion
 /weather (city) = gives you the weather in the city you specify
+/filter = toggles the profanity filter
 and some weeb stuff
   `);
 });
@@ -126,13 +129,8 @@ bot.onText(generateRegExp('^\/weather'), (msg, match) => {
 
 // makes a post request to openweathermap API and sends the user the weather of a specified city
 bot.onText(/^\/weather .+$/i, async(msg, match) => {
-  const fetch = require('node-fetch');
-  const city = match[0].slice(match[0].indexOf(' '));
+  const city = match[0].slice(match[0].indexOf(' ')).replace(/\s/g, '+');
   const weatherAPI = `http://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=${process.env.WEATHER_API_KEY}&units=imperial`; // units=imperial converts temperature to Fahrenheit
-
-  if(city.includes(' ')) {
-    city.replace(/\s/g, '+'); // handles queries for cities with spaces (i.e san franscisco)
-  }
 
   try {
     const response = await fetch(weatherAPI, {
@@ -140,6 +138,7 @@ bot.onText(/^\/weather .+$/i, async(msg, match) => {
       header: { "Content-Type": "application/json" }
     });
     const data = await response.json();
+    console.log(data)
     const weatherCode = data.weather[0].id;
     const temperatureEmoji = data.main.temp > 50 ? emojis.fire : emojis.snowman;
     let weatherEmoji;
@@ -212,7 +211,6 @@ bot.onText(/\b(tits?|deek|dick|boobs?|cock|cawk|pussy|vaginas?|nips?|nipples?|pe
 
 
 bot.onText(/\b(fags?|faggot|asshole|fuck|fucker|bitch|shit|prick|cunt|slut)\b/i, async(msg, match) => {
-  console.log('profane')
   if(profanityMode) {
     const user = msg.from.id
     const member = await bot.getChatMember(msg.chat.id, user);
@@ -228,3 +226,124 @@ bot.onText(/\b(fags?|faggot|asshole|fuck|fucker|bitch|shit|prick|cunt|slut)\b/i,
     bot.sendMessage(msg.chat.id, profanityReplies[Math.floor(Math.random()*(profanityReplies.length-1))]);
   }
 });
+
+bot.onText(generateRegExp('^\/spotify'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, 'Enter a song query with the command, senpai. Onigaishimasu~');
+});
+
+
+let accessToken = "BQCY4Hj09HNaSCxPXSbKE22IP_f05QUGp12Bb1CvcmcWpv1bXL2elOSW6ncxnPJ43j7pK_FiUxgpGyqTnCc";
+bot.onText(/^\/spotify .+$/i, (msg, match) => {
+  const songQuery = match[0].slice(match[0].indexOf(' ')).replace(/\/s/g, '+');
+
+  const replyKeyboard = {
+    reply_markup: JSON.stringify({ 
+      inline_keyboard: [
+        [{text:"Track", callback_data:'Track'}],
+        [{text:"Album", callback_data:'Album'}],
+        [{text:"Artist", callback_data:'Artist'}],
+        [{text:"Playlist", callback_data:'Playlist'}]
+      ]
+    })
+  };
+  
+  bot.sendMessage(msg.chat.id, "What are you querying for?", replyKeyboard);
+
+  bot.on('callback_query', async(queryType) => {
+    bot.sendMessage(msg.chat.id, `You clicked: ${queryType.data}`);
+    const spotifyAPI = `https://api.spotify.com/v1/search?q=${(songQuery).toLowerCase()}&type=${(queryType.data).toLowerCase()}&access_token=${accessToken}`
+    //bot.editMessageReplyMarkup({reply_markup: []}, {chat_id: msg.chat.id, message_id: queryType.message.message_id});
+
+    try {
+      const response = await fetch(spotifyAPI, {
+        method: "GET",
+        header: {"Content-Type": "application/json"}
+      });
+      const data = await response.json();
+
+      if(data.error) {
+        console.log('theres a spotify error!')
+        console.log(data.error);
+        let errResponseMsg;
+
+        // 401 = access token expired, so generate new one. (they expire every hour)
+        if(data.error.status === 401) {
+          errResponseMsg = 'Spotify access token expired, generating a new one! Choto mottay and try again in a few seconds! '
+          console.log('creating a new token!');
+          axios({
+            url: 'https://accounts.spotify.com/api/token',
+            method: 'post',
+            params: {grant_type: 'client_credentials'},
+            headers: {
+              'Accept':'application/json',
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            auth: {
+              username: process.env.SPOTIFY_CLIENT_ID,
+              password: process.env.SPOTIFY_CLIENT_SECRET
+            }
+          }).then(response => {
+            console.log(`successfully made a token!! yay`);
+            console.log(response.data);
+            accessToken = response.data.access_token;
+          }).catch(tokenErr => {
+            console.log(`axios err: ${tokenErr}`);
+            bot.sendMessage(msg.chat.id, 'Failed to generate a new access token for some reason, look into it Kenford!!');
+          });
+        } else {
+          errResponseMsg = 'Failed to fetch song data, double check your query!';
+        }
+        bot.sendMessage(msg.chat.id, errResponseMsg);
+      } 
+      else {
+        switch(queryType.data) {
+          //case 'Track': break;
+          //case 'Album': break;
+          case 'Artist': {
+            console.log(data.artists.items[0]);
+            bot.sendMessage(msg.chat.id, `
+Here's a profile: ${data.artists.items[0].external_urls.spotify} \n
+${data.artists.items[0].name} has ${data.artists.items[0].followers.total} followers! \n
+Artist's genres: ${data.artists.items[0].genres.join(' ')} \n
+            `);
+          } break;
+          //case 'Playlist': break;
+          default: {
+            console.log(data.artists.items[0]);
+            bot.sendMessage(msg.chat.id, `
+Here's a profile: ${data.artists.items[0].external_urls.spotify} \n
+${data.artists.items[0].name} has ${data.artists.items[0].followers.total} followers! \n
+Artist's genres: ${data.artists.items[0].genres.join(' ')} \n
+            `);
+          }
+        }
+        
+      }
+    } catch(fetchErr) {
+      console.log(fetchErr);
+    }
+  });
+});
+
+
+// try { 
+//   console.log('generating new token');
+//   const spotifyAuth = new Buffer(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64');
+//   const response = await fetch('https://accounts.spotify.com/api/token', {
+//     method: "POST",
+//     header: {
+//       "Content-Type": "application/x-www-form-urlencoded",
+//       'Accept':'application/json',
+//       "Authorization": `Basic ${spotifyAuth}`
+//     },
+//     data: { grant_type: "client_credentials" }
+//   });
+//   console.log(response);
+//   const token = await response.text();
+//   //const token = await JSON.parse(response);
+//   console.log('token is creating!!!');
+//   console.log(token);
+// } catch(tokenErr) {
+//   console.log(`token err: ${tokenErr}`);
+//   bot.sendMessage(msg.chat.id, 'Failed to generate a new access token for some reason, look into it Kenford!!');
+// }

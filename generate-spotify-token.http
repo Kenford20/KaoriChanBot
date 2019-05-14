@@ -1,0 +1,3 @@
+curl -X "GET" "https://api.spotify.com/v1/search?q=marshmello&type=artist" -H "Authorization: Bearer BQBVSOElyTgYbI3cTQIf1uroB_gLQQuQgrf9fLRJhqSu3miMMCOr1UY3PKNw5FJkSApzlZp18VBoO6a79XM"
+
+//curl -X "POST" -H "Authorization: Basic NjFmOWJhYzkzNTkxNDViMWEzYWRlNDliMGQyN2ZkMTU6YjJlMGE1ZjUxY2U5NDM1YThjYzhiNThkYzQwZGZmZmM=" -d grant_type=client_credentials https://accounts.spotify.com/api/token
