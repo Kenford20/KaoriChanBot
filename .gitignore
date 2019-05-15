@@ -1,2 +1,5 @@
 node_modules
 .env
+translate.http
+google-translate.json
+spotify-token.http

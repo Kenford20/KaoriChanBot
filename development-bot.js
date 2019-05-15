@@ -44,6 +44,7 @@ const emojis = {
   kissFaceHeart: '\u{1F618}',
   peach: '\u{1F351}',
   winkyTongueFace: '\u{1F61C}',
+  smilingColdSweatFace: '\u{1F605}',
   blushFace: '\u{1F633}',
   monkeyBlockingEyes: '\u{1F648}',
   blueScreamingFace: '\u{1F631}',
@@ -228,6 +229,11 @@ bot.onText(/\b(fags?|faggot|asshole|fuck|fucker|bitch|shit|prick|cunt|slut)\b/i,
   }
 });
 
+bot.onText(generateRegExp('^\/freshmix'), (msg, match) => {
+  const mixes = ['https://soundcloud.com/wayneechu/02-neptune-melodic-future-bass-mix-1/s-XAHJb', 'https://soundcloud.com/wayneechu/01-jupiter-feels-trap-mix'];
+  bot.sendMessage(msg.chat.id, mixes[Math.floor(Math.random()*(mixes.length-1))]);
+});
+
 bot.onText(generateRegExp('^\/spotify'), (msg, match) => {
   bot.sendMessage(msg.chat.id, 'Enter a song query with the command, senpai. Onigaishimasu~');
 });
@@ -237,7 +243,7 @@ bot.onText(/^\/spotify .+$/i, (msg, match) => {
   const songQuery = match[0].slice(match[0].indexOf(' ')+1).replace(/\s/g, '+');
   console.log(songQuery);
   
-  const replyKeyboard = {
+  const queryOptions = {
     reply_markup: JSON.stringify({ 
       inline_keyboard: [
         [{text:"Track", callback_data:'Track ' + songQuery}],
@@ -247,16 +253,39 @@ bot.onText(/^\/spotify .+$/i, (msg, match) => {
       ]
     })
   };
-  bot.sendMessage(msg.chat.id, "What are you querying for?", replyKeyboard);
+  bot.sendMessage(msg.chat.id, "What are you querying for?", queryOptions);
 });
 
-let accessToken = "BQDxQ1_SjCmF4eCGrtgqhCmdlFCOyCLBWWq-p3tzTEdofFJ6oonViKCkkdfjrTxX2xU43Y_TNeXIeCWg5Kw";
-bot.on('callback_query', async(callbackQuery) => {
+let accessToken = "BQA0ro6B7s53s-VT9DjxfsNv-8EtkqzXlO3TaDQSTo8u83z6TI2jfurvb6LrwfZSg-18BuFY0exEZmHsi-c";
+function generateSpotifyToken(chatID) {
+  axios({
+    url: 'https://accounts.spotify.com/api/token',
+    method: 'post',
+    params: {grant_type: 'client_credentials'},
+    headers: {
+      'Accept':'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    auth: {
+      username: process.env.SPOTIFY_CLIENT_ID,
+      password: process.env.SPOTIFY_CLIENT_SECRET
+    }
+  }).then(response => {
+    console.log(`successfully made a token!! yay`);
+    console.log(response.data);
+    accessToken = response.data.access_token;
+  }).catch(tokenErr => {
+    console.log(`axios err: ${tokenErr}`);
+    bot.sendMessage(chatID, 'Failed to generate a new access token for some reason, look into it Kenford!!');
+  });
+}
+
+async function spotifyHandler(callbackQuery) {
   const queryType = callbackQuery.data.slice(0, callbackQuery.data.indexOf(' '));
   const queryInput = callbackQuery.data.slice(callbackQuery.data.indexOf(' ') + 1);
   console.log(queryType);
 
-  bot.deleteMessage(callbackQuery.message.chat.id, callbackQuery.message.message_id);
+  //bot.deleteMessage(callbackQuery.message.chat.id, callbackQuery.message.message_id);
   bot.sendMessage(callbackQuery.message.chat.id, `You queried for: ${queryType}`);
   
   const spotifyAPI = `https://api.spotify.com/v1/search?q=${(queryInput).toLowerCase()}&type=${(queryType).toLowerCase()}&limit=5&access_token=${accessToken}`
@@ -277,26 +306,7 @@ bot.on('callback_query', async(callbackQuery) => {
       if(spotifyData.error.status === 401) {
         errResponseMsg = 'Spotify access token expired, generating a new one! Choto mottay and try again in a few seconds! '
         console.log('creating a new token!');
-        axios({
-          url: 'https://accounts.spotify.com/api/token',
-          method: 'post',
-          params: {grant_type: 'client_credentials'},
-          headers: {
-            'Accept':'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          auth: {
-            username: process.env.SPOTIFY_CLIENT_ID,
-            password: process.env.SPOTIFY_CLIENT_SECRET
-          }
-        }).then(response => {
-          console.log(`successfully made a token!! yay`);
-          console.log(response.data);
-          accessToken = response.data.access_token;
-        }).catch(tokenErr => {
-          console.log(`axios err: ${tokenErr}`);
-          bot.sendMessage(callbackQuery.message.chat.id, 'Failed to generate a new access token for some reason, look into it Kenford!!');
-        });
+        generateSpotifyToken(callbackQuery.message.chat.id);
       } else {
         errResponseMsg = 'Failed to fetch song data, double check your query!';
       }
@@ -339,5 +349,59 @@ You can view more of his/her stuff at: ${spotifyData.playlists.items[0].owner.ex
     }
   } catch(fetchErr) {
     console.log(fetchErr);
+  }
+}
+
+async function translationHandler(callbackQuery) {
+  console.log(callbackQuery)
+  // Imports the Google Cloud client library
+  const {Translate} = require('@google-cloud/translate');
+  const projectId = process.env.GOOGLE_TRANSLATE_PROJECT_ID;
+  // Instantiates a client
+  const translate = new Translate({projectId});
+
+  const targetLanguage = callbackQuery.data.slice(0, callbackQuery.data.indexOf(' '));
+  const textInput = callbackQuery.data.slice(callbackQuery.data.indexOf(' ') + 1);
+
+  // Translates some text into Russian
+  const [translation] = await translate.translate(textInput, targetLanguage);
+  bot.sendMessage(callbackQuery.message.chat.id, `Translated message: ${translation}`);
+}
+
+bot.onText(generateRegExp('^\/translate'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, `Senpai, you need to give me something to translate silly goose! ${emojis.smilingColdSweatFace}`);
+});
+
+bot.onText(/^\/translate .+$/i, (msg, match) => {
+  const textInput = match[0].slice(match[0].indexOf(' '));
+
+  const languageOptions = {
+    reply_markup: JSON.stringify({ 
+      inline_keyboard: [
+        [{text:"English", callback_data:'en' + textInput}],
+        [{text:"Chinese Simplified", callback_data:'zh-CN' + textInput}],
+        [{text:"Chinese Traditional", callback_data:'zh-TW' + textInput}],
+        [{text:"Filipino", callback_data:'tl' + textInput}],
+        [{text:"French", callback_data:'fr' + textInput}],
+        [{text:"German", callback_data:'de' + textInput}],
+        [{text:"Greek", callback_data:'el' + textInput}],
+        [{text:"Japanese", callback_data:'ja' + textInput}],
+        [{text:"Korean", callback_data:'ko' + textInput}],
+        [{text:"Latin", callback_data:'la' + textInput}],
+        [{text:"Spanish", callback_data:'es' + textInput}]
+      ]
+    })
+  };
+  bot.sendMessage(msg.chat.id, "Translate to?", languageOptions);
+});
+
+bot.on('callback_query', async(callbackQuery) => {
+  bot.deleteMessage(callbackQuery.message.chat.id, callbackQuery.message.message_id);
+  if(callbackQuery.message.text === 'What are you querying for?') {
+    spotifyHandler(callbackQuery);
+  } else if(callbackQuery.message.text === 'Translate to?') {
+    translationHandler(callbackQuery);
+  } else {
+    console.log('callback query handler error');
   }
 });

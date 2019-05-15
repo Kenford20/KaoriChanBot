@@ -1,3 +1,0 @@
-curl -X "GET" "https://api.spotify.com/v1/search?q=awake&type=album&limit=5" -H "Authorization: Bearer BQAow_dPXan6fNNCXii1YoWrZbhifGJjP7jvAqiHNoInpkfZi84XamSIRZxicII-RiyjAoRTHUP_TPYgrVc"
-
-//curl -X "POST" -H "Authorization: Basic NjFmOWJhYzkzNTkxNDViMWEzYWRlNDliMGQyN2ZkMTU6YjJlMGE1ZjUxY2U5NDM1YThjYzhiNThkYzQwZGZmZmM=" -d grant_type=client_credentials https://accounts.spotify.com/api/token
