@@ -76,6 +76,7 @@ bot.onText(/(^\/taskete(@qqm_development_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) =
 /convert (unit) to (unit) = general units conversion
 /weather (city) = gives you the weather in the city you specify
 /filter = toggles the profanity filter
+/spotify (search query) = allows user to search key words from spotify and returns top result
 and some weeb stuff
   `);
 });
