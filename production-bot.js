@@ -78,6 +78,8 @@ bot.onText(/(^\/taskete(@qqm_development_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) =
 /weather (city) = gives you the weather in the city you specify
 /filter = toggles the profanity filter
 /spotify (search query) = allows user to search key words from spotify and returns top result
+/translate (text) = translates your text for you into a target language
+/freshmix = gives you a fresh scboiz mix
 and some weeb stuff
   `);
 });
@@ -231,7 +233,7 @@ bot.onText(/\b(fags?|faggot|asshole|fuck|fucker|bitch|shit|prick|cunt|slut)\b/i,
 
 bot.onText(generateRegExp('^\/freshmix'), (msg, match) => {
   const mixes = ['https://soundcloud.com/wayneechu/02-neptune-melodic-future-bass-mix-1/s-XAHJb', 'https://soundcloud.com/wayneechu/01-jupiter-feels-trap-mix'];
-  bot.sendMessage(msg.chat.id, mixes[Math.floor(Math.random()*(mixes.length-1))]);
+  bot.sendMessage(msg.chat.id, mixes[Math.floor(Math.random()*(mixes.length))]);
 });
 
 bot.onText(generateRegExp('^\/spotify'), (msg, match) => {
