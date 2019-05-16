@@ -407,17 +407,15 @@ bot.on('callback_query', async(callbackQuery) => {
   }
 });
 
-function findSecondsToElapse(timeString) {
+function findSecondsToElapse(reminderHours, reminderMinutes, am_pm) {
   const today = new Date();
   // convert time to UTC8, I think the bot is hosted at another location so the date object returns a different value
   today.setTime(today.getTime() + today.getTimezoneOffset() * 60 * 1000 /* convert to UTC */ + (/* UTC+8 */ 8) * 60 * 60 * 1000);
 
-  // -12 to match my timezone, (8:00 am CDT) = 20:00 UTC8 or whatever that is above
-  const currHours = today.getHours()-12; 
+  // -13 to match my timezone, (8:00 am CDT) = 20:00 UTC8 or whatever that is above
+  const currHours = today.getHours()-13; 
   const currMinutes = today.getMinutes();
 
-  let [reminderHours, mins_am_pm] = timeString.text.split(':');
-  let [reminderMinutes, am_pm] = mins_am_pm.split(' ');
   reminderHours = /(pm|PM)/.test(am_pm) && reminderHours < 12 ? parseInt(reminderHours) + 12 : parseInt(reminderHours);
 
   let hoursToElapse = reminderHours - currHours;
@@ -453,15 +451,17 @@ bot.onText(/^\/remindmeto .+$/i, (msg, match) => {
   let reminder = match[0].slice(match[0].indexOf(' ')+1);
   bot.sendMessage(
     msg.chat.id, 
-    `When do you want to be reminded, @${msg.chat.username}? \n Please use format: (HH:MM AM/PM)`, 
+    `When do you want to be reminded, @${msg.from.username}? \n Please use format: (HH:MM AM/PM)`, 
     { reply_markup: { force_reply: true, selective: true }}
   )
   .then(botsQuestion => {
     bot.onReplyToMessage(botsQuestion.chat.id, botsQuestion.message_id, (reply) => {
-      if(/\d?\d:\d\d (AM|PM)/i.test(reply.text)) {
+      let [reminderHours, mins_am_pm] = reply.text.split(':');
+      let [reminderMinutes, am_pm] = mins_am_pm.split(' ');
+      if(/\d?\d:\d\d (AM|PM)/i.test(reply.text) && reminderHours > 0 && reminderHours < 13 && reminderMinutes >= 0 && reminderMinutes < 60) {
         bot.sendMessage(msg.chat.id, `Wakatta, I will remind you to ${reminder} at ${reply.text}. \nShinpaishinaide! ${emojis.thumbsUp}`);
 
-        let timeUntilReminder = findSecondsToElapse(reply) * 1000;
+        let timeUntilReminder = findSecondsToElapse(reminderHours, reminderMinutes, am_pm) * 1000;
         console.log(`reminding in ${timeUntilReminder} milliseconds!`);
         setTimeout(() => {
           bot.sendMessage(msg.chat.id, `@${reply.chat.username}-senpai, it is time to ${reminder}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
