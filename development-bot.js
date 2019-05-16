@@ -423,13 +423,12 @@ function findSecondsToElapse(timeString) {
 
   let [reminderHours, mins_am_pm] = timeString.text.split(':');
   let [reminderMinutes, am_pm] = mins_am_pm.split(' ');
-  console.log(typeof reminderMinutes);
   reminderHours = /(pm|PM)/.test(am_pm) && reminderHours < 12 ? parseInt(reminderHours) + 12 : parseInt(reminderHours);
 
   let hoursToElapse = reminderHours - currHours;
   let minutesToElapse = parseInt(reminderMinutes) - currMinutes;
 
-  // going from pm to am or when time differnce is greater than 12 hours
+  // going from pm to am or when time difference is greater than 12 hours
   if(hoursToElapse < 0) {
     hoursToElapse += 24;
   }
@@ -444,7 +443,6 @@ function findSecondsToElapse(timeString) {
       hoursToElapse += 24;
     }
   }
-  console.log((hoursToElapse*60 + minutesToElapse)*60);
   return (hoursToElapse*60 + minutesToElapse)*60;
 }
 
