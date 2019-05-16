@@ -39,6 +39,7 @@ const emojis = {
   cryFace2: '\u{1F622}',
   madFace: '\u{1F620}',
   redMadFace: '\u{1F621}',
+  unamusedFace: '\u{1F612}',
   smiley: '\u{1F604}',
   blushSmiley: '\u{1F60A}',
   kissFaceHeart: '\u{1F618}',
@@ -48,7 +49,8 @@ const emojis = {
   blushFace: '\u{1F633}',
   monkeyBlockingEyes: '\u{1F648}',
   blueScreamingFace: '\u{1F631}',
-  defaultEmoji: '\u{1F300}'     // # default emojis
+  thumbsUp: '\u{1F44D}',
+  defaultEmoji: '\u{1F300}'
 };
 
 //https://api.telegram.org/bot{my_bot_token}/setWebhook?url={url_to_send_updates_to}
@@ -79,6 +81,8 @@ bot.onText(/(^\/taskete(@qqm_development_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) =
 /filter = toggles the profanity filter
 /spotify (search query) = allows user to search key words from spotify and returns top result
 /translate (text) = translates your text for you into a target language
+/freshmix = gives you a fresh scboiz mix
+/remindmeto (task) = kaori-chan will remind you to do something at a time you specify
 and some weeb stuff
   `);
 });
@@ -402,6 +406,7 @@ bot.onText(/^\/translate .+$/i, (msg, match) => {
 
 bot.on('callback_query', async(callbackQuery) => {
   bot.deleteMessage(callbackQuery.message.chat.id, callbackQuery.message.message_id);
+
   if(callbackQuery.message.text === 'What are you querying for?') {
     spotifyHandler(callbackQuery);
   } else if(callbackQuery.message.text === 'Translate to?') {
@@ -409,4 +414,64 @@ bot.on('callback_query', async(callbackQuery) => {
   } else {
     console.log('callback query handler error');
   }
+});
+
+function findSecondsToElapse(timeString) {
+  const today = new Date();
+  const currHours = today.getHours();
+  const currMinutes = today.getMinutes();
+
+  let [reminderHours, mins_am_pm] = timeString.text.split(':');
+  let [reminderMinutes, am_pm] = mins_am_pm.split(' ');
+  console.log(typeof reminderMinutes);
+  reminderHours = /(pm|PM)/.test(am_pm) && reminderHours < 12 ? parseInt(reminderHours) + 12 : parseInt(reminderHours);
+
+  let hoursToElapse = reminderHours - currHours;
+  let minutesToElapse = parseInt(reminderMinutes) - currMinutes;
+
+  // going from pm to am or when time differnce is greater than 12 hours
+  if(hoursToElapse < 0) {
+    hoursToElapse += 24;
+  }
+
+  // time borrow
+  if(minutesToElapse < 0) {
+    minutesToElapse += 60;
+    hoursToElapse--;
+
+    // 7:30 am to 7:00 am or with pm
+    if(hoursToElapse < 0) {
+      hoursToElapse += 24;
+    }
+  }
+  console.log((hoursToElapse*60 + minutesToElapse)*60);
+  return (hoursToElapse*60 + minutesToElapse)*60;
+}
+
+bot.onText(generateRegExp('^\/remindmeto'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama, you gotta tell me what to remind you to do ya bakayero! ${emojis.unamusedFace}`);
+});
+
+bot.onText(/^\/remindmeto .+$/i, (msg, match) => {
+  let reminder = match[0].slice(match[0].indexOf(' ')+1);
+  bot.sendMessage(
+    msg.chat.id, 
+    `When do you want to be reminded, @${msg.chat.username}? \n Please use format: (HH:MM AM/PM)`, 
+    { reply_markup: { force_reply: true, selective: true }}
+  )
+  .then(botsQuestion => {
+    bot.onReplyToMessage(botsQuestion.chat.id, botsQuestion.message_id, (reply) => {
+      if(/\d?\d:\d\d (AM|PM)/i.test(reply.text)) {
+        bot.sendMessage(msg.chat.id, `Wakatta, I will remind you to ${reminder} at ${reply.text}. \nShinpaishinaide! ${emojis.thumbsUp}`);
+
+        let timeUntilReminder = findSecondsToElapse(reply) * 1000;
+        console.log(`reminding in ${timeUntilReminder} milliseconds!`);
+        setTimeout(() => {
+          bot.sendMessage(msg.chat.id, `@${reply.chat.username}-senpai, it is time to ${reminder}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
+        }, timeUntilReminder);
+      } else {
+        bot.sendMessage(msg.chat.id, 'Make sure your time is in the right format bruh!');
+      }
+    })
+  });
 });
