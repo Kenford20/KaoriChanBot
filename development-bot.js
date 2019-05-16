@@ -357,14 +357,16 @@ async function translationHandler(callbackQuery) {
   console.log(callbackQuery)
   // Imports the Google Cloud client library
   const {Translate} = require('@google-cloud/translate');
-  const projectId = process.env.GOOGLE_TRANSLATE_PROJECT_ID;
+
   // Instantiates a client
-  const translate = new Translate({projectId});
+  const translate = new Translate({
+    projectId: process.env.GOOGLE_TRANSLATE_PROJECT_ID,
+    key: process.env.GOOGLE_TRANSLATE_API_KEY
+  });
 
   const targetLanguage = callbackQuery.data.slice(0, callbackQuery.data.indexOf(' '));
   const textInput = callbackQuery.data.slice(callbackQuery.data.indexOf(' ') + 1);
 
-  // Translates some text into Russian
   const [translation] = await translate.translate(textInput, targetLanguage);
   bot.sendMessage(callbackQuery.message.chat.id, `Translated message: ${translation}`);
 }

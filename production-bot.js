@@ -21,7 +21,7 @@ function generateRegExp(reg) {
 // # Openweathermap Weather codes and corresponding emojis
 // emoji codes here: https://apps.timwhitlock.info/emoji/tables/unicode
 const emojis = {
-  thunderstorm: '\u{1F4A8}',    // # Code: 200's, thunderstorms
+  thunderstorm: '\u{1F4A8}',    // # Code: 200's thunderstorms
   droplet: '\u{1F4A7}',         // # Code: 300's drizzle
   rain: '\u{02614}',            // # Code: 500's rain
   snowflake: '\u{02744}',       // # Code: 600's snow
@@ -86,16 +86,13 @@ and some weeb stuff
 
 // tags everyone in my group
 bot.onText(generateRegExp('^\/meena'), (msg, match) => {
-    //const user = msg.from.id;
-    //const member = await bot.getChatMember(chatId, user);
-    //console.log(member);
-    bot.sendMessage(msg.chat.id, process.env.TELEGRAM_GROUP_USERS);
-  });
+  bot.sendMessage(msg.chat.id, process.env.TELEGRAM_GROUP_USERS);
+});
 
 // rolls a die
 bot.onText(generateRegExp('^\/roll( [0-9]*)?'), (msg, match) => {
   let threshold = match[0].split(' ')[1]; // grabs optional parameter defined by user i.e: /roll 100
-  //generateRegExp('^\/roll( [0-9]*)?');
+
   if(!threshold) {
     threshold = 6; // default die roll
   }
@@ -212,7 +209,6 @@ bot.onText(/\b(tits?|deek|dick|boobs?|cock|cawk|pussy|vaginas?|nips?|nipples?|pe
     bot.sendMessage(msg.chat.id, naughtyReplies[Math.floor(Math.random()*(naughtyReplies.length-1))]);
   }
 });
-
 
 bot.onText(/\b(fags?|faggot|asshole|fuck|fucker|bitch|shit|prick|cunt|slut)\b/i, async(msg, match) => {
   if(profanityMode) {
@@ -353,14 +349,16 @@ You can view more of his/her stuff at: ${spotifyData.playlists.items[0].owner.ex
 async function translationHandler(callbackQuery) {
   // Imports the Google Cloud client library
   const {Translate} = require('@google-cloud/translate');
-  const projectId = process.env.GOOGLE_TRANSLATE_PROJECT_ID;
+
   // Instantiates a client
-  const translate = new Translate({projectId});
+  const translate = new Translate({
+    projectId: process.env.GOOGLE_TRANSLATE_PROJECT_ID,
+    key: process.env.GOOGLE_TRANSLATE_API_KEY
+  });
 
   const targetLanguage = callbackQuery.data.slice(0, callbackQuery.data.indexOf(' '));
   const textInput = callbackQuery.data.slice(callbackQuery.data.indexOf(' ') + 1);
 
-  // Translates some text into Russian
   const [translation] = await translate.translate(textInput, targetLanguage);
   bot.sendMessage(callbackQuery.message.chat.id, `Translated message: ${translation}`);
 }
