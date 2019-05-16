@@ -418,15 +418,22 @@ bot.on('callback_query', async(callbackQuery) => {
 
 function findSecondsToElapse(timeString) {
   const today = new Date();
+  today.setTime(today.getTime() + today.getTimezoneOffset() * 60 * 1000 /* convert to UTC */ + (/* UTC+8 */ 8) * 60 * 60 * 1000);
+  console.log('UTC+8 Time:', today);
   const currHours = today.getHours();
   const currMinutes = today.getMinutes();
 
   let [reminderHours, mins_am_pm] = timeString.text.split(':');
   let [reminderMinutes, am_pm] = mins_am_pm.split(' ');
   reminderHours = /(pm|PM)/.test(am_pm) && reminderHours < 12 ? parseInt(reminderHours) + 12 : parseInt(reminderHours);
+  reminderHours += 12; // chagne to UTC 8 time
 
   let hoursToElapse = reminderHours - currHours;
   let minutesToElapse = parseInt(reminderMinutes) - currMinutes;
+
+  console.log(`New reminder posted! Currhours: ${currHours} currMins: ${currMinutes}`);
+  console.log(`reminderHrs: ${reminderHours} and reminderMins: ${reminderMinutes}`);
+  console.log(`hoursToElapse: ${hoursToElapse} and minutesToElapse: ${minutesToElapse}`);
 
   // going from pm to am or when time difference is greater than 12 hours
   if(hoursToElapse < 0) {

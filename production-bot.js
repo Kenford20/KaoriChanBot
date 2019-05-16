@@ -409,12 +409,15 @@ bot.on('callback_query', async(callbackQuery) => {
 
 function findSecondsToElapse(timeString) {
   const today = new Date();
+  today.setTime(today.getTime() + today.getTimezoneOffset() * 60 * 1000 /* convert to UTC */ + (/* UTC+8 */ 8) * 60 * 60 * 1000);
+
   const currHours = today.getHours();
   const currMinutes = today.getMinutes();
 
   let [reminderHours, mins_am_pm] = timeString.text.split(':');
   let [reminderMinutes, am_pm] = mins_am_pm.split(' ');
   reminderHours = /(pm|PM)/.test(am_pm) && reminderHours < 12 ? parseInt(reminderHours) + 12 : parseInt(reminderHours);
+  reminderHours += 12; // chagne to UTC 8 time
 
   let hoursToElapse = reminderHours - currHours;
   let minutesToElapse = parseInt(reminderMinutes) - currMinutes;
