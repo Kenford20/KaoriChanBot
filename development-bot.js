@@ -418,11 +418,10 @@ bot.on('callback_query', async(callbackQuery) => {
 
 function findSecondsToElapse(reminderHours, reminderMinutes, am_pm) {
   const today = new Date();
-  // convert time to UTC8, I think the bot is hosted at another location so the date object returns a different value
-  today.setTime(today.getTime() + today.getTimezoneOffset() * 60 * 1000 /* convert to UTC */ + (/* UTC+8 */ 8) * 60 * 60 * 1000);
+  console.log(`date of reminder request: ${today}`);
 
   // -13 to match my timezone, (8:00 am CDT) = 20:00 UTC8 or whatever that is above
-  const currHours = today.getHours()-13; 
+  const currHours = today.getHours(); 
   const currMinutes = today.getMinutes();
 
   reminderHours = /(pm|PM)/.test(am_pm) && reminderHours < 12 ? parseInt(reminderHours) + 12 : parseInt(reminderHours);

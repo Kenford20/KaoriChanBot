@@ -409,11 +409,10 @@ bot.on('callback_query', async(callbackQuery) => {
 
 function findSecondsToElapse(reminderHours, reminderMinutes, am_pm) {
   const today = new Date();
-  // convert time to UTC8, I think the bot is hosted at another location so the date object returns a different value
-  today.setTime(today.getTime() + today.getTimezoneOffset() * 60 * 1000 /* convert to UTC */ + (/* UTC+8 */ 8) * 60 * 60 * 1000);
+  console.log(`date of reminder request: ${today}`);
 
-  // -13 to match my timezone, (8:00 am CDT) = 20:00 UTC8 or whatever that is above
-  const currHours = today.getHours()-13; 
+  // -5 to match my timezone, (2:00 pm CDT -> 14:00) = 19:00 UTC8 or whatever that is above
+  const currHours = today.getHours()-5; 
   const currMinutes = today.getMinutes();
 
   reminderHours = /(pm|PM)/.test(am_pm) && reminderHours < 12 ? parseInt(reminderHours) + 12 : parseInt(reminderHours);
@@ -464,7 +463,7 @@ bot.onText(/^\/remindmeto .+$/i, (msg, match) => {
         let timeUntilReminder = findSecondsToElapse(reminderHours, reminderMinutes, am_pm) * 1000;
         console.log(`reminding in ${timeUntilReminder} milliseconds!`);
         setTimeout(() => {
-          bot.sendMessage(msg.chat.id, `@${reply.chat.username}-senpai, it is time to ${reminder}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
+          bot.sendMessage(msg.chat.id, `@${reply.from.username}-senpai, it is time to ${reminder}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
         }, timeUntilReminder);
       } else {
         bot.sendMessage(msg.chat.id, 'Make sure your time is in the right format bruh!');
