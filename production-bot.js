@@ -356,11 +356,13 @@ async function translationHandler(callbackQuery) {
     key: process.env.GOOGLE_TRANSLATE_API_KEY
   });
 
-  const targetLanguage = callbackQuery.data.slice(0, callbackQuery.data.indexOf(' '));
+  // callback argument format: "languageCode|language userInputToTranslate"
+  // ex: "es|Spanish translate this sentence please!" 
+  const [targetLanguageCode, targetLanguageText] = callbackQuery.data.slice(0, callbackQuery.data.indexOf(' ')).split('|');
   const textInput = callbackQuery.data.slice(callbackQuery.data.indexOf(' ') + 1);
 
-  const [translation] = await translate.translate(textInput, targetLanguage);
-  bot.sendMessage(callbackQuery.message.chat.id, `Translated message: ${translation}`);
+  const [translation] = await translate.translate(textInput, targetLanguageCode);
+  bot.sendMessage(callbackQuery.message.chat.id, `In ${targetLanguageText}: ${translation}`);
 }
 
 bot.onText(generateRegExp('^\/translate'), (msg, match) => {
@@ -373,17 +375,17 @@ bot.onText(/^\/translate .+$/i, (msg, match) => {
   const languageOptions = {
     reply_markup: JSON.stringify({ 
       inline_keyboard: [
-        [{text:"English", callback_data:'en' + textInput}],
-        [{text:"Chinese Simplified", callback_data:'zh-CN' + textInput}],
-        [{text:"Chinese Traditional", callback_data:'zh-TW' + textInput}],
-        [{text:"Filipino", callback_data:'tl' + textInput}],
-        [{text:"French", callback_data:'fr' + textInput}],
-        [{text:"German", callback_data:'de' + textInput}],
-        [{text:"Greek", callback_data:'el' + textInput}],
-        [{text:"Japanese", callback_data:'ja' + textInput}],
-        [{text:"Korean", callback_data:'ko' + textInput}],
-        [{text:"Latin", callback_data:'la' + textInput}],
-        [{text:"Spanish", callback_data:'es' + textInput}]
+        [{text:"English", callback_data:'en|English' + textInput}],
+        [{text:"Chinese Simplified", callback_data:'zh-CN|Chinese(Simp)' + textInput}],
+        [{text:"Chinese Traditional", callback_data:'zh-TW|Chinese(Trad)' + textInput}],
+        [{text:"Filipino", callback_data:'tl|Filipino' + textInput}],
+        [{text:"French", callback_data:'fr|French' + textInput}],
+        [{text:"German", callback_data:'de|German' + textInput}],
+        [{text:"Greek", callback_data:'el|Greek' + textInput}],
+        [{text:"Japanese", callback_data:'ja|Japanese' + textInput}],
+        [{text:"Korean", callback_data:'ko|Korean' + textInput}],
+        [{text:"Latin", callback_data:'la|Latin' + textInput}],
+        [{text:"Spanish", callback_data:'es|Spanish' + textInput}]
       ]
     })
   };
