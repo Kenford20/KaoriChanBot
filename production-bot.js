@@ -420,13 +420,13 @@ function findSecondsToElapse(reminderHours, reminderMinutes, am_pm) {
   let hoursToElapse = reminderHours - currHours;
   let minutesToElapse = parseInt(reminderMinutes) - currMinutes;
 
-  console.log(`New reminder posted! Currhours: ${currHours} currMins: ${currMinutes}`);
-  console.log(`reminderHrs: ${reminderHours} and reminderMins: ${reminderMinutes}`);
-  console.log(`hoursToElapse: ${hoursToElapse} and minutesToElapse: ${minutesToElapse}`);
-
   // going from pm to am or when time difference is greater than 12 hours
   if(hoursToElapse < 0) {
     hoursToElapse += 24;
+  } 
+  // 9:30 pm to 9:35 pm = 2:30(utc8) - 5 hours = -3:30 => 9:35 pm = 21:35 pm - (-3):30 = 24:05 to elapse - 24 = 5 mins
+  else if(hoursToElapse >= 24) {
+    hoursToElapse -= 24;
   }
 
   // time borrow
@@ -439,6 +439,9 @@ function findSecondsToElapse(reminderHours, reminderMinutes, am_pm) {
       hoursToElapse += 24;
     }
   }
+  console.log(`New reminder posted! Currhours: ${currHours} currMins: ${currMinutes}`);
+  console.log(`reminderHrs: ${reminderHours} and reminderMins: ${reminderMinutes}`);
+  console.log(`hoursToElapse: ${hoursToElapse} and minutesToElapse: ${minutesToElapse}`);
   return (hoursToElapse*60 + minutesToElapse)*60;
 }
 
