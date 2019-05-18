@@ -50,6 +50,10 @@ const emojis = {
   monkeyBlockingEyes: '\u{1F648}',
   blueScreamingFace: '\u{1F631}',
   thumbsUp: '\u{1F44D}',
+  train: '\u{1F684}',
+  bus: '\u{1F68C}',
+  taxi: '\u{1F696}',
+  car: '\u{1F698}',
   defaultEmoji: '\u{1F300}'
 };
 
@@ -83,6 +87,7 @@ bot.onText(/(^\/taskete(@qqm_development_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) =
 /translate (text) = translates your text for you into a target language
 /freshmix = gives you a fresh scboiz mix
 /remindmeto (task) = kaori-chan will remind you to do something at a time you specify
+/nextbus (bus number) (bus stop name) = get the arrival time of next bus you specified \n   Numbered street and named street intersections are separated with a / ex: 35th/Archer
 and some weeb stuff
   `);
 });
@@ -402,6 +407,8 @@ bot.on('callback_query', async(callbackQuery) => {
     spotifyHandler(callbackQuery);
   } else if(callbackQuery.message.text === 'Translate to?') {
     translationHandler(callbackQuery);
+  } else if(callbackQuery.message.text === 'What directon senpai?') {
+    CTA_busHandler(callbackQuery);
   } else {
     console.log('callback query handler error');
   }
@@ -475,3 +482,93 @@ bot.onText(/^\/remindmeto .+$/i, (msg, match) => {
     })
   });
 });
+
+
+bot.onText(generateRegExp('^\/nextbus'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, `${msg.from.first_name}-kun, you didn't tell me the bus number and bus stop name! \n Ya silly goose ${emojis.smilingColdSweatFace}`);
+});
+
+bot.onText(/^\/nextbus .+$/i, (msg, match) => {
+  const busDataInput = match[0].slice(match[0].indexOf(' ')+1);
+  const route = busDataInput.slice(0, busDataInput.indexOf(' '));
+  const stopName = busDataInput.slice(busDataInput.indexOf(' ')+1);
+  console.log(`route: ${route} stop: ${stopName}`);
+
+  const busDirections = {
+    reply_markup: JSON.stringify({ 
+      inline_keyboard: [
+        [{text:"Northbound", callback_data:`Northbound|${route}|${stopName}`}],
+        [{text:"Southbound", callback_data:`Southbound|${route}|${stopName}`}],
+        [{text:"Eastbound", callback_data:`Eastbound|${route}|${stopName}`}],
+        [{text:"Westbound", callback_data:`Westbound|${route}|${stopName}`}]
+      ]
+    })
+  };
+  bot.sendMessage(msg.chat.id, "What direction senpai?", busDirections);
+});
+
+// given the bus direction, route, and user input for the stop name, it returns the given bus stop object which contains the stopid and the stopname
+async function fetchBusStopID(direction, route, stopNameInput) {
+  const CTA_getStops_API = `http://www.ctabustracker.com/bustime/api/v2/getstops?key=${process.env.CTA_BUS_TRACKER_API_KEY}&rt=${route}&dir=${direction}&format=json`;
+  const response = await fetch(CTA_getStops_API, {
+    method: "GET",
+    header: {"Content-Type": "application/json"}
+  });
+  const data = await response.json();
+  if(data["bustime-response"].stops) {
+    const busStop = data["bustime-response"].stops.find(stop => stop.stpnm.toLowerCase() === stopNameInput.toLowerCase());
+    if(busStop) {
+      return busStop;
+    } else {
+      return {msg: `Could not find data for your stop name`}
+    }
+  } else {
+    return data["bustime-response"].error[0];
+  }
+}
+
+async function CTA_busHandler(callbackQuery) {
+  const chatId = callbackQuery.message.chat.id;
+  const [direction, route, stopName] = callbackQuery.data.split('|');
+  const busStopResponse = await fetchBusStopID(direction, route, stopName);
+  console.log(busStopResponse);
+
+  // stpid = the bus stop id and this property exists if the user entered a valid bus stop name
+  // otherwise busStopResponse is an error with a property of 'msg'
+  if(busStopResponse.stpid) {
+    const CTA_getPredictions_API = `http://www.ctabustracker.com/bustime/api/v2/getpredictions?key=${process.env.CTA_BUS_TRACKER_API_KEY}&rt=${route}&stpid=${busStopResponse.stpid}&format=json`;
+    try {
+      const response = await fetch(CTA_getPredictions_API, {
+        method: "GET",
+        header: {"Content-Type": "application/json"}
+      });
+      const data = await response.json();
+      const CTA_data = data["bustime-response"];
+
+      // prd = prediction and this property exists if the CTA route currently has an active schedule
+      // otherwise the property is an error
+      if(CTA_data.prd) {      
+        console.log(CTA_data.prd.filter(prediction => prediction.rtdir === direction).map(requestedPrediction => requestedPrediction.prdctdn));
+        bot.sendMessage(
+          chatId, 
+          `${emojis.bus} Next ${route} bus at ${stopName.toUpperCase()} is arriving in ${CTA_data.prd.find(prediction => prediction.rtdir === direction).prdctdn} minutes!` // prdctdn = prediction countdown which is the minutes until the bus arrives
+        );
+      } else {
+        const errorMessage = CTA_data.error[0].msg === "No service scheduled" || CTA_data.error[0].msg === "No arrival times"
+          ? `Gomen senpai.. there is currently no service scheduled for the route you selected. \nBetter call an Uber bruh! ${emojis.taxi}`
+          : CTA_data.error[0].msg === 'No data found for parameters' 
+          ? `Gomen senpai.. there is no data found for your inputs! Spell check it fam ${emojis.sadFace}`
+          : `Something else went wrong, Kenford check the logs!! ${emojis.madFace}`;
+
+          console.log(errorMessage);
+          bot.sendMessage(chatId, errorMessage);
+      }
+    }
+    catch(err) { // runs for failed GET requests
+      console.log(err);
+      bot.sendMessage(chatId, `Gomenasai.. something went wrong ${emojis.sadFace}, double check CTA servers?`);
+    }
+  } else {
+    bot.sendMessage(chatId, `Gomen senpai.. ${busStopResponse.msg}. \nSpell check your inputs onegaishimasu! ${emojis.sadFace2}`);
+  }
+}
