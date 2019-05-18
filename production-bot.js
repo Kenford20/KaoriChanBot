@@ -407,10 +407,11 @@ bot.on('callback_query', async(callbackQuery) => {
     spotifyHandler(callbackQuery);
   } else if(callbackQuery.message.text === 'Translate to?') {
     translationHandler(callbackQuery);
-  } else if(callbackQuery.message.text === 'What directon senpai?') {
+  } else if(callbackQuery.message.text === 'What direction senpai?') {
     CTA_busHandler(callbackQuery);
   } else {
     console.log('callback query handler error');
+    bot.sendMessage(callbackQuery.message.chat.id, 'Callback query handler error, Kenford fix it!!');
   }
 });
 
