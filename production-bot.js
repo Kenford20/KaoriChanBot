@@ -460,6 +460,7 @@ bot.onText(/^\/remindmeto .+$/i, (msg, match) => {
     bot.onReplyToMessage(botsQuestion.chat.id, botsQuestion.message_id, (reply) => {
       let [reminderHours, mins_am_pm] = reply.text.split(':');
       let [reminderMinutes, am_pm] = mins_am_pm.split(' ');
+      
       if(/\d?\d:\d\d (AM|PM)/i.test(reply.text) && reminderHours > 0 && reminderHours < 13 && reminderMinutes >= 0 && reminderMinutes < 60) {
         bot.sendMessage(msg.chat.id, `Wakatta, I will remind you to ${reminder} at ${reply.text}. \nShinpaishinaide! ${emojis.thumbsUp}`);
 
