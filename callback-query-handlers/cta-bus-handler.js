@@ -11,11 +11,21 @@ async function fetchBusStopID(direction, route, stopNameInput) {
     const data = await response.json();
   
     if(data["bustime-response"].stops) {
+      const userStopName = stopNameInput.toLowerCase().replace(/(\+|\&)/g, '').split(' ').sort();
+      console.log(userStopName);
       const busStop = data["bustime-response"].stops.find(stop => {
         // API returns inconsistent responses that contain '+' for one direction and '&' for other direction to separate intersection names
         // ex: Archer & Canal for southbound response and Archer + Canal for Northbound response
         // So need to add the replace method to just compare the two street names 
-        return stop.stpnm.toLowerCase().replace(/(\s|\+|\&)/g, '') === stopNameInput.toLowerCase().replace(/(\s|\+|\&)/g, '');
+        // Then I do a split and sort to just compare the street names in any order to give user more input flexibility so that it doesnt have to match the CTA stop name exactly
+        // ex: '31st street halsted' would match the CTA stop name, 'Halsted & 31st Street', which is essentially what a user may mean without the hassle of typing an ampersand or plus sign
+        const CTA_stopName = stop.stpnm.toLowerCase().replace(/(\+|\&)/g, '').replace(/\s{2,}/g, ' ').split(' ').sort();
+
+        if(userStopName.every((street, i) => street === CTA_stopName[i])) {
+          console.log('found da stop');
+          console.log(CTA_stopName);
+          return CTA_stopName;
+        }
       });
   
       if(busStop) {
