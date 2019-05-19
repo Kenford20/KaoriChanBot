@@ -489,23 +489,41 @@ bot.onText(generateRegExp('^\/nextbus'), (msg, match) => {
   bot.sendMessage(msg.chat.id, `${msg.from.first_name}-kun, you didn't tell me the bus number and bus stop name! \n Ya silly goose ${emojis.smilingColdSweatFace}`);
 });
 
-bot.onText(/^\/nextbus .+$/i, (msg, match) => {
+async function fetchBusDirections(route, chatId) {
+  const CTA_getDirections_API = `http://www.ctabustracker.com/bustime/api/v2/getdirections?key=${process.env.CTA_BUS_TRACKER_API_KEY}&rt=${route}&format=json`;
+  const response = await fetch(CTA_getDirections_API, {
+    method: "GET",
+    header: {"Content-Type": "application/json"}
+  });
+  const data = await response.json();
+
+  if(data["bustime-response"].directions) {
+    const directions = data["bustime-response"].directions.map(direction => direction.dir);
+    //console.log(directions);
+    return directions;
+  } else {
+    console.log(data["bustime-response"].error[0]);
+    bot.sendMessage(chatId, `Gomen senpai.. please enter a valid bus number ${emojis.sadFace2}`);
+  }
+}
+
+bot.onText(/^\/nextbus .+$/i, async(msg, match) => {
   const busDataInput = match[0].slice(match[0].indexOf(' ')+1);
   const route = busDataInput.slice(0, busDataInput.indexOf(' '));
   const stopName = busDataInput.slice(busDataInput.indexOf(' ')+1);
   console.log(`route: ${route} stop: ${stopName}`);
 
-  const busDirections = {
+  const busDirections = await fetchBusDirections(route, msg.chat.id);
+  const inlineKeyboardOptions = busDirections.map(option => {
+    return {text:`${option}`, callback_data:`${option}|${route}|${stopName}`}
+  });
+
+  const directionOptions = {
     reply_markup: JSON.stringify({ 
-      inline_keyboard: [
-        [{text:"Northbound", callback_data:`Northbound|${route}|${stopName}`}],
-        [{text:"Southbound", callback_data:`Southbound|${route}|${stopName}`}],
-        [{text:"Eastbound", callback_data:`Eastbound|${route}|${stopName}`}],
-        [{text:"Westbound", callback_data:`Westbound|${route}|${stopName}`}]
-      ]
+      inline_keyboard: [inlineKeyboardOptions]
     })
   };
-  bot.sendMessage(msg.chat.id, "What direction senpai?", busDirections);
+  bot.sendMessage(msg.chat.id, "What direction senpai?", directionOptions);
 });
 
 // given the bus direction, route, and user input for the stop name, it returns the given bus stop object which contains the stopid and the stopname
@@ -516,8 +534,12 @@ async function fetchBusStopID(direction, route, stopNameInput) {
     header: {"Content-Type": "application/json"}
   });
   const data = await response.json();
+
   if(data["bustime-response"].stops) {
-    const busStop = data["bustime-response"].stops.find(stop => stop.stpnm.toLowerCase() === stopNameInput.toLowerCase());
+    const busStop = data["bustime-response"].stops.find(stop => {
+      return stop.stpnm.toLowerCase().replace(/( \+ | \& )/g, '') === stopNameInput.toLowerCase().replace(/( \+ | \& )/g, '');
+    });
+    
     if(busStop) {
       return busStop;
     } else {
