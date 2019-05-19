@@ -87,7 +87,7 @@ bot.onText(/(^\/taskete(@qqm_development_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) =
 /translate (text) = translates your text for you into a target language
 /freshmix = gives you a fresh scboiz mix
 /remindmeto (task) = kaori-chan will remind you to do something at a time you specify
-/nextbus (bus number) (bus stop name) = get the arrival time of next bus you specified \n   Numbered street and named street intersections are separated with a / ex: 35th/Archer
+/nextbus (bus number) (bus stop name) = get the arrival time of next bus you specified \n   Numbered street and named street intersections are separated with a / or &; ex: 35th/Archer or Halsted & 16th Street 
 and some weeb stuff
   `);
 });
@@ -552,7 +552,7 @@ async function CTA_busHandler(callbackQuery) {
         console.log(CTA_data.prd.filter(prediction => prediction.rtdir === direction).map(requestedPrediction => requestedPrediction.prdctdn));
         bot.sendMessage(
           chatId, 
-          `${emojis.bus} Next ${route} bus at ${stopName.toUpperCase()} is arriving in ${CTA_data.prd.find(prediction => prediction.rtdir === direction).prdctdn} minutes!` // prdctdn = prediction countdown which is the minutes until the bus arrives
+          `${emojis.bus} Next ${route} bus going ${direction} at ${stopName.toUpperCase()} is arriving in...  ${CTA_data.prd.find(prediction => prediction.rtdir === direction).prdctdn} minutes!` // prdctdn = prediction countdown which is the minutes until the bus arrives
         );
       } else {
         const errorMessage = CTA_data.error[0].msg === "No service scheduled" || CTA_data.error[0].msg === "No arrival times"
