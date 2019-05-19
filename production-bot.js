@@ -1,7 +1,6 @@
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const math = require('mathjs');
-const axios = require('axios');
 
 // replace the value below with the Telegram token you receive from @BotFather
 const token = process.env.PRODUCTION_BOT_TOKEN;
@@ -10,6 +9,7 @@ const token = process.env.PRODUCTION_BOT_TOKEN;
 const bot = new TelegramBot(token, {polling: true});
 const botTag = '@qqm_weeb_bot';
 const fetch = require('node-fetch');
+const emojis = require('./telegram-emojis');
 let profanityMode = false;
 
 // handles command autocompletion through the commands list (adds the bot's tag name to the regexp)
@@ -17,45 +17,6 @@ let profanityMode = false;
 function generateRegExp(reg) {
   return new RegExp(`${reg}(${botTag})?$`);
 }
-
-// # Openweathermap Weather codes and corresponding emojis
-// emoji codes here: https://apps.timwhitlock.info/emoji/tables/unicode
-const emojis = {
-  thunderstorm: '\u{1F4A8}',    // # Code: 200's, thunderstorms
-  droplet: '\u{1F4A7}',         // # Code: 300's drizzle
-  rain: '\u{02614}',            // # Code: 500's rain
-  snowflake: '\u{02744}',       // # Code: 600's snow
-  snowman: '\u{026C4}',         // # Code: 600's snowman
-  atmosphere: '\u{1F301}',      // # Code: 700's atmosphere (mist, smoke, haze, fog, dust, sand)
-  sun: '\u{02600}',             // # Code: 800 clear sky
-  sunCloud: '\u{026C5}',        // # Code: 801/802 partly cloudly (11-50%)
-  cloud: '\u{02601}',           // # Code: 803/804 cloudy (50-100%)
-  fire: '\u{1F525}',            // # Code: 904
-  arrowUp: '\u{2B06}',
-  arrowDown: '\u{2B07}',
-  sadFace: '\u{1F61E}',
-  sadFace2: '\u{1F614}',
-  cryFace: '\u{1F62D}',
-  cryFace2: '\u{1F622}',
-  madFace: '\u{1F620}',
-  redMadFace: '\u{1F621}',
-  unamusedFace: '\u{1F612}',
-  smiley: '\u{1F604}',
-  blushSmiley: '\u{1F60A}',
-  kissFaceHeart: '\u{1F618}',
-  peach: '\u{1F351}',
-  winkyTongueFace: '\u{1F61C}',
-  smilingColdSweatFace: '\u{1F605}',
-  blushFace: '\u{1F633}',
-  monkeyBlockingEyes: '\u{1F648}',
-  blueScreamingFace: '\u{1F631}',
-  thumbsUp: '\u{1F44D}',
-  train: '\u{1F684}',
-  bus: '\u{1F68C}',
-  taxi: '\u{1F696}',
-  car: '\u{1F698}',
-  defaultEmoji: '\u{1F300}'
-};
 
 //https://api.telegram.org/bot{my_bot_token}/setWebhook?url={url_to_send_updates_to}
 
@@ -73,7 +34,7 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 });
 
 // sends user a list of commands
-bot.onText(/(^\/taskete(@qqm_development_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
+bot.onText(/(^\/taskete(@qqm_weeb_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
   bot.sendMessage(msg.chat.id, `
 /roll = rolls a die by default, 
 /roll (number) = gives a random number up to the number you input
@@ -87,14 +48,14 @@ bot.onText(/(^\/taskete(@qqm_development_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) =
 /translate (text) = translates your text for you into a target language
 /freshmix = gives you a fresh scboiz mix
 /remindmeto (task) = kaori-chan will remind you to do something at a time you specify
-/nextbus (bus number) (bus stop name) = get the arrival time of next bus you specified \n   Numbered street and named street intersections are separated with a / or &; ex: 35th/Archer or Halsted & 16th Street 
+/nextbus (bus number) (bus stop name) = get the arrival time of next bus you specified \n   Numbered streets and named street intersections are separated with a / ex: 35th/Archer
 and some weeb stuff
   `);
 });
 
 // tags everyone in my group
 bot.onText(generateRegExp('^\/meena'), (msg, match) => {
-  bot.sendMessage(msg.chat.id, process.env.TELEGRAM_GROUP_USERS);
+    bot.sendMessage(msg.chat.id, process.env.TELEGRAM_GROUP_USERS);
 });
 
 // rolls a die
@@ -218,6 +179,7 @@ bot.onText(/\b(tits?|deek|dick|boobs?|cock|cawk|pussy|vaginas?|nips?|nipples?|pe
   }
 });
 
+
 bot.onText(/\b(fags?|faggot|asshole|fuck|fucker|bitch|shit|prick|cunt|slut)\b/i, async(msg, match) => {
   if(profanityMode) {
     const user = msg.from.id
@@ -260,119 +222,6 @@ bot.onText(/^\/spotify .+$/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, "What are you querying for?", queryOptions);
 });
 
-let accessToken = "BQA0ro6B7s53s-VT9DjxfsNv-8EtkqzXlO3TaDQSTo8u83z6TI2jfurvb6LrwfZSg-18BuFY0exEZmHsi-c";
-function generateSpotifyToken(chatID) {
-  axios({
-    url: 'https://accounts.spotify.com/api/token',
-    method: 'post',
-    params: {grant_type: 'client_credentials'},
-    headers: {
-      'Accept':'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    auth: {
-      username: process.env.SPOTIFY_CLIENT_ID,
-      password: process.env.SPOTIFY_CLIENT_SECRET
-    }
-  }).then(response => {
-    console.log(`successfully made a token!! yay`);
-    console.log(response.data);
-    accessToken = response.data.access_token;
-  }).catch(tokenErr => {
-    console.log(`axios err: ${tokenErr}`);
-    bot.sendMessage(chatID, 'Failed to generate a new access token for some reason, look into it Kenford!!');
-  });
-}
-
-async function spotifyHandler(callbackQuery) {
-  const queryType = callbackQuery.data.slice(0, callbackQuery.data.indexOf(' '));
-  const queryInput = callbackQuery.data.slice(callbackQuery.data.indexOf(' ') + 1);
-
-  bot.sendMessage(callbackQuery.message.chat.id, `You queried for: ${queryType}`);
-  
-  const spotifyAPI = `https://api.spotify.com/v1/search?q=${(queryInput).toLowerCase()}&type=${(queryType).toLowerCase()}&limit=5&access_token=${accessToken}`
-
-  try {
-    const response = await fetch(spotifyAPI, {
-      method: "GET",
-      header: {"Content-Type": "application/json"}
-    });
-    const spotifyData = await response.json();
-
-    if(spotifyData.error) {
-      console.log('theres a spotify error!')
-      console.log(spotifyData.error);
-      let errResponseMsg;
-
-      // 401 = access token expired, so generate new one. (they expire every hour)
-      if(spotifyData.error.status === 401) {
-        errResponseMsg = 'Spotify access token expired, generating a new one! Choto mottay and try again in a few seconds! '
-        console.log('creating a new token!');
-        generateSpotifyToken(callbackQuery.message.chat.id);
-      } else {
-        errResponseMsg = 'Failed to fetch song data, double check your query!';
-      }
-      bot.sendMessage(callbackQuery.message.chat.id, errResponseMsg);
-    } 
-    else {
-      switch(queryType.replace(/\s/g, '')) {
-        case 'Track': {
-          bot.sendMessage(callbackQuery.message.chat.id, `
-Here's the track: ${spotifyData.tracks.items[0].external_urls.spotify} 
-Track album: ${spotifyData.tracks.items[0].album.name}, which has ${spotifyData.tracks.items[0].album.total_tracks} tracks
-Album release: ${spotifyData.tracks.items[0].album.release_date}
-If you don't have a spotify account, here's a preview fam dw: ${spotifyData.tracks.items[0].preview_url}
-          `);
-        } break;
-        case 'Album': {
-          bot.sendMessage(callbackQuery.message.chat.id, `
-Here's the album: ${spotifyData.albums.items[0].external_urls.spotify} 
-Album is called ${spotifyData.albums.items[0].name} has ${spotifyData.albums.items[0].total_tracks} tracks.
-Album release: ${spotifyData.albums.items[0].release_date}
-          `);
-        } break;
-        case 'Artist': {
-          bot.sendMessage(callbackQuery.message.chat.id, `
-Here's a profile: ${spotifyData.artists.items[0].external_urls.spotify} 
-${spotifyData.artists.items[0].name} has ${spotifyData.artists.items[0].followers.total} followers! 
-Artist's genres: ${spotifyData.artists.items[0].genres.join(' ')} 
-          `);
-        } break;
-        case 'Playlist': {
-          bot.sendMessage(callbackQuery.message.chat.id, `
-Here's the playlist: ${spotifyData.playlists.items[0].external_urls.spotify} 
-Playlist is called: ${spotifyData.playlists.items[0].name}
-Created by: ${spotifyData.playlists.items[0].owner.display_name}
-You can view more of his/her stuff at: ${spotifyData.playlists.items[0].owner.external_urls.spotify}
-          `);
-        } break;
-        default: bot.sendMessage(callbackQuery.message.chat.id, 'Something went wrong, try again oof'); break;
-      }
-    }
-  } catch(fetchErr) {
-    console.log(fetchErr);
-  }
-}
-
-async function translationHandler(callbackQuery) {
-  // Imports the Google Cloud client library
-  const {Translate} = require('@google-cloud/translate');
-
-  // Instantiates a client
-  const translate = new Translate({
-    projectId: process.env.GOOGLE_TRANSLATE_PROJECT_ID,
-    key: process.env.GOOGLE_TRANSLATE_API_KEY
-  });
-
-  // callback argument format: "languageCode|language userInputToTranslate"
-  // ex: "es|Spanish translate this sentence please!" 
-  const [targetLanguageCode, targetLanguageText] = callbackQuery.data.slice(0, callbackQuery.data.indexOf(' ')).split('|');
-  const textInput = callbackQuery.data.slice(callbackQuery.data.indexOf(' ') + 1);
-
-  const [translation] = await translate.translate(textInput, targetLanguageCode);
-  bot.sendMessage(callbackQuery.message.chat.id, `In ${targetLanguageText}: ${translation}`);
-}
-
 bot.onText(generateRegExp('^\/translate'), (msg, match) => {
   bot.sendMessage(msg.chat.id, `Senpai, you need to give me something to translate silly goose! ${emojis.smilingColdSweatFace}`);
 });
@@ -400,65 +249,9 @@ bot.onText(/^\/translate .+$/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, "Translate to?", languageOptions);
 });
 
-bot.on('callback_query', async(callbackQuery) => {
-  bot.deleteMessage(callbackQuery.message.chat.id, callbackQuery.message.message_id);
-
-  if(callbackQuery.message.text === 'What are you querying for?') {
-    spotifyHandler(callbackQuery);
-  } else if(callbackQuery.message.text === 'Translate to?') {
-    translationHandler(callbackQuery);
-  } else if(callbackQuery.message.text === 'What direction senpai?') {
-    CTA_busHandler(callbackQuery);
-  } else {
-    console.log('callback query handler error');
-    bot.sendMessage(callbackQuery.message.chat.id, 'Callback query handler error, Kenford fix it!!');
-  }
-});
-
-function findSecondsToElapse(reminderHours, reminderMinutes, am_pm) {
-  const today = new Date();
-  console.log(`date of reminder request: ${today}`);
-
-  // -5 to match my timezone, (2:00 pm CDT -> 14:00) = 19:00 UTC8 or whatever that is above
-  const currHours = today.getHours()-5; 
-  const currMinutes = today.getMinutes();
-
-  reminderHours = /(pm|PM)/.test(am_pm) && reminderHours < 12 ? parseInt(reminderHours) + 12 : parseInt(reminderHours);
-
-  let hoursToElapse = reminderHours - currHours;
-  let minutesToElapse = parseInt(reminderMinutes) - currMinutes;
-
-  // going from pm to am or when time difference is greater than 12 hours
-  if(hoursToElapse < 0) {
-    hoursToElapse += 24;
-  } 
-  // 9:30 pm to 9:35 pm = 2:30(utc8) - 5 hours = -3:30 => 9:35 pm = 21:35 pm - (-3):30 = 24:05 to elapse - 24 = 5 mins
-  else if(hoursToElapse >= 24) {
-    hoursToElapse -= 24;
-  }
-
-  // time borrow
-  if(minutesToElapse < 0) {
-    minutesToElapse += 60;
-    hoursToElapse--;
-
-    // 7:30 am to 7:00 am or with pm
-    if(hoursToElapse < 0) {
-      hoursToElapse += 24;
-    }
-  }
-  console.log(`New reminder posted! Currhours: ${currHours} currMins: ${currMinutes}`);
-  console.log(`reminderHrs: ${reminderHours} and reminderMins: ${reminderMinutes}`);
-  console.log(`hoursToElapse: ${hoursToElapse} and minutesToElapse: ${minutesToElapse}`);
-  return (hoursToElapse*60 + minutesToElapse)*60;
-}
-
-bot.onText(generateRegExp('^\/remindmeto'), (msg, match) => {
-  bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama, you gotta tell me what to remind you to do ya bakayero! ${emojis.unamusedFace}`);
-});
-
 bot.onText(/^\/remindmeto .+$/i, (msg, match) => {
   let reminder = match[0].slice(match[0].indexOf(' ')+1);
+
   bot.sendMessage(
     msg.chat.id, 
     `When do you want to be reminded, @${msg.from.username}? \n Please use format: (HH:MM AM/PM)`, 
@@ -468,14 +261,14 @@ bot.onText(/^\/remindmeto .+$/i, (msg, match) => {
     bot.onReplyToMessage(botsQuestion.chat.id, botsQuestion.message_id, (reply) => {
       let [reminderHours, mins_am_pm] = reply.text.split(':');
       let [reminderMinutes, am_pm] = mins_am_pm.split(' ');
-      
       if(/\d?\d:\d\d (AM|PM)/i.test(reply.text) && reminderHours > 0 && reminderHours < 13 && reminderMinutes >= 0 && reminderMinutes < 60) {
+        const findSecondsToElapse = require('./command-methods/find-seconds-to-elapse');
         bot.sendMessage(msg.chat.id, `Wakatta, I will remind you to ${reminder} at ${reply.text}. \nShinpaishinaide! ${emojis.thumbsUp}`);
 
         let timeUntilReminder = findSecondsToElapse(reminderHours, reminderMinutes, am_pm) * 1000;
         console.log(`reminding in ${timeUntilReminder} milliseconds!`);
         setTimeout(() => {
-          bot.sendMessage(msg.chat.id, `@${reply.from.username}-senpai, it is time to ${reminder}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
+          bot.sendMessage(msg.chat.id, `@${reply.chat.username}-senpai, it is time to ${reminder}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
         }, timeUntilReminder);
       } else {
         bot.sendMessage(msg.chat.id, 'Make sure your time is in the right format bruh!');
@@ -484,114 +277,47 @@ bot.onText(/^\/remindmeto .+$/i, (msg, match) => {
   });
 });
 
-
 bot.onText(generateRegExp('^\/nextbus'), (msg, match) => {
   bot.sendMessage(msg.chat.id, `${msg.from.first_name}-kun, you didn't tell me the bus number and bus stop name! \n Ya silly goose ${emojis.smilingColdSweatFace}`);
 });
-
-async function fetchBusDirections(route, chatId) {
-  const CTA_getDirections_API = `http://www.ctabustracker.com/bustime/api/v2/getdirections?key=${process.env.CTA_BUS_TRACKER_API_KEY}&rt=${route}&format=json`;
-  const response = await fetch(CTA_getDirections_API, {
-    method: "GET",
-    header: {"Content-Type": "application/json"}
-  });
-  const data = await response.json();
-
-  if(data["bustime-response"].directions) {
-    const directions = data["bustime-response"].directions.map(direction => direction.dir);
-    //console.log(directions);
-    return directions;
-  } else {
-    console.log(data["bustime-response"].error[0]);
-    bot.sendMessage(chatId, `Gomen senpai.. please enter a valid bus number ${emojis.sadFace2}`);
-  }
-}
 
 bot.onText(/^\/nextbus .+$/i, async(msg, match) => {
   const busDataInput = match[0].slice(match[0].indexOf(' ')+1);
   const route = busDataInput.slice(0, busDataInput.indexOf(' '));
   const stopName = busDataInput.slice(busDataInput.indexOf(' ')+1);
+  const fetchBusDirections = require('./command-methods/fetch-bus-directions');
   console.log(`route: ${route} stop: ${stopName}`);
 
-  const busDirections = await fetchBusDirections(route, msg.chat.id);
-  const inlineKeyboardOptions = busDirections.map(option => {
-    return {text:`${option}`, callback_data:`${option}|${route}|${stopName}`}
-  });
+  try {
+    const busDirections = await fetchBusDirections(route, msg.chat.id);
+    const inlineKeyboardOptions = busDirections.map(option => {
+      return {text:`${option}`, callback_data:`${option}|${route}|${stopName}`}
+    });
 
-  const directionOptions = {
-    reply_markup: JSON.stringify({ 
-      inline_keyboard: [inlineKeyboardOptions]
-    })
-  };
-  bot.sendMessage(msg.chat.id, "What direction senpai?", directionOptions);
+    const directionOptions = {
+      reply_markup: JSON.stringify({ 
+        inline_keyboard: [inlineKeyboardOptions]
+      })
+    };
+    bot.sendMessage(msg.chat.id, "What direction senpai?", directionOptions);
+  } catch(err) {
+    console.log(err);
+  }
 });
 
-// given the bus direction, route, and user input for the stop name, it returns the given bus stop object which contains the stopid and the stopname
-async function fetchBusStopID(direction, route, stopNameInput) {
-  const CTA_getStops_API = `http://www.ctabustracker.com/bustime/api/v2/getstops?key=${process.env.CTA_BUS_TRACKER_API_KEY}&rt=${route}&dir=${direction}&format=json`;
-  const response = await fetch(CTA_getStops_API, {
-    method: "GET",
-    header: {"Content-Type": "application/json"}
-  });
-  const data = await response.json();
+bot.on('callback_query', async(callbackQuery) => {
+  bot.deleteMessage(callbackQuery.message.chat.id, callbackQuery.message.message_id);
 
-  if(data["bustime-response"].stops) {
-    const busStop = data["bustime-response"].stops.find(stop => {
-      return stop.stpnm.toLowerCase().replace(/( \+ | \& )/g, '') === stopNameInput.toLowerCase().replace(/( \+ | \& )/g, '');
-    });
-    
-    if(busStop) {
-      return busStop;
-    } else {
-      return {msg: `Could not find data for your stop name`}
-    }
+  if(callbackQuery.message.text === 'What are you querying for?') {
+    const spotifyHandler = require('./callback-query-handlers/spotify-handler');
+    spotifyHandler(callbackQuery, bot);
+  } else if(callbackQuery.message.text === 'Translate to?') {
+    const translationHandler = require('./callback-query-handlers/translation-handler');
+    translationHandler(callbackQuery, bot);
+  } else if(callbackQuery.message.text === "What direction senpai?") {
+    const CTA_busHandler = require('./callback-query-handlers/cta-bus-handler');
+    CTA_busHandler(callbackQuery, bot);
   } else {
-    return data["bustime-response"].error[0];
+    console.log('callback query handler error');
   }
-}
-
-async function CTA_busHandler(callbackQuery) {
-  const chatId = callbackQuery.message.chat.id;
-  const [direction, route, stopName] = callbackQuery.data.split('|');
-  const busStopResponse = await fetchBusStopID(direction, route, stopName);
-  console.log(busStopResponse);
-
-  // stpid = the bus stop id and this property exists if the user entered a valid bus stop name
-  // otherwise busStopResponse is an error with a property of 'msg'
-  if(busStopResponse.stpid) {
-    const CTA_getPredictions_API = `http://www.ctabustracker.com/bustime/api/v2/getpredictions?key=${process.env.CTA_BUS_TRACKER_API_KEY}&rt=${route}&stpid=${busStopResponse.stpid}&format=json`;
-    try {
-      const response = await fetch(CTA_getPredictions_API, {
-        method: "GET",
-        header: {"Content-Type": "application/json"}
-      });
-      const data = await response.json();
-      const CTA_data = data["bustime-response"];
-
-      // prd = prediction and this property exists if the CTA route currently has an active schedule
-      // otherwise the property is an error
-      if(CTA_data.prd) {      
-        console.log(CTA_data.prd.filter(prediction => prediction.rtdir === direction).map(requestedPrediction => requestedPrediction.prdctdn));
-        bot.sendMessage(
-          chatId, 
-          `${emojis.bus} Next ${route} bus going ${direction} at ${stopName.toUpperCase()} is arriving in...  ${CTA_data.prd.find(prediction => prediction.rtdir === direction).prdctdn} minutes!` // prdctdn = prediction countdown which is the minutes until the bus arrives
-        );
-      } else {
-        const errorMessage = CTA_data.error[0].msg === "No service scheduled" || CTA_data.error[0].msg === "No arrival times"
-          ? `Gomen senpai.. there is currently no service scheduled for the route you selected. \nBetter call an Uber bruh! ${emojis.taxi}`
-          : CTA_data.error[0].msg === 'No data found for parameters' 
-          ? `Gomen senpai.. there is no data found for your inputs! Spell check it fam ${emojis.sadFace}`
-          : `Something else went wrong, Kenford check the logs!! ${emojis.madFace}`;
-
-          console.log(errorMessage);
-          bot.sendMessage(chatId, errorMessage);
-      }
-    }
-    catch(err) { // runs for failed GET requests
-      console.log(err);
-      bot.sendMessage(chatId, `Gomenasai.. something went wrong ${emojis.sadFace}, double check CTA servers?`);
-    }
-  } else {
-    bot.sendMessage(chatId, `Gomen senpai.. ${busStopResponse.msg}. \nSpell check your inputs onegaishimasu! ${emojis.sadFace2}`);
-  }
-}
+});
