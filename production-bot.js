@@ -290,7 +290,7 @@ bot.onText(/^\/nextbus .+$/i, async(msg, match) => {
   console.log(`route: ${route} stop: ${stopName}`);
 
   try {
-    const busDirections = await fetchBusDirections(route, msg.chat.id);
+    const busDirections = await fetchBusDirections(route, msg.chat.id, bot);
     const inlineKeyboardOptions = busDirections.map(option => {
       return {text:`${option}`, callback_data:`${option}|${route}|${stopName}`}
     });

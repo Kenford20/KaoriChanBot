@@ -229,6 +229,7 @@ bot.onText(generateRegExp('^\/translate'), (msg, match) => {
 
 bot.onText(/^\/translate .+$/i, (msg, match) => {
   const textInput = match[0].slice(match[0].indexOf(' '));
+  // the callback_data property for the inline keyboard options can only hold 64 bytes, so the user input is limited to a certain amount of characters
 
   const languageOptions = {
     reply_markup: JSON.stringify({ 
@@ -290,7 +291,7 @@ bot.onText(/^\/nextbus .+$/i, async(msg, match) => {
   console.log(`route: ${route} stop: ${stopName}`);
 
   try {
-    const busDirections = await fetchBusDirections(route, msg.chat.id);
+    const busDirections = await fetchBusDirections(route, msg.chat.id, bot);
     const inlineKeyboardOptions = busDirections.map(option => {
       return {text:`${option}`, callback_data:`${option}|${route}|${stopName}`}
     });
