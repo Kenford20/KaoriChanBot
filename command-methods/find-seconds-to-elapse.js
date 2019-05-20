@@ -3,7 +3,7 @@ module.exports = function findSecondsToElapse(reminderHours, reminderMinutes, am
     console.log(`date of reminder request: ${today}`);
   
     // -5 to match my timezone, (2:00 pm CDT -> 14:00) = 19:00 UTC8 or whatever that is above
-    const currHours = today.getHours()-5; 
+    let currHours = today.getHours()-5; 
     const currMinutes = today.getMinutes();
   
     reminderHours = /(pm|PM)/.test(am_pm) && reminderHours < 12 ? parseInt(reminderHours) + 12 : parseInt(reminderHours);

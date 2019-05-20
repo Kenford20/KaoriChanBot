@@ -270,7 +270,7 @@ bot.onText(/^\/remindmeto .+$/i, (msg, match) => {
         let timeUntilReminder = findSecondsToElapse(reminderHours, reminderMinutes, am_pm) * 1000;
         console.log(`reminding in ${timeUntilReminder} milliseconds!`);
         setTimeout(() => {
-          bot.sendMessage(msg.chat.id, `@${reply.chat.username}-senpai, it is time to ${reminder}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
+          bot.sendMessage(msg.chat.id, `@${reply.from.username}-senpai, it is time to ${reminder}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
         }, timeUntilReminder);
       } else {
         bot.sendMessage(msg.chat.id, 'Make sure your time is in the right format bruh!');
