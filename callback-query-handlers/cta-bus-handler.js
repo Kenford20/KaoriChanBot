@@ -11,7 +11,7 @@ async function fetchBusStopID(direction, route, stopNameInput) {
     const data = await response.json();
   
     if(data["bustime-response"].stops) {
-      const userStopName = stopNameInput.toLowerCase().replace(/(\+|\&)/g, '').split(' ').sort();
+      const userStopName = stopNameInput.toLowerCase().replace(/(\+|\&)/g, '').replace(/\s{2,}/g, ' ').split(' ').sort();
       console.log(userStopName);
       const busStop = data["bustime-response"].stops.find(stop => {
         // API returns inconsistent responses that contain '+' for one direction and '&' for other direction to separate intersection names

@@ -7,6 +7,11 @@ module.exports = function findSecondsToElapse(reminderHours, reminderMinutes, am
     const currMinutes = today.getMinutes();
   
     reminderHours = /(pm|PM)/.test(am_pm) && reminderHours < 12 ? parseInt(reminderHours) + 12 : parseInt(reminderHours);
+
+    // (12:00 am).gethours = 0 hours, add 12 to keep my calculations correct
+    if(currHours == 0) {
+      currHours += 12;
+    }
   
     let hoursToElapse = reminderHours - currHours;
     let minutesToElapse = parseInt(reminderMinutes) - currMinutes;
