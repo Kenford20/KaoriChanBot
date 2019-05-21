@@ -251,33 +251,55 @@ bot.onText(/^\/translate .+$/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, "Translate to?", languageOptions);
 });
 
-bot.onText(/^\/remindmeto .+$/i, (msg, match) => {
-  let reminder = match[0].slice(match[0].indexOf(' ')+1);
+bot.onText(/^\/remindmetoo .+$/i, (msg, match) => {
+  const reminder = match[0].slice(match[0].indexOf(' ')+1);
+  const [task, time] = reminder.split(' @ ');
 
-  bot.sendMessage(
-    msg.chat.id, 
-    `When do you want to be reminded, @${msg.from.username}? \n Please use format: (HH:MM AM/PM)`, 
-    { reply_markup: { force_reply: true, selective: true }}
-  )
-  .then(botsQuestion => {
-    bot.onReplyToMessage(botsQuestion.chat.id, botsQuestion.message_id, (reply) => {
-      let [reminderHours, mins_am_pm] = reply.text.split(':');
-      let [reminderMinutes, am_pm] = mins_am_pm.split(' ');
-      if(/\d?\d:\d\d (AM|PM)/i.test(reply.text) && reminderHours > 0 && reminderHours < 13 && reminderMinutes >= 0 && reminderMinutes < 60) {
-        const findSecondsToElapse = require('./command-methods/find-seconds-to-elapse');
-        bot.sendMessage(msg.chat.id, `Wakatta, I will remind you to ${reminder} at ${reply.text}. \nShinpaishinaide! ${emojis.thumbsUp}`);
+  const [reminderHours, mins_am_pm] = time.split(':');
+  const [reminderMinutes, am_pm] = mins_am_pm.split(' ');
 
-        let timeUntilReminder = findSecondsToElapse(reminderHours, reminderMinutes, am_pm) * 1000;
-        console.log(`reminding in ${timeUntilReminder} milliseconds!`);
-        setTimeout(() => {
-          bot.sendMessage(msg.chat.id, `@${reply.from.username}-senpai, it is time to ${reminder}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
-        }, timeUntilReminder);
-      } else {
-        bot.sendMessage(msg.chat.id, 'Make sure your time is in the right format bruh!');
-      }
-    })
-  });
+  if(/\d?\d:\d\d (AM|PM)/i.test(time) && reminderHours > 0 && reminderHours < 13 && reminderMinutes >= 0 && reminderMinutes < 60) {
+    const findSecondsToElapse = require('./command-methods/find-seconds-to-elapse');
+    bot.sendMessage(msg.chat.id, `Wakatta @${msg.from.username}, I will remind you to ${task} at ${time}. \nShinpaishinaide! ${emojis.thumbsUp}`);
+
+    let timeUntilReminder = findSecondsToElapse(reminderHours, reminderMinutes, am_pm) * 1000;
+    console.log(`reminding in ${timeUntilReminder} milliseconds!`);
+    setTimeout(() => {
+      bot.sendMessage(msg.chat.id, `@${msg.from.username}-senpai, it is time to ${task}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
+    }, timeUntilReminder);
+  } else {
+    bot.sendMessage(msg.chat.id, 'Make sure your time is in the right format bruh!');
+  }
 });
+
+// reminder command with force reply format
+// bot.onText(/^\/remindmeto .+$/i, (msg, match) => {
+//   let reminder = match[0].slice(match[0].indexOf(' ')+1);
+
+//   bot.sendMessage(
+//     msg.chat.id, 
+//     `When do you want to be reminded, @${msg.from.username}? \n Please use format: (HH:MM AM/PM)`, 
+//     { reply_markup: { force_reply: true, selective: true }}
+//   )
+//   .then(botsQuestion => {
+//     bot.onReplyToMessage(botsQuestion.chat.id, botsQuestion.message_id, (reply) => {
+//       let [reminderHours, mins_am_pm] = reply.text.split(':');
+//       let [reminderMinutes, am_pm] = mins_am_pm.split(' ');
+//       if(/\d?\d:\d\d (AM|PM)/i.test(reply.text) && reminderHours > 0 && reminderHours < 13 && reminderMinutes >= 0 && reminderMinutes < 60) {
+//         const findSecondsToElapse = require('./command-methods/find-seconds-to-elapse');
+//         bot.sendMessage(msg.chat.id, `Wakatta, I will remind you to ${reminder} at ${reply.text}. \nShinpaishinaide! ${emojis.thumbsUp}`);
+
+//         let timeUntilReminder = findSecondsToElapse(reminderHours, reminderMinutes, am_pm) * 1000;
+//         console.log(`reminding in ${timeUntilReminder} milliseconds!`);
+//         setTimeout(() => {
+//           bot.sendMessage(msg.chat.id, `@${reply.from.username}-senpai, it is time to ${reminder}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
+//         }, timeUntilReminder);
+//       } else {
+//         bot.sendMessage(msg.chat.id, 'Make sure your time is in the right format bruh!');
+//       }
+//     })
+//   });
+// });
 
 bot.onText(generateRegExp('^\/nextbus'), (msg, match) => {
   bot.sendMessage(msg.chat.id, `${msg.from.first_name}-kun, you didn't tell me the bus number and bus stop name! \n Ya silly goose ${emojis.smilingColdSweatFace}`);
