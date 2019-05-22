@@ -250,25 +250,28 @@ bot.onText(/^\/translate .+$/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, "Translate to?", languageOptions);
 });
 
-
 bot.onText(/^\/remindmeto .+$/i, (msg, match) => {
   const reminder = match[0].slice(match[0].indexOf(' ')+1);
   const [task, time] = reminder.split(' @ ');
 
-  const [reminderHours, mins_am_pm] = time.split(':');
-  const [reminderMinutes, am_pm] = mins_am_pm.split(' ');
+  if(/\d?\d:\d\d (AM|PM)/i.test(time)) {
+    const [reminderHours, mins_am_pm] = time.split(':');
+    const [reminderMinutes, am_pm] = mins_am_pm.split(' '); 
 
-  if(/\d?\d:\d\d (AM|PM)/i.test(time) && reminderHours > 0 && reminderHours < 13 && reminderMinutes >= 0 && reminderMinutes < 60) {
-    const findSecondsToElapse = require('./command-methods/find-seconds-to-elapse');
-    bot.sendMessage(msg.chat.id, `Wakatta @${msg.from.username}, I will remind you to ${task} at ${time}. \nShinpaishinaide! ${emojis.thumbsUp}`);
-
-    let timeUntilReminder = findSecondsToElapse(reminderHours, reminderMinutes, am_pm) * 1000;
-    console.log(`reminding in ${timeUntilReminder} milliseconds!`);
-    setTimeout(() => {
-      bot.sendMessage(msg.chat.id, `@${msg.from.username}-senpai, it is time to ${task}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
-    }, timeUntilReminder);
+    if(reminderHours > 0 && reminderHours < 13 && reminderMinutes >= 0 && reminderMinutes < 60) {
+      const findSecondsToElapse = require('./command-methods/find-seconds-to-elapse');
+      bot.sendMessage(msg.chat.id, `Wakatta @${msg.from.username}, I will remind you to ${task} at ${time}. \nShinpaishinaide! ${emojis.thumbsUp}`);
+  
+      let timeUntilReminder = findSecondsToElapse(reminderHours, reminderMinutes, am_pm) * 1000;
+      console.log(`reminding in ${timeUntilReminder} milliseconds!`);
+      setTimeout(() => {
+        bot.sendMessage(msg.chat.id, `@${msg.from.username}-senpai, it is time to ${task}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
+      }, timeUntilReminder);
+    } else {
+      bot.sendMessage(msg.chat.id, `Senpai, make sure to enter a valid time ya bakayero! ${emojis.smilingColdSweatFace} \n(AM/PM format) pls`);
+    }
   } else {
-    bot.sendMessage(msg.chat.id, 'Make sure your time is in the right format bruh!');
+    bot.sendMessage(msg.chat.id, `Senpai, you didn't specify am/pm or you're missing a colon ya konoyero! ${emojis.smilingColdSweatFace}`);
   }
 });
 
