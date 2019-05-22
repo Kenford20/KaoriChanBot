@@ -251,24 +251,28 @@ bot.onText(/^\/translate .+$/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, "Translate to?", languageOptions);
 });
 
-bot.onText(/^\/remindmetoo .+$/i, (msg, match) => {
+bot.onText(/^\/remindmeto .+$/i, (msg, match) => {
   const reminder = match[0].slice(match[0].indexOf(' ')+1);
   const [task, time] = reminder.split(' @ ');
 
-  const [reminderHours, mins_am_pm] = time.split(':');
-  const [reminderMinutes, am_pm] = mins_am_pm.split(' ');
+  if(/\d?\d:\d\d (AM|PM)/i.test(time)) {
+    const [reminderHours, mins_am_pm] = time.split(':');
+    const [reminderMinutes, am_pm] = mins_am_pm.split(' '); 
 
-  if(/\d?\d:\d\d (AM|PM)/i.test(time) && reminderHours > 0 && reminderHours < 13 && reminderMinutes >= 0 && reminderMinutes < 60) {
-    const findSecondsToElapse = require('./command-methods/find-seconds-to-elapse');
-    bot.sendMessage(msg.chat.id, `Wakatta @${msg.from.username}, I will remind you to ${task} at ${time}. \nShinpaishinaide! ${emojis.thumbsUp}`);
-
-    let timeUntilReminder = findSecondsToElapse(reminderHours, reminderMinutes, am_pm) * 1000;
-    console.log(`reminding in ${timeUntilReminder} milliseconds!`);
-    setTimeout(() => {
-      bot.sendMessage(msg.chat.id, `@${msg.from.username}-senpai, it is time to ${task}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
-    }, timeUntilReminder);
+    if(reminderHours > 0 && reminderHours < 13 && reminderMinutes >= 0 && reminderMinutes < 60) {
+      const findSecondsToElapse = require('./command-methods/find-seconds-to-elapse');
+      bot.sendMessage(msg.chat.id, `Wakatta @${msg.from.username}, I will remind you to ${task} at ${time}. \nShinpaishinaide! ${emojis.thumbsUp}`);
+  
+      let timeUntilReminder = findSecondsToElapse(reminderHours, reminderMinutes, am_pm) * 1000;
+      console.log(`reminding in ${timeUntilReminder} milliseconds!`);
+      setTimeout(() => {
+        bot.sendMessage(msg.chat.id, `@${msg.from.username}-senpai, it is time to ${task}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
+      }, timeUntilReminder);
+    } else {
+      bot.sendMessage(msg.chat.id, `Senpai, make sure to enter a valid time ya bakayero! ${emojis.smilingColdSweatFace} \n(AM/PM format) pls`);
+    }
   } else {
-    bot.sendMessage(msg.chat.id, 'Make sure your time is in the right format bruh!');
+    bot.sendMessage(msg.chat.id, `Senpai, you didn't specify am/pm or you're missing a colon ya konoyero! ${emojis.smilingColdSweatFace}`);
   }
 });
 
@@ -326,6 +330,52 @@ bot.onText(/^\/nextbus .+$/i, async(msg, match) => {
     bot.sendMessage(msg.chat.id, "What direction senpai?", directionOptions);
   } catch(err) {
     console.log(err);
+  }
+});
+
+bot.onText(generateRegExp('^\/nexttrain'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, `${msg.from.first_name}-kun, you didn't tell me the bus number and bus stop name! \n Ya silly goose ${emojis.smilingColdSweatFace}`);
+});
+
+// const trainData = require('./cta-data-files/l-stop-trains');
+// console.log(trainData.find(train => train.station_name === '35th/Archer').stop_id);
+const trainColorCodes = require('./cta-data-files/train_color_codes');
+bot.onText(/^\/nexttrain .+$/i, async(msg, match) => {
+  const trainDataInput = match[0].slice(match[0].indexOf(' ')+1);
+  const color = trainDataInput.slice(0, trainDataInput.indexOf(' '));
+  const trainStation = trainDataInput.slice(trainDataInput.indexOf(' ')+1);
+  const fetchTrainStopID = require('./command-methods/fetch-train-stop-id');
+  const colorCode = trainColorCodes[color];
+
+  try {
+    const trainStopID = await fetchTrainStopID(trainStation);
+    console.log(trainStopID);
+
+    const CTA_getTrainTimes_API = `http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx?key=${process.env.CTA_TRAIN_TRACKER_API_KEY}&stpid=${trainStopID}&rt=${colorCode}&outputType=JSON`;
+    
+    try {
+      const response = await fetch(CTA_getTrainTimes_API, {
+        method: "GET",
+        header: {"Content-Type": "application/json"}
+      });
+      const data = await response.json();
+      const trainData = data.ctatt.eta;
+      console.log(trainData);
+      const trainData1 = 'logic to grab fastest train coming in one direction'; // ie towards loop probably a .find?
+      const trainData2 = 'logic to grab fastest train coming in other direction'; // ie towards midway
+
+      bot.sendMessage(msg.chat.id, `
+        ${emojis.train} Next ${trainData.rt} trains at ${trainStation} station... 
+        \n${trainData1.destNm}: arriving in ${trainData1.prdt - trainData1.arrT} // prdt = prediction time (time of request basically)
+        \n${trainData2.destNm}: arriving in ${trainData2.prdt - trainData2.arrT} // arrT = predicted arrival time (format is in YYYY-MM-DD timezone? HH:MM:SS)
+      `);
+    } catch(err) {
+      console.log(err);
+      bot.sendMessage(msg.chat.id, `Failed to fetch train arrival data :c`);
+    }
+  } catch([errMessage, errLog]) {
+    console.log(errLog);
+    bot.sendMessage(msg.chat.id, errMessage);
   }
 });
 

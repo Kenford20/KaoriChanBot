@@ -1,8 +1,8 @@
 const fetch = require('node-fetch');
 
 module.exports = async function fetchBusDirections(route, chatId, bot) {
-    const CTA_getDirections_API = `http://www.ctabustracker.com/bustime/api/v2/getdirections?key=${process.env.CTA_BUS_TRACKER_API_KEY}&rt=${route}&format=json`;
-    const response = await fetch(CTA_getDirections_API, {
+    const CTA_getBusDirections_API = `http://www.ctabustracker.com/bustime/api/v2/getdirections?key=${process.env.CTA_BUS_TRACKER_API_KEY}&rt=${route}&format=json`;
+    const response = await fetch(CTA_getBusDirections_API, {
       method: "GET",
       header: {"Content-Type": "application/json"}
     });

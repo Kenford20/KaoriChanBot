@@ -36,7 +36,7 @@ async function fetchBusStopID(direction, route, stopNameInput) {
     } else {
       return data["bustime-response"].error[0];
     }
-  }
+}
   
   module.exports = async function CTA_busHandler(callbackQuery, bot) {
     const chatId = callbackQuery.message.chat.id;
