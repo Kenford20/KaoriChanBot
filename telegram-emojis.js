@@ -25,6 +25,7 @@ module.exports = emojis = {
     smiley: '\u{1F604}',
     blushSmiley: '\u{1F60A}',
     kissFaceHeart: '\u{1F618}',
+    pinkHearts: '\u{1F495}',
     peach: '\u{1F351}',
     winkyTongueFace: '\u{1F61C}',
     smilingColdSweatFace: '\u{1F605}',
@@ -52,6 +53,15 @@ module.exports = emojis = {
     vietnameseFlag: '\u{1F1FB}\u{1F1F3}',
     italianFlag: '\u{1F1EE}\u{1F1F9}',
     russianFlag: '\u{1F1F7}\u{1F1FA}',
+
+    redCircle: '\u{1F534}',
+    orangeCircle: '\u{1F7E0}',
+    yellowCircle: '\u{1F7E1}',
+    greenCircle: '\u{1F7E2}',
+    blueCircle: '\u{1F535}',
+    purpleCircle: '\u{1F7E3}',
+    brownCircle: '\u{1F7E4}',
+    pinkCherryBlossom: '\u{1F338}',
 
     defaultEmoji: '\u{1F300}'
 };

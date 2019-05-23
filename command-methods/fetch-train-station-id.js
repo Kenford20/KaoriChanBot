@@ -9,7 +9,6 @@ module.exports = async function fetchTrainStopID(stationName) {
       header: {"Content-Type": "application/json"}
     });
     const data = await response.json();
-    console.log(data);
 
     if(data.length !== 0) {
       return data[0].stop_id;

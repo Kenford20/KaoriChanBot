@@ -236,7 +236,7 @@ bot.onText(/^\/translate .+$/i, (msg, match) => {
   const languageOptions = {
     reply_markup: JSON.stringify({ 
       inline_keyboard: [
-        [{text:"English", callback_data:`en|English|${emojis.americanFlag}` + textInput}],
+        [{text:"English", callback_data:`en|English|${emojis.redSquare}` + textInput}],
         [{text:"Chinese Simplified", callback_data:`zh-CN|Chinese(Simp)|${emojis.chineseFlag}` + textInput}],
         [{text:"Chinese Traditional", callback_data:`zh-TW|Chinese(Trad)|${emojis.chineseFlag}` + textInput}],
         [{text:"Filipino", callback_data:`tl|Filipino|${emojis.filipinoFlag}` + textInput}],
@@ -246,7 +246,7 @@ bot.onText(/^\/translate .+$/i, (msg, match) => {
         [{text:"Japanese", callback_data:`ja|Japanese|${emojis.japaneseFlag}` + textInput}],
         [{text:"Korean", callback_data:`ko|Korean|${emojis.koreanFlag}` + textInput}],
         [{text:"Latin", callback_data:`la|Latin|${emojis.bolivianFlag}` + textInput}],
-        [{text:"Spanish", callback_data:`es|Spanish|${emojis.spanishFlag}` + textInput}]
+        [{text:"Spanish", callback_data:`es|Spanish|${emojis.spanishFlag}` + textInput}],
         [{text:"Vietnamese", callback_data:`vi|Vietnamese|${emojis.vietnameseFlag}` + textInput}],
         [{text:"Hawaiian", callback_data:`haw|Hawaiian|${emojis.americanFlag}` + textInput}],
         [{text:"Italian", callback_data:`it|Italian|${emojis.italianFlag}` + textInput}],
@@ -351,12 +351,23 @@ bot.onText(/^\/nexttrain .+$/i, async(msg, match) => {
   const fetchTrainStations = require('./command-methods/fetch-train-stations');
   const colorCode = trainColorCodes[color];
 
+  const trainColorEmojis = {
+    "red": emojis.redCircle,
+    "blue": emojis.blueCircle,
+    "brown": emojis.brownCircle,
+    "green": emojis.greenCircle,
+    "orange": emojis.orangeCircle,
+    "purple": emojis.purpleCircle,
+    "pink": emojis.pinkCherryBlossom,
+    "yellow": emojis.yellowCircle
+  }
+
   try {
     const trainStations = await fetchTrainStations(colorCode);
     //console.log(trainStations);
 
     const trainStopNames = trainStations.map(([stationName, stationID]) => {
-      return [{text:`${stationName}`, callback_data:`${color}|${stationName}|${stationID}`}];
+      return [{text:`${stationName}`, callback_data:`${color}|${stationName}|${stationID}|${trainColorEmojis[color]}`}];
     });
     //console.log(trainStopNames)
 

@@ -10,7 +10,6 @@ module.exports = async function fetchTrainStations(colorCode) {
       header: {"Content-Type": "application/json"}
     });
     const data = await response.json();
-    console.log(data);
     
     if(data.length !== 0 && !data.error) {
       // map to grab stopname/id, then filter them to be unique since they come in pairs (one for both directions)
@@ -26,10 +25,10 @@ module.exports = async function fetchTrainStations(colorCode) {
       for(let i = 0; i < uniqueStops.length; i++) {
         trainNameIDpairs.push([uniqueStops[i], uniqueIDs[i]]);
       }
-      return trainNameIDpairs;
+      return trainNameIDpairs.sort();
     } 
     else {
-      console.log(data.error);
+      console.log(data.message);
       return Promise.reject([
         `Enter a valid train station name, onegaishimasu~`, 
         `User failed to enter a valid train station name`
