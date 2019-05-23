@@ -334,46 +334,34 @@ bot.onText(/^\/nextbus .+$/i, async(msg, match) => {
 });
 
 bot.onText(generateRegExp('^\/nexttrain'), (msg, match) => {
-  bot.sendMessage(msg.chat.id, `${msg.from.first_name}-kun, you didn't tell me the bus number and bus stop name! \n Ya silly goose ${emojis.smilingColdSweatFace}`);
+  bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama, you didn't tell train line color, ya silly goose ${emojis.smilingColdSweatFace}`);
 });
 
 // const trainData = require('./cta-data-files/l-stop-trains');
 // console.log(trainData.find(train => train.station_name === '35th/Archer').stop_id);
 const trainColorCodes = require('./cta-data-files/train_color_codes');
 bot.onText(/^\/nexttrain .+$/i, async(msg, match) => {
-  const trainDataInput = match[0].slice(match[0].indexOf(' ')+1);
-  const color = trainDataInput.slice(0, trainDataInput.indexOf(' '));
-  const trainStation = trainDataInput.slice(trainDataInput.indexOf(' ')+1);
-  const fetchTrainStopID = require('./command-methods/fetch-train-stop-id');
+  const color = match[0].slice(match[0].indexOf(' ')+1);
+  const fetchTrainStations = require('./command-methods/fetch-train-stations');
   const colorCode = trainColorCodes[color];
 
   try {
-    const trainStopID = await fetchTrainStopID(trainStation);
-    console.log(trainStopID);
+    const trainStations = await fetchTrainStations(colorCode);
+    //console.log(trainStations);
 
-    const CTA_getTrainTimes_API = `http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx?key=${process.env.CTA_TRAIN_TRACKER_API_KEY}&stpid=${trainStopID}&rt=${colorCode}&outputType=JSON`;
-    
-    try {
-      const response = await fetch(CTA_getTrainTimes_API, {
-        method: "GET",
-        header: {"Content-Type": "application/json"}
-      });
-      const data = await response.json();
-      const trainData = data.ctatt.eta;
-      console.log(trainData);
-      const trainData1 = 'logic to grab fastest train coming in one direction'; // ie towards loop probably a .find?
-      const trainData2 = 'logic to grab fastest train coming in other direction'; // ie towards midway
+    const trainStopNames = trainStations.map(([stationName, stationID]) => {
+      return [{text:`${stationName}`, callback_data:`${color}|${stationName}|${stationID}`}];
+    });
+    //console.log(trainStopNames)
 
-      bot.sendMessage(msg.chat.id, `
-        ${emojis.train} Next ${trainData.rt} trains at ${trainStation} station... 
-        \n${trainData1.destNm}: arriving in ${trainData1.prdt - trainData1.arrT} // prdt = prediction time (time of request basically)
-        \n${trainData2.destNm}: arriving in ${trainData2.prdt - trainData2.arrT} // arrT = predicted arrival time (format is in YYYY-MM-DD timezone? HH:MM:SS)
-      `);
-    } catch(err) {
-      console.log(err);
-      bot.sendMessage(msg.chat.id, `Failed to fetch train arrival data :c`);
-    }
-  } catch([errMessage, errLog]) {
+    const options = {
+      reply_markup: JSON.stringify({ 
+        inline_keyboard: trainStopNames
+      })
+    };
+    bot.sendMessage(msg.chat.id, "Select a train station!", options);
+  } 
+  catch([errMessage, errLog]) {
     console.log(errLog);
     bot.sendMessage(msg.chat.id, errMessage);
   }
@@ -391,6 +379,9 @@ bot.on('callback_query', async(callbackQuery) => {
   } else if(callbackQuery.message.text === "What direction senpai?") {
     const CTA_busHandler = require('./callback-query-handlers/cta-bus-handler');
     CTA_busHandler(callbackQuery, bot);
+  } else if(callbackQuery.message.text === "Select a train station!") {
+    const CTA_trainHandler = require('./callback-query-handlers/cta-train-handler');
+    CTA_trainHandler(callbackQuery, bot);
   } else {
     console.log('callback query handler error');
   }

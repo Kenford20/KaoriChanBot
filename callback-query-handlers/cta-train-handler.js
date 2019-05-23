@@ -1,0 +1,57 @@
+const fetch = require('node-fetch');
+const emojis = require('../telegram-emojis');
+const officialTrainColorCodes = require('../cta-data-files/official_train_color_codes');
+
+function calculateTrainArrivalTime(trainData) {
+    const currentTime = trainData[0].prdt.split('T')[1]; // prdt = predictionTime or time of request (format: YYYY-MM-DD T HH:MM:SS)
+    const predictedArrivalTime = trainData[0].arrT.split('T')[1]; // arrT = predicted arrivalTime (format: YYYY-MM-DD T HH:MM:SS)
+
+    // subtract the minutes between the arrival time and the current time
+    let minutesUntilArrival = predictedArrivalTime.slice(3, 5) - currentTime.slice(3, 5);
+
+    // time borrow
+    if(minutesUntilArrival < 0) {
+        minutesUntilArrival += 60;
+    }
+
+    return minutesUntilArrival;
+}
+
+module.exports = async function CTA_busHandler(callbackQuery, bot) {
+    const chatId = callbackQuery.message.chat.id;
+    const [color, stationName, stationID] = callbackQuery.data.split('|');
+    const colorCode = officialTrainColorCodes[color];
+    const CTA_getTrainTimes_API = `http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx?key=${process.env.CTA_TRAIN_TRACKER_API_KEY}&mapid=${stationID}&rt=${colorCode}&outputType=JSON`;
+
+    try {
+        const response = await fetch(CTA_getTrainTimes_API, {
+          method: "GET",
+          header: {"Content-Type": "application/json"}
+        });
+        const data = await response.json();
+        const trainArrivals = data.ctatt.eta;
+
+        if(data.ctatt.eta) {
+            // trDr = train direction, 1 = one direction, 5 = opposite
+            const trainData1 = trainArrivals.filter(arrival => arrival.trDr == 1);
+            const minutesUntilArrival1 = calculateTrainArrivalTime(trainData1);
+            
+            const trainData2 = trainArrivals.filter(arrival => arrival.trDr == 5);
+            const minutesUntilArrival2 = calculateTrainArrivalTime(trainData2);
+
+            const colorName = color[0].toUpperCase() + color.slice(1).toLowerCase(); // camel case the color just for output purposes
+
+            bot.sendMessage(chatId, `
+              ${emojis.train} Next ${colorName} Line trains at ${stationName} station... 
+              \n${trainData1[0].destNm.toUpperCase()}: arriving in ${minutesUntilArrival1} minutes!
+              \n${trainData2[0].destNm.toUpperCase()}: arriving in ${minutesUntilArrival2} minutes!
+            `);
+        } else {
+            console.log(data.ctatt.errCd);
+            console.log(data.ctatt.errNm);
+        }
+      } catch(err) {
+        console.log(err);
+        bot.sendMessage(chatId, `Failed to fetch train arrival data :c`);
+      }
+}
