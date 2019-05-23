@@ -1,12 +1,14 @@
 module.exports = {
-    "red": "Red",
-    "blue": "Blue",
-    "brown": "Brn",
-    "green": "G",
-    "orange": "Org",
+    // codes below are for city of chicago SODA API docs (CTA - System Information - List of 'L' Stops)
+    "red": "red",
+    "blue": "blue",
+    "brown": "brn",
+    "green": "g",
+    "orange": "o",
     "purple": "P",
-    "pink": "Pink",
-    "yellow": "Y"
+    "purpleX": "pexp",
+    "pink": "pnk",
+    "yellow": "y"
 }
 
 // Direction Codes:

@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 
 module.exports = async function fetchTrainStopID(stationName) {
   const CTA_getTrainStops_API = `https://data.cityofchicago.org/resource/8pix-ypme.json?station_name=${stationName}`;
-  
+
   try { 
     const response = await fetch(CTA_getTrainStops_API, {
       method: "GET",
