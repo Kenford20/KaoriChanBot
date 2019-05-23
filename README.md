@@ -14,8 +14,9 @@ Kaori-chan is a chat bot made for Telegram, which is a popular, cloud based inst
 Kaori-chan utilizes several APIs to help her retrieve the necessary data for her users. 
 Big thanks to the following:
 
-* [Openweathermap.org](https://openweathermap.org/api) 
+* [Openweathermap API](https://openweathermap.org/api) 
 * [CTA Bus Tracker API](https://www.transitchicago.com/developers/bustracker/)
+* [CTA Train Tracker API](https://www.transitchicago.com/developers/ttdocs/)
 * [Google Cloud Translation API](https://cloud.google.com/translate/docs/apis)
 * [Spotify API](https://developer.spotify.com/documentation/web-api/)
 
@@ -28,7 +29,7 @@ Big thanks to the following:
 ![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/taskete.PNG)
 
 * roll a dice for you or give you a random number up to a given limit   
-`roll` or `/roll (number)`  
+`/roll` or `/roll (number)`  
 ![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/roll.PNG)
 
 * flip a coin:  
@@ -65,6 +66,11 @@ Big thanks to the following:
 `/nextbus (bus #) (bus stop name)`  
 ![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/nextbus.PNG)  
 ![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/nextbus2.PNG)
+
+* tell you when the next CTA trains are coming at a station (if you live in Chicago of course!):  
+`/nexttrain (CTA train color)`  
+![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/nexttrain.PNG)  
+![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/nexttrain2.PNG)
   
 * and some weeb stuff ;)
 
@@ -87,7 +93,7 @@ Download Telegram [here](https://desktop.telegram.org/ "Telegram Download")!
 Telegram gives developers a very easy and user friendly way to create your own chat bot. If you're an avid Telegram user or if you're interested at all in creating one yourself, [visit here](https://core.telegram.org/bots "Telegram Bots Page") to get started! You may reference the API [here](https://core.telegram.org/bots/api "Telegram Bots API").
 
 ## *Add Kaori-chan*
-Bot username: `@qqm-weeb-bot`
+Bot username: `@qqm-weeb-bot`  
 If you'd like you try this bot out yourself, install the Telegram application on your desktop or download it from the app store on mobile. To add a bot to your group chat, click add members and search for the bot's username in the input box. Once Kaori-chan is added to your group, you can type /help to get a list of commands that she offers. You may also just directly message her to start a conversation!
 
 ## *License*
