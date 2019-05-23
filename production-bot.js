@@ -49,6 +49,7 @@ bot.onText(/(^\/taskete(@qqm_weeb_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
 /freshmix = gives you a fresh scboiz mix
 /remindmeto (task) = kaori-chan will remind you to do something at a time you specify
 /nextbus (bus number) (bus stop name) = get the arrival time of next bus you specified. Numbered streets and named street intersections are separated with a / ex: 35th/Archer
+/nexttrain (CTA train color) = get the arrival time of the next trains at a station
 and some weeb stuff
   `);
 });
@@ -233,17 +234,21 @@ bot.onText(/^\/translate .+$/i, (msg, match) => {
   const languageOptions = {
     reply_markup: JSON.stringify({ 
       inline_keyboard: [
-        [{text:"English", callback_data:'en|English' + textInput}],
-        [{text:"Chinese Simplified", callback_data:'zh-CN|Chinese(Simp)' + textInput}],
-        [{text:"Chinese Traditional", callback_data:'zh-TW|Chinese(Trad)' + textInput}],
-        [{text:"Filipino", callback_data:'tl|Filipino' + textInput}],
-        [{text:"French", callback_data:'fr|French' + textInput}],
-        [{text:"German", callback_data:'de|German' + textInput}],
-        [{text:"Greek", callback_data:'el|Greek' + textInput}],
-        [{text:"Japanese", callback_data:'ja|Japanese' + textInput}],
-        [{text:"Korean", callback_data:'ko|Korean' + textInput}],
-        [{text:"Latin", callback_data:'la|Latin' + textInput}],
-        [{text:"Spanish", callback_data:'es|Spanish' + textInput}]
+        [{text:"English", callback_data:`en|English|${emojis.americanFlag}` + textInput}],
+        [{text:"Chinese Simplified", callback_data:`zh-CN|Chinese(Simp)|${emojis.chineseFlag}` + textInput}],
+        [{text:"Chinese Traditional", callback_data:`zh-TW|Chinese(Trad)|${emojis.chineseFlag}` + textInput}],
+        [{text:"Filipino", callback_data:`tl|Filipino|${emojis.filipinoFlag}` + textInput}],
+        [{text:"French", callback_data:`fr|French|${emojis.frenchFlag}` + textInput}],
+        [{text:"German", callback_data:`de|German|${emojis.germanFlag}` + textInput}],
+        [{text:"Greek", callback_data:`el|Greek|${emojis.greekFlag}` + textInput}],
+        [{text:"Japanese", callback_data:`ja|Japanese|${emojis.japaneseFlag}` + textInput}],
+        [{text:"Korean", callback_data:`ko|Korean|${emojis.koreanFlag}` + textInput}],
+        [{text:"Latin", callback_data:`la|Latin|${emojis.bolivianFlag}` + textInput}],
+        [{text:"Spanish", callback_data:`es|Spanish|${emojis.spanishFlag}` + textInput}]
+        [{text:"Vietnamese", callback_data:`vi|Vietnamese|${emojis.vietnameseFlag}` + textInput}],
+        [{text:"Hawaiian", callback_data:`haw|Hawaiian|${emojis.americanFlag}` + textInput}],
+        [{text:"Italian", callback_data:`it|Italian|${emojis.italianFlag}` + textInput}],
+        [{text:"Russian", callback_data:`ru|Russian|${emojis.russianFlag}` + textInput}],
       ]
     })
   };

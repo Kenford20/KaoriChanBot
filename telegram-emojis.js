@@ -11,8 +11,10 @@ module.exports = emojis = {
     sunCloud: '\u{026C5}',        // # Code: 801/802 partly cloudly (11-50%)
     cloud: '\u{02601}',           // # Code: 803/804 cloudy (50-100%)
     fire: '\u{1F525}',            // # Code: 904
+
     arrowUp: '\u{2B06}',
     arrowDown: '\u{2B07}',
+
     sadFace: '\u{1F61E}',
     sadFace2: '\u{1F614}',
     cryFace: '\u{1F62D}',
@@ -30,9 +32,26 @@ module.exports = emojis = {
     monkeyBlockingEyes: '\u{1F648}',
     blueScreamingFace: '\u{1F631}',
     thumbsUp: '\u{1F44D}',
+
     train: '\u{1F684}',
     bus: '\u{1F68C}',
     taxi: '\u{1F696}',
     car: '\u{1F698}',
+
+    englishFlag: '\u{1F1FA}\u{1F1F8}',
+    chineseFlag: '\u{1F1E8}\u{1F1F3}',
+    chineseFlag: '\u{1F1E8}\u{1F1F3}',
+    filipinoFlag: '\u{1F1F5}\u{1F1ED}',
+    frenchFlag: '\u{1F1EB}\u{1F1F7}',
+    germanFlag: '\u{1F1E9}\u{1F1EA}',
+    greekFlag: '\u{1F1EC}\u{1F1F7}',
+    japaneseFlag: '\u{1F1EF}\u{1F1F5}',
+    koreanFlag: '\u{1F1F0}\u{1F1F7}',
+    bolivianFlag: '\u{1F1E7}\u{1F1F4}',
+    spanishFlag: '\u{1F1EA}\u{1F1F8}',
+    vietnameseFlag: '\u{1F1FB}\u{1F1F3}',
+    italianFlag: '\u{1F1EE}\u{1F1F9}',
+    russianFlag: '\u{1F1F7}\u{1F1FA}',
+
     defaultEmoji: '\u{1F300}'
 };
