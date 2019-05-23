@@ -48,7 +48,7 @@ bot.onText(/(^\/taskete(@qqm_development_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) =
 /translate (text) = translates your text for you into a target language
 /freshmix = gives you a fresh scboiz mix
 /remindmeto (task) = kaori-chan will remind you to do something at a time you specify
-/nextbus (bus number) (bus stop name) = get the arrival time of next bus you specified \n   Numbered streets and named street intersections are separated with a / ex: 35th/Archer
+/nextbus (bus number) (bus stop name) = get the arrival time of next bus you specified. Numbered streets and named street intersections are separated with a / ex: 35th/Archer
 and some weeb stuff
   `);
 });
@@ -213,7 +213,7 @@ bot.onText(/^\/spotify .+$/i, (msg, match) => {
   const queryOptions = {
     reply_markup: JSON.stringify({ 
       inline_keyboard: [
-        [{text:"Track", callback_data:'Track ' + songQuery}],
+        [{text:"Track", callback_data:'Track ' + songQuery}], // wrap options in brackets if you want them to be on their own line, exclude if you want options to be inline (side by side)
         [{text:"Album", callback_data:'Album ' + songQuery}],
         [{text:"Artist", callback_data:'Artist ' + songQuery}],
         [{text:"Playlist", callback_data:'Playlist ' + songQuery}]

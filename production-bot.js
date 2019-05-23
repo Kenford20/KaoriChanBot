@@ -48,7 +48,7 @@ bot.onText(/(^\/taskete(@qqm_weeb_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
 /translate (text) = translates your text for you into a target language
 /freshmix = gives you a fresh scboiz mix
 /remindmeto (task) = kaori-chan will remind you to do something at a time you specify
-/nextbus (bus number) (bus stop name) = get the arrival time of next bus you specified \n   Numbered streets and named street intersections are separated with a / ex: 35th/Archer
+/nextbus (bus number) (bus stop name) = get the arrival time of next bus you specified. Numbered streets and named street intersections are separated with a / ex: 35th/Archer
 and some weeb stuff
   `);
 });
