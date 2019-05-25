@@ -30,8 +30,8 @@ module.exports = async function fetchTrainStations(colorCode) {
     else {
       console.log(data.message);
       return Promise.reject([
-        `Enter a valid train station name, onegaishimasu~`, 
-        `User failed to enter a valid train station name`
+        `Enter a valid train line color, onegaishimasu~`, 
+        `User failed to enter a valid train line color`
       ]);
     }
   } catch {

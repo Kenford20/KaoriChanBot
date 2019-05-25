@@ -331,14 +331,11 @@ bot.onText(/^\/nexttrain .+$/i, async(msg, match) => {
     "yellow": emojis.yellowCircle
   }
 
-  try {
-    const trainStations = await fetchTrainStations(colorCode);
-    //console.log(trainStations);
-
+  await fetchTrainStations(colorCode)
+  .then(trainStations => {
     const trainStopNames = trainStations.map(([stationName, stationID]) => {
       return [{text:`${stationName}`, callback_data:`${color}|${stationName}|${stationID}|${trainColorEmojis[color]}`}];
     });
-    //console.log(trainStopNames)
 
     const options = {
       reply_markup: JSON.stringify({ 
@@ -346,11 +343,11 @@ bot.onText(/^\/nexttrain .+$/i, async(msg, match) => {
       })
     };
     bot.sendMessage(msg.chat.id, "Select a train station!", options);
-  } 
-  catch([errMessage, errLog]) {
+  })
+  .catch(([errMessage, errLog]) => {
     console.log(errLog);
     bot.sendMessage(msg.chat.id, errMessage);
-  }
+  });
 });
 
 bot.on('callback_query', async(callbackQuery) => {

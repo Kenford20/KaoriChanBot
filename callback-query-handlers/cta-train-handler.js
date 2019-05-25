@@ -69,8 +69,8 @@ module.exports = async function CTA_busHandler(callbackQuery, bot) {
 
             bot.sendMessage(chatId, errorMessage);
         }
-      } catch(err) {
-        console.log(err);
-        bot.sendMessage(chatId, `Failed to fetch train arrival data :c`);
-      }
+    } catch(err) {
+      console.log(err);
+      bot.sendMessage(chatId, `Failed to fetch train arrival data :c`);
+    }
 }
