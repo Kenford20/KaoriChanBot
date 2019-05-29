@@ -39,7 +39,7 @@ module.exports = emojis = {
     taxi: '\u{1F696}',
     car: '\u{1F698}',
 
-    englishFlag: '\u{1F1FA}\u{1F1F8}',
+    americanFlag: '\u{1F1FA}\u{1F1F8}',
     chineseFlag: '\u{1F1E8}\u{1F1F3}',
     chineseFlag: '\u{1F1E8}\u{1F1F3}',
     filipinoFlag: '\u{1F1F5}\u{1F1ED}',

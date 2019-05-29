@@ -234,7 +234,7 @@ bot.onText(/^\/translate .+$/i, (msg, match) => {
   const languageOptions = {
     reply_markup: JSON.stringify({ 
       inline_keyboard: [
-        [{text:"English", callback_data:`en|English|${emojis.redSquare}` + textInput}],
+        [{text:"English", callback_data:`en|English|${emojis.americanFlag}` + textInput}],
         [{text:"Chinese Simplified", callback_data:`zh-CN|Chinese(Simp)|${emojis.chineseFlag}` + textInput}],
         [{text:"Chinese Traditional", callback_data:`zh-TW|Chinese(Trad)|${emojis.chineseFlag}` + textInput}],
         [{text:"Filipino", callback_data:`tl|Filipino|${emojis.filipinoFlag}` + textInput}],
