@@ -257,7 +257,16 @@ bot.onText(/^\/translate .+$/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, "Translate to?", languageOptions);
 });
 
-bot.onText(/^\/remindmeto .+$/i, (msg, match) => {
+bot.onText(generateRegExp('^\/remindmeto'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, `Nani is your reminder, ${msg.from.first_name}-kun? ${emojis.smilingColdSweatFace}`);
+});
+
+bot.onText(generateRegExp('^\/remindmeena'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, `Nani is your reminder, ${msg.from.first_name}-kun? ${emojis.smilingColdSweatFace}`);
+});
+
+bot.onText(/(^\/remindmeto .+$)|(^\/remindmeena .+$)/i, (msg, match) => {
+  const command = match[0].slice(0, match[0].indexOf(' '));
   const reminder = match[0].slice(match[0].indexOf(' ')+1);
   const [task, time] = reminder.split(' @ ');
 
@@ -267,12 +276,17 @@ bot.onText(/^\/remindmeto .+$/i, (msg, match) => {
 
     if(reminderHours > 0 && reminderHours < 13 && reminderMinutes >= 0 && reminderMinutes < 60) {
       const findSecondsToElapse = require('./command-methods/find-seconds-to-elapse');
-      bot.sendMessage(msg.chat.id, `Wakatta @${msg.from.username}, I will remind you to ${task} at ${time}. \nShinpaishinaide! ${emojis.thumbsUp}`);
+      const remindee = command === '/remindmeto' ? 'you' : 'meena';
+      bot.sendMessage(msg.chat.id, `Wakatta @${msg.from.username}, I will remind ${remindee} to ${task} at ${time}. \nShinpaishinaide! ${emojis.thumbsUp}`);
   
       let timeUntilReminder = findSecondsToElapse(reminderHours, reminderMinutes, am_pm) * 1000;
       console.log(`reminding in ${timeUntilReminder} milliseconds!`);
       setTimeout(() => {
-        bot.sendMessage(msg.chat.id, `@${msg.from.username}-senpai, it is time to ${task}!! \nHaiyaku fam ${emojis.blueScreamingFace}`);
+        bot.sendMessage(msg.chat.id, `
+          \n${remindee === 'you' ? `@${msg.from.username}-senpai` : 'Meena'}, it is time to ${task}!! 
+          \nHaiyaku ${remindee === 'you' ? 'fam' : 'boiZ'} ${emojis.blueScreamingFace}
+          ${remindee === 'meena' ? `\n${process.env.TELEGRAM_GROUP_USERS}` : ''}
+        `);
       }, timeUntilReminder);
     } else {
       bot.sendMessage(msg.chat.id, `Senpai, make sure to enter a valid time ya bakayero! ${emojis.smilingColdSweatFace} \n(AM/PM format) pls`);
