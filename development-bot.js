@@ -200,7 +200,13 @@ bot.onText(/\b(fags?|faggot|asshole|fuck|fucker|bitch|shit|prick|cunt|slut)\b/i,
 });
 
 bot.onText(generateRegExp('^\/freshmix'), (msg, match) => {
-  const mixes = ['https://soundcloud.com/wayneechu/02-neptune-melodic-future-bass-mix-1/s-XAHJb', 'https://soundcloud.com/wayneechu/01-jupiter-feels-trap-mix'];
+  const mixes = [
+    'https://soundcloud.com/wayneechu/02-neptune-melodic-future-bass-mix-1/s-XAHJb', 
+    'https://soundcloud.com/wayneechu/01-jupiter-feels-trap-mix',
+    'https://soundcloud.com/wayneechu/fall-in-smoke-master',
+    'https://soundcloud.com/wayneechu/seven-lions-sojourn-worlds-apart-wayne-edit'
+  ];
+  
   bot.sendMessage(msg.chat.id, mixes[Math.floor(Math.random()*(mixes.length))]);
 });
 
