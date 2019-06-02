@@ -29,53 +29,61 @@ Big thanks to the following:
 `/taskete`  
 ![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/taskete.PNG)
 
+* tag everyone in the group  
+`/meena`  
+![tag everyone command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/meena.PNG)
+
 * roll a dice for you or give you a random number up to a given limit   
 `/roll` or `/roll (number)`  
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/roll.PNG)
+![roll dice command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/roll.PNG)
 
 * flip a coin:  
 `/flip`  
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/flip.PNG)
+![flip coin command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/flip.PNG)
   
 * do math:  
 `/calc (mathematical expression)`  
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/calc.PNG)
+![math calculation command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/calc.PNG)
   
 * convert units:  
 `/convert (unit) to (unit)`  
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/convert.PNG)
+![unit conversion command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/convert.PNG)
   
 * give you the weather in a city:  
 `/weather (city)`  
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/weather.PNG)
+![weather command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/weather.PNG)
   
 * give you songs, albums, playlists, and artists links from Spotify:  
 `/spotify (search query)`  
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/spotify.PNG)  
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/spotify2.PNG)
+![spotify command image of query](https://github.com/Kenford20/my-telegram-bot/blob/master/images/spotify.PNG)  
+![spotify command image of response](https://github.com/Kenford20/my-telegram-bot/blob/master/images/spotify2.PNG)
   
 * translate text to another language:  
 `/translate`  
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/translate.PNG)  
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/translate2.PNG)
+![translate command image of query](https://github.com/Kenford20/my-telegram-bot/blob/master/images/translate.PNG)  
+![translate command image of response](https://github.com/Kenford20/my-telegram-bot/blob/master/images/translate2.PNG)
 
 * remind you to do something later at a time you specify:  
-`/remindmeto`  
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/remindmeto.PNG)
+`/remindmeto (reminder) @ (hh:mm am/pm)`  
+![reminder command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/remindmeto.PNG)
+
+* remind everyone in the group to do something later at a time you specify:  
+`/remindmeena (reminder) @ (hh:mm am/pm)`  
+![remind everyone command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/remindmeena.PNG)
   
 * tell you when the next CTA bus is coming (if you live in Chicago of course!):  
 `/nextbus (bus #) (bus stop name)`  
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/nextbus.PNG)  
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/nextbus2.PNG)
+![bus command image of query](https://github.com/Kenford20/my-telegram-bot/blob/master/images/nextbus.PNG)  
+![bus command image of response](https://github.com/Kenford20/my-telegram-bot/blob/master/images/nextbus2.PNG)
 
 * tell you when the next CTA trains are coming at a station (if you live in Chicago of course!):  
 `/nexttrain (CTA train color)`  
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/nexttrain.PNG)  
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/nexttrain2.PNG)
+![train command image of query](https://github.com/Kenford20/my-telegram-bot/blob/master/images/nexttrain.PNG)  
+![train command image of response](https://github.com/Kenford20/my-telegram-bot/blob/master/images/nexttrain2.PNG)
 
-* convert a money amount from one currency to another (use 3 letter currency codes)
-`/convert (amount) (base currency) to (target currency)`
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/exchange.PNG)
+* convert a money amount from one currency to another (use 3 letter currency codes)  
+`/exchange (amount) (base currency) to (target currency)`  
+![currency exchange command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/exchange.PNG)
   
 * and some weeb stuff ;)
 
@@ -102,4 +110,4 @@ Bot username: `@qqm-weeb-bot`
 If you'd like you try this bot out yourself, install the Telegram application on your desktop or download it from the app store on mobile. To add a bot to your group chat, click add members and search for the bot's username in the input box. Once Kaori-chan is added to your group, you can type /help to get a list of commands that she offers. You may also just directly message her to start a conversation!
 
 ## *License*
-MIT © [Kenny Zhou](https://github.com/kenford20)
+MIT © [Kenny Zhou](https://github.com/Kenford20/my-telegram-bot/blob/master/LICENSE.md)
