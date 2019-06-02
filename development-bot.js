@@ -402,6 +402,30 @@ bot.onText(/^\/nexttrain .+$/i, async(msg, match) => {
   });
 });
 
+bot.onText(generateRegExp('^\/exchange'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, `${msg.from.first_name}-san, you need to tell me the currencies to exchange, kono baaaaa-ka ${emojis.smilingColdSweatFace}`);
+});
+
+// /exchange 25 USD to CAD
+bot.onText(/^\/exchange .+$/i, async(msg, match) => {
+  let [amount, baseCurrency, to, targetCurrency] = match[0].slice(match[0].indexOf(' ')+1).split(' ');
+  baseCurrency = baseCurrency.toUpperCase();
+  targetCurrency = targetCurrency.toUpperCase()
+  const currencyAPI = `https://api.exchangeratesapi.io/latest?base=${baseCurrency}&symbols=${targetCurrency}`;
+
+  const response = await fetch(currencyAPI, {
+    method: 'GET',
+    header: {"Content-Type": "application/json"}
+  })
+  const data = await response.json();
+  console.log(data);
+  bot.sendMessage(msg.chat.id, `
+    As of ${data.date}, 
+    \nThe exchange rate from ${baseCurrency} to ${targetCurrency} is ${data.rates[targetCurrency]}
+    \n${amount} ${baseCurrency} = ${(amount * data.rates[targetCurrency]).toFixed(2)} ${targetCurrency}
+  `);
+});
+
 bot.on('callback_query', async(callbackQuery) => {
   bot.deleteMessage(callbackQuery.message.chat.id, callbackQuery.message.message_id);
 
