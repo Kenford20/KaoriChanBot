@@ -51,6 +51,7 @@ bot.onText(/(^\/taskete(@qqm_development_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) =
 /remindmeena (task) = kaori-chan will remind everyone in the group to do something at a time you specify
 /nextbus (bus number) (bus stop name) = get the arrival time of next bus you specified. Numbered streets and named street intersections are separated with a / ex: 35th/Archer
 /nexttrain (CTA train color) = get the arrival time of the next trains at a station
+/exchange (amount) (currency) to (currency) = convert a money amount from one currency to another (use 3 letter currency codes)
 and some weeb stuff
   `);
 });

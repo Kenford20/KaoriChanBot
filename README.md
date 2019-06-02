@@ -19,6 +19,7 @@ Big thanks to the following:
 * [CTA Train Tracker API](https://www.transitchicago.com/developers/ttdocs/)
 * [Google Cloud Translation API](https://cloud.google.com/translate/docs/apis)
 * [Spotify API](https://developer.spotify.com/documentation/web-api/)
+* [Currency Exchange API](https://exchangeratesapi.io/)
 
 ## *What can Kaori-chan do?*
 
@@ -71,6 +72,10 @@ Big thanks to the following:
 `/nexttrain (CTA train color)`  
 ![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/nexttrain.PNG)  
 ![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/nexttrain2.PNG)
+
+* convert a money amount from one currency to another (use 3 letter currency codes)
+`/convert (amount) (base currency) to (target currency)`
+![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/exchange.PNG)
   
 * and some weeb stuff ;)
 
