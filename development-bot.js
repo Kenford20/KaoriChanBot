@@ -112,32 +112,63 @@ bot.onText(/^\/weather .+$/i, async(msg, match) => {
     });
     const data = await response.json();
     console.log(data)
+    const getWeatherEmoji = require('./command-methods/determine-weather-emoji');
     const weatherCode = data.weather[0].id;
     const temperatureEmoji = data.main.temp > 50 ? emojis.fire : emojis.snowman;
-    let weatherEmoji;
-
-    // weather codes at: https://openweathermap.org/weather-conditions
-    switch(true) {
-      case (weatherCode >= 200 && weatherCode <= 232): weatherEmoji = emojis.thunderstorm; break;
-      case (weatherCode >= 300 && weatherCode <= 321): weatherEmoji = emojis.droplet; break;
-      case (weatherCode >= 500 && weatherCode <= 531): weatherEmoji = emojis.rain; break;
-      case (weatherCode >= 600 && weatherCode <= 622): weatherEmoji = emojis.snowflake; break;
-      case (weatherCode >= 700 && weatherCode <= 781): weatherEmoji = emojis.atmosphere; break;
-      case weatherCode === 800: weatherEmoji = emojis.sun; break;
-      case (weatherCode === 801 || weatherCode === 802): weatherEmoji = emojis.sunCloud; break;
-      case (weatherCode === 803 || weatherCode === 804): weatherEmoji = emojis.cloud; break;
-      default: weatherEmoji = emojis.defaultEmoji;
-    }
+    let weatherEmoji = getWeatherEmoji(weatherCode);
 
     bot.sendMessage(msg.chat.id, `
       Current weather in ${data.name},  (${data.sys.country}): \n
-      ${temperatureEmoji} Temp is ${data.main.temp}${String.fromCharCode(176)}F
+      ${temperatureEmoji} Temp is ${data.main.temp}${String.fromCharCode(176)}F and humidity is ${data.main.humidity}%
       ${emojis.arrowUp} ${data.main.temp_max}${String.fromCharCode(176)}F high and ${emojis.arrowDown} ${data.main.temp_min}${String.fromCharCode(176)}F low
       ${weatherEmoji} Forecast is ${data.weather[0].main} and ${data.weather[0].description}
     `);
   } catch(err) {
       console.log(err);
       bot.sendMessage(msg.chat.id, 'Go..m-men n-nasai.. double check the city name ya bakayero!');
+  }
+});
+
+bot.onText(generateRegExp('^\/forecast'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, 'Oni..g-gai, enter a city name with the command, senpai~');
+});
+
+bot.onText(/^\/forecast .+$/i, async(msg, match) => {
+  const city = match[0].slice(match[0].indexOf(' ')).replace(/\s/g, '+');
+  const weatherAPI = `http://api.openweathermap.org/data/2.5/forecast?q=${city}&APPID=${process.env.WEATHER_API_KEY}&units=imperial`; // units=imperial converts temperature to Fahrenheit
+
+  try {
+    const response = await fetch(weatherAPI, {
+      method: "POST",
+      header: { "Content-Type": "application/json" }
+    });
+    const data = await response.json();
+    //console.log(data)
+    const days = [null, 'M', 'T', 'W', 'Th', 'F', 'Sat', 'Sun'];
+    let currentDay = new Date().getDay();
+    const getWeatherEmoji = require('./command-methods/determine-weather-emoji');
+    
+    let forecastOutput = ``;
+    for(let i = 0; i < data.list.length; i += 8) { // += 8 because the daily weather data throughout the 5 day forecast is pulled every 3 hours 
+      const weatherCode = data.list[i].weather[0].id;
+      const weatherEmoji = getWeatherEmoji(weatherCode);
+      const temperatureEmoji = data.list[i].main.temp > 50 ? emojis.fire : emojis.snowman;
+
+      forecastOutput += `
+${days[currentDay]}: ${temperatureEmoji} Temp is ${data.list[i].main.temp}${String.fromCharCode(176)}F 
+      ${emojis.arrowUp} ${data.list[i].main.temp_max}${String.fromCharCode(176)}F high and ${emojis.arrowDown} ${data.list[i].main.temp_min}${String.fromCharCode(176)}F low
+      ${weatherEmoji} Forecast is ${data.list[i].weather[0].main} and ${data.list[i].weather[0].description}
+      `;
+      currentDay++;
+    }
+
+    bot.sendMessage(msg.chat.id, `
+      5 day forecast in ${data.city.name},  (${data.city.country}):
+      ${forecastOutput}
+    `);
+  } catch(err) {
+    console.log(err);
+    bot.sendMessage(msg.chat.id, 'Go..m-men n-nasai.. double check the city name ya bakayero!');
   }
 });
 

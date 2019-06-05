@@ -141,6 +141,49 @@ bot.onText(/^\/weather .+$/i, async(msg, match) => {
   }
 });
 
+bot.onText(generateRegExp('^\/forecast'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, 'Oni..g-gai, enter a city name with the command, senpai~');
+});
+
+bot.onText(/^\/forecast .+$/i, async(msg, match) => {
+  const city = match[0].slice(match[0].indexOf(' ')).replace(/\s/g, '+');
+  const weatherAPI = `http://api.openweathermap.org/data/2.5/forecast?q=${city}&APPID=${process.env.WEATHER_API_KEY}&units=imperial`; // units=imperial converts temperature to Fahrenheit
+
+  try {
+    const response = await fetch(weatherAPI, {
+      method: "POST",
+      header: { "Content-Type": "application/json" }
+    });
+    const data = await response.json();
+    //console.log(data)
+    const days = [null, 'M', 'T', 'W', 'Th', 'F', 'Sat', 'Sun'];
+    let currentDay = new Date().getDay();
+    const getWeatherEmoji = require('./command-methods/determine-weather-emoji');
+    
+    let forecastOutput = ``;
+    for(let i = 0; i < data.list.length; i += 8) { // += 8 because the daily weather data throughout the 5 day forecast is pulled every 3 hours 
+      const weatherCode = data.list[i].weather[0].id;
+      const weatherEmoji = getWeatherEmoji(weatherCode);
+      const temperatureEmoji = data.list[i].main.temp > 50 ? emojis.fire : emojis.snowman;
+
+      forecastOutput += `
+${days[currentDay]}: ${temperatureEmoji} Temp is ${data.list[i].main.temp}${String.fromCharCode(176)}F 
+      ${emojis.arrowUp} ${data.list[i].main.temp_max}${String.fromCharCode(176)}F high and ${emojis.arrowDown} ${data.list[i].main.temp_min}${String.fromCharCode(176)}F low
+      ${weatherEmoji} Forecast is ${data.list[i].weather[0].main} and ${data.list[i].weather[0].description}
+      `;
+      currentDay++;
+    }
+
+    bot.sendMessage(msg.chat.id, `
+      5 day forecast in ${data.city.name},  (${data.city.country}):
+      ${forecastOutput}
+    `);
+  } catch(err) {
+    console.log(err);
+    bot.sendMessage(msg.chat.id, 'Go..m-men n-nasai.. double check the city name ya bakayero!');
+  }
+});
+
 bot.onText(generateRegExp('^\/filter'), (msg, match) => {
   profanityMode = !profanityMode;
   console.log(`profanity mode is: ${profanityMode}`);
