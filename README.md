@@ -52,6 +52,10 @@ Big thanks to the following:
 * give you the weather in a city:  
 `/weather (city)`  
 ![weather command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/weather.PNG)
+
+* give you a 5 day weather forecast in a city:  
+`/forecast (city)`  
+![forecast command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/forecast.PNG)
   
 * give you songs, albums, playlists, and artists links from Spotify:  
 `/spotify (search query)`  
