@@ -145,7 +145,7 @@ bot.onText(/^\/forecast .+$/i, async(msg, match) => {
     });
     const data = await response.json();
     //console.log(data)
-    const days = [null, 'M', 'T', 'W', 'Th', 'F', 'Sat', 'Sun'];
+    const days = ['M', 'T', 'W', 'Th', 'F', 'Sat', 'Sun'];
     let currentDay = new Date().getDay();
     const getWeatherEmoji = require('./command-methods/determine-weather-emoji');
     
@@ -156,7 +156,7 @@ bot.onText(/^\/forecast .+$/i, async(msg, match) => {
       const temperatureEmoji = data.list[i].main.temp > 50 ? emojis.fire : emojis.snowman;
 
       forecastOutput += `
-${days[currentDay]}: ${temperatureEmoji} Temp is ${data.list[i].main.temp}${String.fromCharCode(176)}F and humidity is ${data.list[i].main.humidity}%
+${days[(currentDay - 1) % 7]}: ${temperatureEmoji} Temp is ${data.list[i].main.temp}${String.fromCharCode(176)}F and humidity is ${data.list[i].main.humidity}%
       ${emojis.arrowUp} ${data.list[i].main.temp_max}${String.fromCharCode(176)}F high and ${emojis.arrowDown} ${data.list[i].main.temp_min}${String.fromCharCode(176)}F low
       ${weatherEmoji} Forecast is ${data.list[i].weather[0].main} and ${data.list[i].weather[0].description}
       `;
