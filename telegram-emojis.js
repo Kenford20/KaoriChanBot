@@ -63,5 +63,14 @@ module.exports = emojis = {
     brownCircle: '\u{1F7E4}',
     pinkCherryBlossom: '\u{1F338}',
 
+    sake: '\u{1F376}',
+    wineBottle: '\u{1F37E}',
+    wineGlass: '\u{1F377}',
+    tallWineGlasses: '\u{1F942}',
+    cocktailGlass: '\u{1F378}',
+    tropicalGlass: '\u{1F379}',
+    beerMug: '\u{1F37A}',
+    tumblerGlass: '\u{1F943}',
+
     defaultEmoji: '\u{1F300}'
 };

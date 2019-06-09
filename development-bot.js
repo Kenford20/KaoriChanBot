@@ -459,6 +459,31 @@ bot.onText(/^\/exchange .+$/i, async(msg, match) => {
   `);
 });
 
+bot.onText(generateRegExp('^\/alky'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama, you dunk? You need to tell me the alky name, kono baaaaa-ka ${emojis.smilingColdSweatFace}`);
+});
+
+bot.onText(/^\/alky .+$/i, async(msg, match) => {
+  const alky = match[0].slice(match[0].indexOf(' ')+1).replace(/\s/g, '+');
+  const alkyAPI = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${alky}`;
+  const alkyEmojis = ['sake', 'wineBottle', 'wineGlass', 'tallWineGlasses', 'cocktailGlass', 'tropicalGlass', 'beerMug', 'tumblerGlass'];
+
+  const fetchAlky = require('./command-methods/fetch-alky-data');
+  await fetchAlky(alkyAPI)
+  .then(([alkyData, alkyIngredients]) => {
+    console.log(alkyData);
+    bot.sendMessage(msg.chat.id, `
+${emojis[alkyEmojis[Math.floor(Math.random()*alkyEmojis.length)]]} Drink: ${alkyData.strDrink}\n
+Category: ${alkyData.strCategory}
+Glass: ${alkyData.strGlass}
+Ingredients: ${alkyIngredients.replace(/, ,/, '')}\n
+How to make dis: ${alkyData.strInstructions}
+    ${alkyData.strDrinkThumb}
+    `);
+  })
+  .catch(err => bot.sendMessage(msg.chat.id, `${err} ${emojis.smilingColdSweatFace}`));
+});
+
 bot.on('callback_query', async(callbackQuery) => {
   bot.deleteMessage(callbackQuery.message.chat.id, callbackQuery.message.message_id);
 
