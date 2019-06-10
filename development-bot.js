@@ -121,7 +121,7 @@ bot.onText(/^\/weather .+$/i, async(msg, match) => {
 
     bot.sendMessage(msg.chat.id, `
       Current weather in ${data.name},  (${data.sys.country}): \n
-      ${temperatureEmoji} Temp is ${data.main.temp}${String.fromCharCode(176)}F and humidity is ${data.main.humidity}%
+      ${temperatureEmoji} Temp is ${data.main.temp}${String.fromCharCode(176)}F and ${emojis.droplet} humidity is ${data.main.humidity}%
       ${emojis.arrowUp} ${data.main.temp_max}${String.fromCharCode(176)}F high and ${emojis.arrowDown} ${data.main.temp_min}${String.fromCharCode(176)}F low
       ${weatherEmoji} Forecast is ${data.weather[0].main} and ${data.weather[0].description}
     `);
