@@ -88,6 +88,10 @@ Big thanks to the following:
 * convert a money amount from one currency to another (use 3 letter currency codes)  
 `/exchange (amount) (base currency) to (target currency)`  
 ![currency exchange command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/exchange.PNG)
+
+* receive general information about a cocktail drink  
+`/alky (cocktail name)`  
+![alky command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/alky.PNG)
   
 * and some weeb stuff ;)
 
