@@ -4,8 +4,10 @@ const packageInfo = require('./package.json');
 const app = express();
 
 app.get('/', function(req, res) {
-  res.send('Konnichiwa! Kaori-chan bot lives here! :)')
-  res.send('https://github.com/Kenford20/my-telegram-bot')
+  res.send(`
+    <h1>Konnichiwa! Kaori-chan bot lives here! :)</h1>\n
+    <h2>You can view her code <a href="https://github.com/Kenford20/my-telegram-bot">here!</a></h2>
+  `)
 });
 
 const server = app.listen(process.env.PORT, function() {
