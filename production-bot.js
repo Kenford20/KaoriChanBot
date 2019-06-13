@@ -54,6 +54,7 @@ bot.onText(/(^\/taskete(@qqm_weeb_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
 /nexttrain (CTA train color) = get the arrival time of the next trains at a station
 /exchange (amount) (currency) to (currency) = convert a money amount from one currency to another (use 3 letter currency codes)
 /alky (cocktail name) = receive general information about a cocktail drink
+/meme = posts a random meme from meme related subreddits
 and some weeb stuff
   `);
 });
@@ -463,6 +464,23 @@ How to make dis: ${alkyData.strInstructions}
     `);
   })
   .catch(err => bot.sendMessage(msg.chat.id, `${err} ${emojis.smilingColdSweatFace}`));
+});
+
+bot.onText(generateRegExp('^\/meme'), async(msg, match) => {
+  const randomMemeAPI = `https://meme-api.herokuapp.com/gimme/dankmemes`;
+
+  try {
+    const response = await fetch(randomMemeAPI, {
+      method: 'GET',
+      header: 'application/json'
+    })
+    const memeData = await response.json();
+  
+    bot.sendMessage(msg.chat.id, `${memeData.title}: \n${memeData.url}`);
+  } catch(err) {
+    console.log(err);
+    bot.sendMessage(msg.chat.id, `Gomen.. couldn't fetch dank m3m3z! Try again in a bit ${emojis.sadFace}`);
+  }
 });
 
 bot.on('callback_query', async(callbackQuery) => {
