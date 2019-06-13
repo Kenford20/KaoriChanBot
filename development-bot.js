@@ -486,12 +486,22 @@ How to make dis: ${alkyData.strInstructions}
   .catch(err => bot.sendMessage(msg.chat.id, `${err} ${emojis.smilingColdSweatFace}`));
 });
 
-bot.onText(/^\/meme ?.*$/i, async(msg, match) => {
-  const subreddit = match[0].indexOf(' ') > 0 ? match[0].slice(match[0].indexOf(' ')+1) : 'dankmemes';
-  console.log(subreddit);
-  const randomMemeAPI = `https://meme-api.herokuapp.com/gimme/${subreddit}`;
-  console.log(randomMemeAPI);
-  if(subreddit.match(/(girls?|sexy?|intercourse|penetrat(es?|ions?)|whores?|nudes?|naked|strip(per)?s?|anal|porno?(graphy)?|bukkakes?|gangbangs?|(3|three)somes?|jobs?|babes?|creampies?|squirts?|milfs?|hentai|incests?|hubs?|tubes?|lesbians?|bondage|brazzers?|dildos?|masturbat(es?|ions?)|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|pussy|pussies|vaginas?|nips?|nipples?|penis(es)?|ass(es)?|booty|butts?|nuts?|balls|testicles|69)/i)) {
+bot.onText(/^\/(meme|reddit) ?.*$/i, async(msg, match) => {
+  const command = match[0].indexOf(' ') > 0 ? match[0].slice(0, match[0].indexOf(' ')+1).replace(/\s/, '') : match[0];
+  console.log(command);
+  const subreddit = match[0].indexOf(' ') > 0 ? match[0].slice(match[0].indexOf(' ')+1) : 'dank';
+  let randomMemeAPI = command === '/meme'
+    ? `https://meme-api.herokuapp.com/gimme/${subreddit}memes`
+    : `https://meme-api.herokuapp.com/gimme/${subreddit}`;
+
+  console.log(randomMemeAPI)
+
+  if(command === '/reddit' && subreddit === 'dank') {
+    bot.sendMessage(msg.chat.id, `Specify the subreddit you want to pull from, senpai! ${emojis.smilingColdSweatFace}`);
+    return;
+  }
+
+  if(command === '/reddit' && msg.chat.id !== process.env.NSFW_GROUP_CHAT_ID && subreddit.match(/(girls?|sexy?|intercourse|penetrat(es?|ions?)|whores?|nudes?|naked|strip(per)?s?|anal|porno?(graphy)?|bukkakes?|gangbangs?|(3|three)somes?|jobs?|babes?|creampies?|squirts?|milfs?|hentai|incests?|hubs?|tubes?|lesbians?|bondage|brazzers?|dildos?|masturbat(es?|ions?)|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|pussy|pussies|vaginas?|nips?|nipples?|penis(es)?|ass(es)?|booty|butts?|nuts?|balls|testicles|69)/i)) {
     bot.sendMessage(msg.chat.id, `S-sen..pai ${emojis.blushFace}, this is only for the NSFW group!`);
   } else {
     try {
