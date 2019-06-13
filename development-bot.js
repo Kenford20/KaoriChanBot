@@ -199,7 +199,7 @@ bot.onText(/\bwaifu\b/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, `W-wata..shi?? K-kimi no waifu?! ${emojis.blushFace}`);
 });
 
-bot.onText(/\b(tits?|deek|dick|boobs?|cock|cawk|pussy|vaginas?|nips?|nipples?|penis|ass|booty|butt|nuts|balls|testicles|69)\b/i, async(msg, match) => {
+bot.onText(/\b(|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|pussy|pussies|vaginas?|nips?|nipples?|penis(es)?|ass(es)?|booty|butts?|nuts?|balls|testicles|69)\b/i, async(msg, match) => {
   if(profanityMode) {
     const user = msg.from.id
     const member = await bot.getChatMember(msg.chat.id, user);
@@ -217,7 +217,7 @@ bot.onText(/\b(tits?|deek|dick|boobs?|cock|cawk|pussy|vaginas?|nips?|nipples?|pe
 });
 
 
-bot.onText(/\b(fags?|faggot|asshole|fuck|fucker|bitch|shit|prick|cunt|slut)\b/i, async(msg, match) => {
+bot.onText(/\b(fags?|faggots?|assholes?|fuck|fuckers?|bitch(es)?|shits?|pricks?|cunts?|sluts?)\b/i, async(msg, match) => {
   if(profanityMode) {
     const user = msg.from.id
     const member = await bot.getChatMember(msg.chat.id, user);
@@ -491,22 +491,25 @@ bot.onText(/^\/meme ?.*$/i, async(msg, match) => {
   console.log(subreddit);
   const randomMemeAPI = `https://meme-api.herokuapp.com/gimme/${subreddit}`;
   console.log(randomMemeAPI);
-
-  try {
-    const response = await fetch(randomMemeAPI, {
-      method: 'GET',
-      header: 'application/json'
-    })
-    const memeData = await response.json();
-  
-    if(memeData.status_code >= 400) {
-      bot.sendMessage(msg.chat.id, `Gomenasai... couldn't find memes for that subreddit!`);
-    } else {
-      bot.sendMessage(msg.chat.id, `${memeData.title}: \n${memeData.url}`);
+  if(subreddit.match(/(girls?|sexy?|intercourse|penetrat(es?|ions?)|whores?|nudes?|naked|strip(per)?s?|anal|porno?(graphy)?|bukkakes?|gangbangs?|(3|three)somes?|jobs?|babes?|creampies?|squirts?|milfs?|hentai|incests?|hubs?|tubes?|lesbians?|bondage|brazzers?|dildos?|masturbat(es?|ions?)|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|pussy|pussies|vaginas?|nips?|nipples?|penis(es)?|ass(es)?|booty|butts?|nuts?|balls|testicles|69)/i)) {
+    bot.sendMessage(msg.chat.id, `S-sen..pai ${emojis.blushFace}, this is only for the NSFW group!`);
+  } else {
+    try {
+      const response = await fetch(randomMemeAPI, {
+        method: 'GET',
+        header: 'application/json'
+      })
+      const memeData = await response.json();
+    
+      if(memeData.status_code >= 400) {
+        bot.sendMessage(msg.chat.id, `Gomenasai... couldn't find memes for that subreddit!`);
+      } else {
+        bot.sendMessage(msg.chat.id, `${memeData.title}: \n${memeData.url}`);
+      }
+    } catch(err) {
+      console.log(err);
+      bot.sendMessage(msg.chat.id, `Gomen.. couldn't fetch dank m3m3z! Try again in a bit ${emojis.sadFace}`);
     }
-  } catch(err) {
-    console.log(err);
-    bot.sendMessage(msg.chat.id, `Gomen.. couldn't fetch dank m3m3z! Try again in a bit ${emojis.sadFace}`);
   }
 });
 
