@@ -54,7 +54,7 @@ bot.onText(/(^\/taskete(@qqm_weeb_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
 /nexttrain (CTA train color) = get the arrival time of the next trains at a station
 /exchange (amount) (currency) to (currency) = convert a money amount from one currency to another (use 3 letter currency codes)
 /alky (cocktail name) = receive general information about a cocktail drink
-/meme = posts a random meme from meme related subreddits
+/meme (subreddit - optional) = posts a random meme from meme related subreddits
 and some weeb stuff
   `);
 });
@@ -466,8 +466,9 @@ How to make dis: ${alkyData.strInstructions}
   .catch(err => bot.sendMessage(msg.chat.id, `${err} ${emojis.smilingColdSweatFace}`));
 });
 
-bot.onText(generateRegExp('^\/meme'), async(msg, match) => {
-  const randomMemeAPI = `https://meme-api.herokuapp.com/gimme/dankmemes`;
+bot.onText(/^\/meme ?.*$/i, async(msg, match) => {
+  const subreddit = match[0].indexOf(' ') > 0 ? match[0].slice(match[0].indexOf(' ')+1) : 'dank';
+  const randomMemeAPI = `https://meme-api.herokuapp.com/gimme/${subreddit}memes`;
 
   try {
     const response = await fetch(randomMemeAPI, {
@@ -476,7 +477,11 @@ bot.onText(generateRegExp('^\/meme'), async(msg, match) => {
     })
     const memeData = await response.json();
   
-    bot.sendMessage(msg.chat.id, `${memeData.title}: \n${memeData.url}`);
+    if(memeData.status_code === 404) {
+      bot.sendMessage(msg.chat.id, `Gomenasai... couldn't find memes for that subreddit!`);
+    } else {
+      bot.sendMessage(msg.chat.id, `${memeData.title}: \n${memeData.url}`);
+    }
   } catch(err) {
     console.log(err);
     bot.sendMessage(msg.chat.id, `Gomen.. couldn't fetch dank m3m3z! Try again in a bit ${emojis.sadFace}`);
