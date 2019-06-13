@@ -20,6 +20,7 @@ Big thanks to the following:
 * [Google Cloud Translation API](https://cloud.google.com/translate/docs/apis)
 * [Spotify API](https://developer.spotify.com/documentation/web-api/)
 * [Currency Exchange API](https://exchangeratesapi.io/)
+* [TheCocktailDB API](https://www.thecocktaildb.com/api.php)
 
 ## *What can Kaori-chan do?*
 
