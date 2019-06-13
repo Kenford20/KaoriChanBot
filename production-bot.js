@@ -466,6 +466,7 @@ How to make dis: ${alkyData.strInstructions}
 });
 
 bot.onText(/^\/meme ?.*$/i, async(msg, match) => {
+  console.log(msg.chat.id);
   const subreddit = match[0].indexOf(' ') > 0 ? match[0].slice(match[0].indexOf(' ')+1) : 'dankmemes';
   console.log(subreddit);
   const randomMemeAPI = `https://meme-api.herokuapp.com/gimme/${subreddit}`;
