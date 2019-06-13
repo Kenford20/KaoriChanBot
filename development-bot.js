@@ -487,9 +487,9 @@ How to make dis: ${alkyData.strInstructions}
 });
 
 bot.onText(/^\/meme ?.*$/i, async(msg, match) => {
-  const subreddit = match[0].indexOf(' ') > 0 ? match[0].slice(match[0].indexOf(' ')+1) : 'dank';
+  const subreddit = match[0].indexOf(' ') > 0 ? match[0].slice(match[0].indexOf(' ')+1) : 'dankmemes';
   console.log(subreddit);
-  const randomMemeAPI = `https://meme-api.herokuapp.com/gimme/${subreddit}memes`;
+  const randomMemeAPI = `https://meme-api.herokuapp.com/gimme/${subreddit}`;
   console.log(randomMemeAPI);
 
   try {
@@ -499,7 +499,7 @@ bot.onText(/^\/meme ?.*$/i, async(msg, match) => {
     })
     const memeData = await response.json();
   
-    if(memeData.status_code === 404) {
+    if(memeData.status_code >= 400) {
       bot.sendMessage(msg.chat.id, `Gomenasai... couldn't find memes for that subreddit!`);
     } else {
       bot.sendMessage(msg.chat.id, `${memeData.title}: \n${memeData.url}`);
