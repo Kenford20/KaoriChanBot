@@ -467,7 +467,7 @@ How to make dis: ${alkyData.strInstructions}
 
 bot.onText(/^\/(meme|reddit) ?.*$/i, async(msg, match) => {
   const command = match[0].indexOf(' ') > 0 ? match[0].slice(0, match[0].indexOf(' ')+1).replace(/\s/, '') : match[0];
-  const subreddit = match[0].indexOf(' ') > 0 ? match[0].slice(match[0].indexOf(' ')+1) : 'dank';
+  const subreddit = match[0].indexOf(' ') > 0 ? match[0].slice(match[0].indexOf(' ')+1).replace(/\s/g, '+') : 'dank';
   let randomMemeAPI = command === '/meme'
     ? `https://meme-api.herokuapp.com/gimme/${subreddit}memes`
     : `https://meme-api.herokuapp.com/gimme/${subreddit}`;
@@ -477,7 +477,10 @@ bot.onText(/^\/(meme|reddit) ?.*$/i, async(msg, match) => {
     return;
   }
 
-  if(command === '/reddit' && msg.chat.id !== process.env.NSFW_GROUP_CHAT_ID && subreddit.match(/(girls?|sexy?|intercourse|penetrat(es?|ions?)|whores?|nudes?|naked|strip(per)?s?|anal|porno?(graphy)?|bukkakes?|gangbangs?|(3|three)somes?|jobs?|babes?|creampies?|squirts?|milfs?|hentai|incests?|hubs?|tubes?|lesbians?|bondage|brazzers?|dildos?|masturbat(es?|ions?)|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|pussy|pussies|vaginas?|nips?|nipples?|penis(es)?|ass(es)?|booty|butts?|nuts?|balls|testicles|69)/i)) {
+  if(command === '/reddit' 
+    && msg.chat.id != process.env.NSFW_GROUP_CHAT_ID 
+    && subreddit.match(/(dirty|naughty|juicy|nsfw|bdsm|girls?|sexy?|intercourse|penetrat(es?|ions?)|whores?|nudes?|naked|strip(per)?s?|anal|porno?(graphy)?|bukkakes?|gangbangs?|(3|three)somes?|jobs?|babes?|creampies?|jizz|cum|squirts?|milfs?|hentai|incests?|hubs?|tubes?|lesbians?|bondage|brazzers?|dildos?|masturbat(es?|ions?)|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|vulva|pussy|pussies|vaginas?|nips?|nipples?|pen(is(es)?|ile)|ass(es)?|booty|butts?|nuts?|balls|testicles|69)/i)
+  ) {
     bot.sendMessage(msg.chat.id, `S-sen..pai ${emojis.blushFace}, this is only for the NSFW group!`);
   } else {
     try {
