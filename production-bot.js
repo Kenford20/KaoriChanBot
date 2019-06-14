@@ -473,14 +473,14 @@ bot.onText(/^\/(meme|reddit) ?.*$/i, async(msg, match) => {
     ? `https://meme-api.herokuapp.com/gimme/${subreddit}memes`
     : `https://meme-api.herokuapp.com/gimme/${subreddit}`;
 
-  if(command === '/reddit' && subreddit === 'dank') {
+  if(command.toLowerCase() === '/reddit' && subreddit === 'dank') {
     bot.sendMessage(msg.chat.id, `Specify the subreddit you want to pull from, senpai! ${emojis.smilingColdSweatFace}`);
     return;
   }
 
-  if(command === '/reddit' 
+  if(command.toLowerCase() === '/reddit' 
     && msg.chat.id != process.env.NSFW_GROUP_CHAT_ID 
-    && subreddit.match(/(dirty|naughty|juicy|nsfw|bdsm|girls?|sexy?|intercourse|penetrat(es?|ions?)|whores?|nudes?|naked|strip(per)?s?|anal|porno?(graphy)?|bukkakes?|gangbangs?|(3|three)somes?|jobs?|babes?|creampies?|jizz|cum|squirts?|milfs?|hentai|incests?|hubs?|tubes?|lesbians?|bondage|brazzers?|dildos?|masturbat(es?|ions?)|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|vulva|pussy|pussies|vaginas?|nips?|nipples?|pen(is(es)?|ile)|ass(es)?|booty|butts?|nuts?|balls|testicles|69)/i)
+    && subreddit.match(/(gonewild|dirty|naughty|juicy|nsfw|bdsm|girls?|sexy?|intercourse|penetrat(es?|ions?)|whores?|nudes?|naked|strip(per)?s?|anal|porno?(graphy)?|bukkakes?|gangbangs?|(3|three)somes?|jobs?|babes?|creampies?|jizz|cum|squirts?|milfs?|hentai|incests?|hubs?|tubes?|lesbians?|bondage|brazzers?|dildos?|masturbat(es?|ions?)|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|vulva|pussy|pussies|vaginas?|nips?|nipples?|pen(is(es)?|ile)|ass(es)?|booty|butts?|nuts?|balls|testicles|69)/i)
   ) {
     bot.sendMessage(msg.chat.id, `S-sen..pai ${emojis.blushFace}, this is only for the NSFW group!`);
   } else {
