@@ -55,6 +55,7 @@ bot.onText(/(^\/taskete(@qqm_weeb_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
 /exchange (amount) (currency) to (currency) = convert a money amount from one currency to another (use 3 letter currency codes)
 /alky (cocktail name) = receive general information about a cocktail drink
 /meme (subreddit - optional) = posts a random meme from meme related subreddits
+/reddit (subreddit) = posts a random post from a specified subreddit
 and some weeb stuff
   `);
 });
@@ -467,7 +468,7 @@ How to make dis: ${alkyData.strInstructions}
 
 bot.onText(/^\/(meme|reddit) ?.*$/i, async(msg, match) => {
   const command = match[0].indexOf(' ') > 0 ? match[0].slice(0, match[0].indexOf(' ')+1).replace(/\s/, '') : match[0];
-  const subreddit = match[0].indexOf(' ') > 0 ? match[0].slice(match[0].indexOf(' ')+1).replace(/\s/g, '+') : 'dank';
+  const subreddit = match[0].indexOf(' ') > 0 ? match[0].slice(match[0].indexOf(' ')+1).replace(/\s/g, '') : 'dank';
   let randomMemeAPI = command === '/meme'
     ? `https://meme-api.herokuapp.com/gimme/${subreddit}memes`
     : `https://meme-api.herokuapp.com/gimme/${subreddit}`;

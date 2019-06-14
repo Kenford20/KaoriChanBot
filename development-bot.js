@@ -488,7 +488,7 @@ How to make dis: ${alkyData.strInstructions}
 
 bot.onText(/^\/(meme|reddit) ?.*$/i, async(msg, match) => {
   const command = match[0].indexOf(' ') > 0 ? match[0].slice(0, match[0].indexOf(' ')+1).replace(/\s/, '') : match[0];
-  const subreddit = match[0].indexOf(' ') > 0 ? match[0].slice(match[0].indexOf(' ')+1).replace(/\s/g, '+') : 'dank';
+  const subreddit = match[0].indexOf(' ') > 0 ? match[0].slice(match[0].indexOf(' ')+1).replace(/\s/g, '') : 'dank';
   let randomMemeAPI = command === '/meme'
     ? `https://meme-api.herokuapp.com/gimme/${subreddit}memes`
     : `https://meme-api.herokuapp.com/gimme/${subreddit}`;

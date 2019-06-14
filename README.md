@@ -93,6 +93,14 @@ Big thanks to the following:
 * receive general information about a cocktail drink  
 `/alky (cocktail name)`  
 ![alky command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/alky.PNG)
+
+* post a random meme from meme related subreddits  
+`/meme (subreddit - optional)`  
+![meme command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/meme.PNG)
+
+* post a random post from a specified subreddit   
+`/reddit (subreddit)`  
+![reddit command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/reddit.PNG)
   
 * and some weeb stuff ;)
 
