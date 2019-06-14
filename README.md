@@ -21,6 +21,7 @@ Big thanks to the following:
 * [Spotify API](https://developer.spotify.com/documentation/web-api/)
 * [Currency Exchange API](https://exchangeratesapi.io/)
 * [TheCocktailDB API](https://www.thecocktaildb.com/api.php)
+* [Meme/Reddit API](https://github.com/R3l3ntl3ss/Meme_Api)
 
 ## *What can Kaori-chan do?*
 

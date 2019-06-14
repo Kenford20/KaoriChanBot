@@ -469,6 +469,7 @@ How to make dis: ${alkyData.strInstructions}
 bot.onText(/^\/(meme|reddit) ?.*$/i, async(msg, match) => {
   const command = match[0].indexOf(' ') > 0 ? match[0].slice(0, match[0].indexOf(' ')+1).replace(/\s/, '') : match[0];
   const subreddit = match[0].indexOf(' ') > 0 ? match[0].slice(match[0].indexOf(' ')+1).replace(/\s/g, '') : 'dank';
+  const member = await bot.getChatMember(msg.chat.id, msg.from.id);
   let randomMemeAPI = command === '/meme'
     ? `https://meme-api.herokuapp.com/gimme/${subreddit}memes`
     : `https://meme-api.herokuapp.com/gimme/${subreddit}`;
@@ -480,9 +481,9 @@ bot.onText(/^\/(meme|reddit) ?.*$/i, async(msg, match) => {
 
   if(command.toLowerCase() === '/reddit' 
     && msg.chat.id != process.env.NSFW_GROUP_CHAT_ID 
-    && subreddit.match(/(gonewild|dirty|naughty|juicy|nsfw|bdsm|girls?|sexy?|intercourse|penetrat(es?|ions?)|whores?|nudes?|naked|strip(per)?s?|anal|porno?(graphy)?|bukkakes?|gangbangs?|(3|three)somes?|jobs?|babes?|creampies?|jizz|cum|squirts?|milfs?|hentai|incests?|hubs?|tubes?|lesbians?|bondage|brazzers?|dildos?|masturbat(es?|ions?)|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|vulva|pussy|pussies|vaginas?|nips?|nipples?|pen(is(es)?|ile)|ass(es)?|booty|butts?|nuts?|balls|testicles|69)/i)
+    && subreddit.match(/(daddy|wank|gonewild|dirty|naughty|juicy|nsfw|bdsm|girls?|sexy?|throat|missionary|doggy|cowgirl|cunnilingus|intercourse|penetrat(es?|ions?)|whores?|nudes?|naked|strip(per)?s?|anal|porno?(graphy)?|bukkakes?|gangbangs?|(3|three)somes?|jobs?|babes?|creampies?|jizz|cum|squirts?|(d|g|m)ilfs?|hentai|incests?|hubs?|tubes?|lesbians?|bondage|brazzers?|dildos?|masturbat(es?|ions?)|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|(finger|fist)ing|vulva|pussy|pussies|vaginas?|busty?|nips?|nipples?|pen(is(es)?|ile)|boner|ass(es)?|booty|butts?|nuts?|balls|testicles|69)/i)
   ) {
-    bot.sendMessage(msg.chat.id, `S-sen..pai ${emojis.blushFace}, this is only for the NSFW group!`);
+    bot.sendMessage(msg.chat.id, `${member.user.first_name} s-sen..pai ${emojis.blushFace}, k-kono.. HENTAI!! This is only for the NSFW group!`);
   } else {
     try {
       const response = await fetch(randomMemeAPI, {
