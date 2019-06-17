@@ -507,6 +507,34 @@ bot.onText(/^\/(meme|reddit) ?.*$/i, async(msg, match) => {
   }
 });
 
+bot.onText(generateRegExp('^\/weebify'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama, you need to tell me what to translate, kono baaaaa-ka ${emojis.smilingColdSweatFace}`);
+});
+
+bot.onText(/^\/weebify .+$/i, async(msg, match) => {
+  const inputText = match[0].slice(match[0].indexOf(' ')+1);
+  const weebifyAPI = `https://api.cognitive.microsofttranslator.com/transliterate?api-version=3.0&language=ja&fromScript=Jpan&toScript=Latn`;
+  const getTranslatedText = require('./command-methods/get-translated-text');
+  const japaneseText = await getTranslatedText(inputText, 'ja');
+
+  try {
+    const response = await fetch(weebifyAPI, {
+      method: 'POST',
+      headers: { 
+        'Ocp-Apim-Subscription-Key': process.env.MICROSOFT_TRANSLATE_API_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify([{'text': japaneseText}]),
+      json: true
+    })
+    .then(data => data.json());
+    bot.sendMessage(msg.chat.id, `In weeb: ${response[0].text}`);
+  } catch(err) {
+      console.log(err);
+      bot.sendMessage(msg.chat.id, `Go..m-men n-nasai.. I failed to translate ${emojis.sadFace}`);
+  }
+});
+
 bot.on('callback_query', async(callbackQuery) => {
   bot.deleteMessage(callbackQuery.message.chat.id, callbackQuery.message.message_id);
 
