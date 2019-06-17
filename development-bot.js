@@ -503,7 +503,7 @@ bot.onText(/^\/(meme|reddit) ?.*$/i, async(msg, match) => {
 
   if(command.toLowerCase() === '/reddit' 
     && msg.chat.id != process.env.NSFW_GROUP_CHAT_ID 
-    && subreddit.match(/(daddy|wank|gonewild|dirty|naughty|juicy|nsfw|bdsm|girls?|sexy?|throat|missionary|doggy|cowgirl|cunnilingus|intercourse|penetrat(es?|ions?)|whores?|nudes?|naked|strip(per)?s?|anal|porno?(graphy)?|bukkakes?|gangbangs?|(3|three)somes?|jobs?|babes?|creampies?|jizz|cum|squirts?|(d|g|m)ilfs?|hentai|incests?|hubs?|tubes?|lesbians?|bondage|brazzers?|dildos?|masturbat(es?|ions?)|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|(finger|fist)ing|vulva|pussy|pussies|vaginas?|busty?|nips?|nipples?|pen(is(es)?|ile)|boner|ass(es)?|booty|butts?|nuts?|balls|testicles|69)/i)
+    && subreddit.match(/(veins|daddy|wank|jiggle|gonewild|wet|dirty|naughty|lewd|perky|voluptuous|juicy|nsfw|bdsm|girls?|sexy?|throat|missionary|doggy|cowgirl|cunnilingus|intercourse|penetrat(es?|ions?)|whores?|sluts?|nudes?|naked|strip(per)?s?|anal|porno?(graphy)?|org(y|ies)|bukkakes?|gangbangs?|(3|three)somes?|jobs?|babes?|creampies?|jizz|cum|squirts?|(d|g|m)ilfs?|hentai|incests?|hubs?|tubes?|lesbians?|bondage|brazzers?|dildos?|masturbat(es?|ions?)|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|(finger|fist)ing|vulva|pussy|pussies|vaginas?|clit(oris)?|busty?|nips?|nipples?|areolas?|pubes?|pen(is(es)?|ile)|boner|ass(es)?|booty|butts?|nuts?|balls|testicles|69)/i)
   ) {
     bot.sendMessage(msg.chat.id, `${member.user.first_name} s-sen..pai ${emojis.blushFace}, k-kono.. HENTAI!! This is only for the NSFW group!`);
   } else {
@@ -515,7 +515,10 @@ bot.onText(/^\/(meme|reddit) ?.*$/i, async(msg, match) => {
       const memeData = await response.json();
     
       if(memeData.status_code >= 400) {
-        bot.sendMessage(msg.chat.id, `Gomenasai... couldn't find memes for that subreddit!`);
+        const errorMsg = command.toLowerCase() === '/reddit'
+          ? `Gomenasai... that subreddit doesn't exist ya konoyero! ${emojis.smilingColdSweatFace}`
+          : `${emojis.sadFace2} Gomen senpai... couldn't find memes for that subreddit!`;
+        bot.sendMessage(msg.chat.id, errorMsg);
       } else {
         bot.sendMessage(msg.chat.id, `${memeData.title}: \n${memeData.url}`);
       }
