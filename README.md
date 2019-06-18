@@ -18,6 +18,7 @@ Big thanks to the following:
 * [CTA Bus Tracker API](https://www.transitchicago.com/developers/bustracker/)
 * [CTA Train Tracker API](https://www.transitchicago.com/developers/ttdocs/)
 * [Google Cloud Translation API](https://cloud.google.com/translate/docs/apis)
+* [Microsoft Transliterate API](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-transliterate?tabs=curl)
 * [Spotify API](https://developer.spotify.com/documentation/web-api/)
 * [Currency Exchange API](https://exchangeratesapi.io/)
 * [TheCocktailDB API](https://www.thecocktaildb.com/api.php)
@@ -102,6 +103,10 @@ Big thanks to the following:
 * post a random post from a specified subreddit   
 `/reddit (subreddit)`  
 ![reddit command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/reddit.PNG)
+
+* attempt to transliterate english into Japanese, (doesn't quite produce what I expect, can't seem to find an accurate solution for transliteration)  
+`/weebify (text)`  
+![weebify command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/weebify.PNG)
   
 * and some weeb stuff ;)
 

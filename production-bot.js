@@ -56,6 +56,7 @@ bot.onText(/(^\/taskete(@qqm_weeb_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
 /alky (cocktail name) = receive general information about a cocktail drink
 /meme (subreddit - optional) = posts a random meme from meme related subreddits
 /reddit (subreddit) = posts a random post from a specified subreddit
+/weebify (text) = transliterates english into japanese
 and some weeb stuff
   `);
 });

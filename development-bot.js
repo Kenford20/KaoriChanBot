@@ -55,6 +55,7 @@ bot.onText(/(^\/taskete(@qqm_development_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) =
 /exchange (amount) (currency) to (currency) = convert a money amount from one currency to another (use 3 letter currency codes)
 /alky (cocktail name) = receive general information about a cocktail drink
 /meme (subreddit - optional) = posts a random meme from meme related subreddits
+/weebify (text) = transliterates english into japanese
 and some weeb stuff
   `);
 });
@@ -538,7 +539,6 @@ bot.onText(/^\/weebify .+$/i, async(msg, match) => {
   const weebifyAPI = `https://api.cognitive.microsofttranslator.com/transliterate?api-version=3.0&language=ja&fromScript=Jpan&toScript=Latn`;
   const getTranslatedText = require('./command-methods/get-translated-text');
   const japaneseText = await getTranslatedText(inputText, 'ja');
-  console.log(japaneseText);
 
   try {
     const response = await fetch(weebifyAPI, {
