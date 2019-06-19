@@ -483,6 +483,7 @@ bot.onText(/^\/(meme|reddit) ?.*$/i, async(msg, match) => {
   if(command.toLowerCase() === '/reddit' 
     && msg.chat.id != process.env.NSFW_GROUP_CHAT_ID 
     && subreddit.match(/(veins|daddy|wank|jiggle|gonewild|dirty|naughty|lewd|perky|juicy|nsfw|bdsm|girls?|sexy?|throat|missionary|doggy|cowgirl|cunnilingus|intercourse|penetrat(es?|ions?)|whores?|sluts?|nudes?|naked|strip(per)?s?|anal|porno?(graphy)?|org(y|ies)|bukkakes?|gangbangs?|(3|three)somes?|jobs?|babes?|creampies?|jizz|cum|squirts?|(d|g|m)ilfs?|hentai|incests?|hubs?|tubes?|lesbians?|bondage|brazzers?|dildos?|masturbat(es?|ions?)|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|(finger|fist)ing|vulva|pussy|pussies|vaginas?|clit(oris)?|busty?|nips?|nipples?|pubes?|pen(is(es)?|ile)|boner|ass(es)?|booty|butts?|nuts?|balls|testicles|69)/i)
+    && !subreddit.match(/(foodporn|earthporn)/)  
   ) {
     bot.sendMessage(msg.chat.id, `${member.user.first_name} s-sen..pai ${emojis.blushFace}, k-kono.. HENTAI!! This is only for the NSFW group!`);
   } else {
