@@ -2,18 +2,16 @@ const fetch = require('node-fetch');
 
 module.exports = async function fetchBusDirections(route, chatId, bot) {
     const CTA_getBusDirections_API = `http://www.ctabustracker.com/bustime/api/v2/getdirections?key=${process.env.CTA_BUS_TRACKER_API_KEY}&rt=${route}&format=json`;
-    const response = await fetch(CTA_getBusDirections_API, {
+    const busData = await fetch(CTA_getBusDirections_API, {
       method: "GET",
       header: {"Content-Type": "application/json"}
-    });
-    const data = await response.json();
+    }).then(response => response.json());
   
-    if(data["bustime-response"].directions) {
-      const directions = data["bustime-response"].directions.map(direction => direction.dir);
-      //console.log(directions);
+    if(busData["bustime-response"].directions) {
+      const directions = busData["bustime-response"].directions.map(direction => direction.dir);
       return directions;
     } else {
-      console.log(data["bustime-response"].error[0]);
+      console.log(busData["bustime-response"].error[0]);
       bot.sendMessage(chatId, `Gomen senpai.. please enter a valid bus number ${emojis.sadFace2}`);
     }
 }

@@ -4,14 +4,13 @@ module.exports = async function fetchTrainStopID(stationName) {
   const CTA_getTrainStops_API = `https://data.cityofchicago.org/resource/8pix-ypme.json?station_name=${stationName}`;
 
   try { 
-    const response = await fetch(CTA_getTrainStops_API, {
+    const trainStopData = await fetch(CTA_getTrainStops_API, {
       method: "GET",
       header: {"Content-Type": "application/json"}
-    });
-    const data = await response.json();
+    }).then(response => response.json());
 
-    if(data.length !== 0) {
-      return data[0].stop_id;
+    if(trainStopData.length !== 0) {
+      return trainStopData[0].stop_id;
     } else {
       return Promise.reject([
         `Enter a valid train station name, onegaishimasu~`, 

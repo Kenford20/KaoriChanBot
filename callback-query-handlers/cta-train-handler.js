@@ -30,14 +30,13 @@ module.exports = async function CTA_busHandler(callbackQuery, bot) {
     const CTA_getTrainTimes_API = `http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx?key=${process.env.CTA_TRAIN_TRACKER_API_KEY}&mapid=${stationID}&rt=${colorCode}&outputType=JSON`;
 
     try {
-        const response = await fetch(CTA_getTrainTimes_API, {
+        const trainData = await fetch(CTA_getTrainTimes_API, {
           method: "GET",
           header: {"Content-Type": "application/json"}
-        });
-        const data = await response.json();
-        const trainArrivals = data.ctatt.eta;
+        }).then(response => response.json());
+        const trainArrivals = trainData.ctatt.eta;
 
-        if(data.ctatt.eta) {
+        if(trainArrivals) {
             // trDr = train direction, 1 = one direction, 5 = opposite
             const trainData1 = trainArrivals.filter(arrival => arrival.trDr == 1);
             const minutesUntilArrival1 = calculateTrainArrivalTime(trainData1);
@@ -60,12 +59,12 @@ module.exports = async function CTA_busHandler(callbackQuery, bot) {
               }
             `);
         } else {
-            console.log(`error code from train command: ${data.ctatt.errCd}`);
-            console.log(`error message from train command: ${data.ctatt.errNm}`);
+            console.log(`error code from train command: ${trainData.ctatt.errCd}`);
+            console.log(`error message from train command: ${trainData.ctatt.errNm}`);
             // error code 0 is an OK, which returns an empty array, probably for successful requests for train routes that are stopped for the night
-            const errorMessage = data.ctatt.errCd == 0 
+            const errorMessage = trainData.ctatt.errCd == 0 
               ? `${colorName} line trains at ${stationName} are currently not in service, \nPerhaps you should call an Uber senpai! ${emojis.taxi}`
-              : data.ctatt.errNm;
+              : trainData.ctatt.errNm;
 
             bot.sendMessage(chatId, errorMessage);
         }

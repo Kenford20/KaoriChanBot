@@ -111,34 +111,21 @@ bot.onText(/^\/weather .+$/i, async(msg, match) => {
   const weatherAPI = `http://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=${process.env.WEATHER_API_KEY}&units=imperial`; // units=imperial converts temperature to Fahrenheit
 
   try {
-    const response = await fetch(weatherAPI, {
+    const weatherData = await fetch(weatherAPI, {
       method: "POST",
       header: { "Content-Type": "application/json" }
-    });
-    const data = await response.json();
-    console.log(data)
-    const weatherCode = data.weather[0].id;
-    const temperatureEmoji = data.main.temp > 50 ? emojis.fire : emojis.snowman;
-    let weatherEmoji;
+    }).then(response => response.json());
 
-    // weather codes at: https://openweathermap.org/weather-conditions
-    switch(true) {
-      case (weatherCode >= 200 && weatherCode <= 232): weatherEmoji = emojis.thunderstorm; break;
-      case (weatherCode >= 300 && weatherCode <= 321): weatherEmoji = emojis.droplet; break;
-      case (weatherCode >= 500 && weatherCode <= 531): weatherEmoji = emojis.rain; break;
-      case (weatherCode >= 600 && weatherCode <= 622): weatherEmoji = emojis.snowflake; break;
-      case (weatherCode >= 700 && weatherCode <= 781): weatherEmoji = emojis.atmosphere; break;
-      case weatherCode === 800: weatherEmoji = emojis.sun; break;
-      case (weatherCode === 801 || weatherCode === 802): weatherEmoji = emojis.sunCloud; break;
-      case (weatherCode === 803 || weatherCode === 804): weatherEmoji = emojis.cloud; break;
-      default: weatherEmoji = emojis.defaultEmoji;
-    }
+    const getWeatherEmoji = require('./command-methods/determine-weather-emoji');
+    const weatherCode = weatherData.weather[0].id;
+    const temperatureEmoji = weatherData.main.temp > 50 ? emojis.fire : emojis.snowman;
+    let weatherEmoji = getWeatherEmoji(weatherCode);
 
     bot.sendMessage(msg.chat.id, `
-      Current weather in ${data.name},  (${data.sys.country}): \n
-      ${temperatureEmoji} Temp is ${data.main.temp}${String.fromCharCode(176)}F and ${emojis.droplet} humidity is ${data.main.humidity}%
-      ${emojis.arrowUp} ${data.main.temp_max}${String.fromCharCode(176)}F high and ${emojis.arrowDown} ${data.main.temp_min}${String.fromCharCode(176)}F low
-      ${weatherEmoji} Forecast is ${data.weather[0].main} and ${data.weather[0].description}
+      Current weather in ${weatherData.name},  (${weatherData.sys.country}): \n
+      ${temperatureEmoji} Temp is ${weatherData.main.temp}${String.fromCharCode(176)}F and ${emojis.droplet} humidity is ${weatherData.main.humidity}%
+      ${emojis.arrowUp} ${weatherData.main.temp_max}${String.fromCharCode(176)}F high and ${emojis.arrowDown} ${weatherData.main.temp_min}${String.fromCharCode(176)}F low
+      ${weatherEmoji} Forecast is ${weatherData.weather[0].main} and ${weatherData.weather[0].description}
     `);
   } catch(err) {
       console.log(err);
@@ -155,32 +142,31 @@ bot.onText(/^\/forecast .+$/i, async(msg, match) => {
   const weatherAPI = `http://api.openweathermap.org/data/2.5/forecast?q=${city}&APPID=${process.env.WEATHER_API_KEY}&units=imperial`; // units=imperial converts temperature to Fahrenheit
 
   try {
-    const response = await fetch(weatherAPI, {
+    const weather = await fetch(weatherAPI, {
       method: "POST",
       header: { "Content-Type": "application/json" }
-    });
-    const data = await response.json();
-    //console.log(data)
+    }).then(response => response.json());
+
     const days = ['Sun', 'M', 'T', 'W', 'Th', 'F', 'Sat'];
     let currentDay = new Date().getDay();
     const getWeatherEmoji = require('./command-methods/determine-weather-emoji');
     
     let forecastOutput = ``;
-    for(let i = 0; i < data.list.length; i += 8) { // += 8 because the daily weather data throughout the 5 day forecast is pulled every 3 hours 
-      const weatherCode = data.list[i].weather[0].id;
+    for(let i = 0; i < weather.list.length; i += 8) { // += 8 because the daily weather data throughout the 5 day forecast is pulled every 3 hours 
+      const weatherCode = weather.list[i].weather[0].id;
       const weatherEmoji = getWeatherEmoji(weatherCode);
-      const temperatureEmoji = data.list[i].main.temp > 50 ? emojis.fire : emojis.snowman;
+      const temperatureEmoji = weather.list[i].main.temp > 50 ? emojis.fire : emojis.snowman;
 
       forecastOutput += `
-${days[(currentDay) % 7]}: ${temperatureEmoji} Temp is ${data.list[i].main.temp}${String.fromCharCode(176)}F and ${emojis.droplet} humidity is ${data.list[i].main.humidity}%
-${emojis.arrowUp} ${data.list[i].main.temp_max}${String.fromCharCode(176)}F high and ${emojis.arrowDown} ${data.list[i].main.temp_min}${String.fromCharCode(176)}F low
-${weatherEmoji} Forecast is ${data.list[i].weather[0].main} and ${data.list[i].weather[0].description}
+${days[(currentDay) % 7]}: ${temperatureEmoji} Temp is ${weather.list[i].main.temp}${String.fromCharCode(176)}F and ${emojis.droplet} humidity is ${weather.list[i].main.humidity}%
+${emojis.arrowUp} ${weather.list[i].main.temp_max}${String.fromCharCode(176)}F high and ${emojis.arrowDown} ${weather.list[i].main.temp_min}${String.fromCharCode(176)}F low
+${weatherEmoji} Forecast is ${weather.list[i].weather[0].main} and ${weather.list[i].weather[0].description}
       `;
       currentDay++;
     }
 
     bot.sendMessage(msg.chat.id, `
-      5 day forecast in ${data.city.name},  (${data.city.country}):
+      5 day forecast in ${weather.city.name},  (${weather.city.country}):
       ${forecastOutput}
     `);
   } catch(err) {
@@ -208,11 +194,12 @@ bot.onText(/\bkaori( ?-?chan)?\b/i, async(msg, match) => {
   const member = await bot.getChatMember(msg.chat.id, user);
   bot.sendMessage(msg.chat.id, `H-a.. hai... ${member.user.first_name}-sama?`);
 });
+
 bot.onText(/\bwaifu\b/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, `W-wata..shi?? K-kimi no waifu?! ${emojis.blushFace}`);
 });
 
-bot.onText(/\b(|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|pussy|pussies|vaginas?|nips?|nipples?|penis(es)?|ass(es)?|booty|butts?|nuts?|balls|testicles|69)\b/i, async(msg, match) => {
+bot.onText(/\b(|tit(s|ies)?|jugs?|deeks?|dicks?|boob(s|ies)?|breasts?|cleavages?|cocks?|cawks?|clit(oris)?|pussy|pussies|vaginas?|nips?|nipples?|penis(es)?|ass(es)?|cheeks?|boot(y|ies)|butts?|nuts?|balls|testicles|69)\b/i, async(msg, match) => {
   if(profanityMode) {
     const user = msg.from.id
     const member = await bot.getChatMember(msg.chat.id, user);
@@ -249,10 +236,11 @@ bot.onText(/\b(fags?|faggots?|assholes?|fuck|fuckers?|bitch(es)?|shits?|pricks?|
 
 bot.onText(generateRegExp('^\/freshmix'), (msg, match) => {
   const mixes = [
-    'https://soundcloud.com/wayneechu/02-neptune-melodic-future-bass-mix-1/s-XAHJb', 
-    'https://soundcloud.com/wayneechu/01-jupiter-feels-trap-mix',
-    'https://soundcloud.com/wayneechu/fall-in-smoke-master',
-    'https://soundcloud.com/wayneechu/seven-lions-sojourn-worlds-apart-wayne-edit'
+    // 'https://soundcloud.com/wayneechu/02-neptune-melodic-future-bass-mix-1/s-XAHJb', 
+    // 'https://soundcloud.com/wayneechu/01-jupiter-feels-trap-mix',
+    // 'https://soundcloud.com/wayneechu/fall-in-smoke-master',
+    // 'https://soundcloud.com/wayneechu/seven-lions-sojourn-worlds-apart-wayne-edit',
+    'https://soundcloud.com/wayneechu/gravity/s-TbJYV'
   ];
   
   bot.sendMessage(msg.chat.id, mixes[Math.floor(Math.random()*(mixes.length))]);
@@ -264,6 +252,7 @@ bot.onText(generateRegExp('^\/spotify'), (msg, match) => {
 
 bot.onText(/^\/spotify .+$/i, (msg, match) => {
   const songQuery = match[0].slice(match[0].indexOf(' ')+1).replace(/\s/g, '+');
+  console.log(songQuery);
   
   const queryOptions = {
     reply_markup: JSON.stringify({ 
@@ -381,8 +370,6 @@ bot.onText(generateRegExp('^\/nexttrain'), (msg, match) => {
   bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama, you didn't tell train line color, ya silly goose ${emojis.smilingColdSweatFace}`);
 });
 
-// const trainData = require('./cta-data-files/l-stop-trains');
-// console.log(trainData.find(train => train.station_name === '35th/Archer').stop_id);
 const trainColorCodes = require('./cta-data-files/train_color_codes');
 bot.onText(/^\/nexttrain .+$/i, async(msg, match) => {
   const color = match[0].slice(match[0].indexOf(' ')+1);
@@ -423,22 +410,22 @@ bot.onText(generateRegExp('^\/exchange'), (msg, match) => {
   bot.sendMessage(msg.chat.id, `${msg.from.first_name}-san, you need to tell me the currencies to exchange, kono baaaaa-ka ${emojis.smilingColdSweatFace}`);
 });
 
+// /exchange 25 USD to CAD
 bot.onText(/^\/exchange .+$/i, async(msg, match) => {
   let [amount, baseCurrency, to, targetCurrency] = match[0].slice(match[0].indexOf(' ')+1).split(' ');
   baseCurrency = baseCurrency.toUpperCase();
   targetCurrency = targetCurrency.toUpperCase()
   const currencyAPI = `https://api.exchangeratesapi.io/latest?base=${baseCurrency}&symbols=${targetCurrency}`;
 
-  const response = await fetch(currencyAPI, {
+  const currencyData = await fetch(currencyAPI, {
     method: 'GET',
     header: {"Content-Type": "application/json"}
-  })
-  const data = await response.json();
-  console.log(data);
+  }).then(response => response.json());
+  console.log(currencyData);
   bot.sendMessage(msg.chat.id, `
-    As of ${data.date}, 
-    \nThe exchange rate from ${baseCurrency} to ${targetCurrency} is ${data.rates[targetCurrency]}
-    \n${amount} ${baseCurrency} = ${(amount * data.rates[targetCurrency]).toFixed(2)} ${targetCurrency}
+    As of ${currencyData.date}, 
+    \nThe exchange rate from ${baseCurrency} to ${targetCurrency} is ${currencyData.rates[targetCurrency]}
+    \n${amount} ${baseCurrency} = ${(amount * currencyData.rates[targetCurrency]).toFixed(2)} ${targetCurrency}
   `);
 });
 
@@ -470,10 +457,11 @@ How to make dis: ${alkyData.strInstructions}
 bot.onText(/^\/(meme|reddit) ?.*$/i, async(msg, match) => {
   const command = match[0].indexOf(' ') > 0 ? match[0].slice(0, match[0].indexOf(' ')+1).replace(/\s/, '') : match[0];
   const subreddit = match[0].indexOf(' ') > 0 ? match[0].slice(match[0].indexOf(' ')+1).replace(/\s/g, '') : 'dank';
-  const member = await bot.getChatMember(msg.chat.id, msg.from.id);
-  let randomMemeAPI = command === '/meme'
+  const randomMemeAPI = command === '/meme'
     ? `https://meme-api.herokuapp.com/gimme/${subreddit}memes`
     : `https://meme-api.herokuapp.com/gimme/${subreddit}`;
+
+  console.log(randomMemeAPI)
 
   if(command.toLowerCase() === '/reddit' && subreddit === 'dank') {
     bot.sendMessage(msg.chat.id, `Specify the subreddit you want to pull from, senpai! ${emojis.smilingColdSweatFace}`);
@@ -482,22 +470,22 @@ bot.onText(/^\/(meme|reddit) ?.*$/i, async(msg, match) => {
 
   if(command.toLowerCase() === '/reddit' 
     && msg.chat.id != process.env.NSFW_GROUP_CHAT_ID 
-    && subreddit.match(/(veins|daddy|wank|jiggle|gonewild|dirty|naughty|lewd|perky|juicy|nsfw|bdsm|girls?|sexy?|throat|missionary|doggy|cowgirl|cunnilingus|intercourse|penetrat(es?|ions?)|whores?|sluts?|nudes?|naked|strip(per)?s?|anal|porno?(graphy)?|org(y|ies)|bukkakes?|gangbangs?|(3|three)somes?|jobs?|babes?|creampies?|jizz|cum|squirts?|(d|g|m)ilfs?|hentai|incests?|hubs?|tubes?|lesbians?|bondage|brazzers?|dildos?|masturbat(es?|ions?)|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|(finger|fist)ing|vulva|pussy|pussies|vaginas?|clit(oris)?|busty?|nips?|nipples?|pubes?|pen(is(es)?|ile)|boner|ass(es)?|booty|butts?|nuts?|balls|testicles|69)/i)
-    && !subreddit.match(/(foodporn|earthporn)/)  
+    && subreddit.match(/(veins|curv(es?|y)|stroking|fap(ping)?|daddy|wank|jiggle|pee(ing)?|gonewild|wet|moist|erect(ions?)?|jerking|dirty|naughty|horny|lewd|perky|saggy|voluptuous|juicy|nsfw|bdsm|girls?|sexy?|throat|missionary|doggy|cowgirl|cunnilingus|intercourse|penetrat(es?|ions?)|whores?|sluts?|nudes?|naked|strip(per)?s?|anal|porno?(graphy)?|org(y|ies)|bukkakes?|gangbangs?|(3|three)somes?|jobs?|babes?|creampies?|rimming|scissoring|jizz|orgasm|cum|squirts?|(d|g|m)ilfs?|cougars?|hentai|incests?|hubs?|tubes?|lesbians?|bondage|brazzers?|dildos?|masturbat(es?|ions?)|tit(s|ties)?|deeks?|(th|d)icks?|boob(s|ies)?|breasts?|bras?|bikinis?|cocks?|cawks?|(finger|fist)ing|vulva|pussy|pussies|vaginas?|clit(oris)?|underwears?|lingeries?|bras?|pant(y|ies)|busty?|nips?|nipples?|areolas?|pubes?|pen(is(es)?|ile)|boner|ass(es)?|cheeks?|boot(y|ies)|butts?|nuts?|balls|testicles|69)/i)
+    && !subreddit.match(/(foodporn|earthporn|youtube)/) 
   ) {
-    bot.sendMessage(msg.chat.id, `${member.user.first_name} s-sen..pai ${emojis.blushFace}, k-kono.. HENTAI!! This is only for the NSFW group!`);
+    bot.sendMessage(msg.chat.id, `${msg.from.first_name} s-sen..pai ${emojis.blushFace}, k-kono.. HENTAI!! This is only for the NSFW group!`);
   } else {
     try {
-      const response = await fetch(randomMemeAPI, {
+      const memeData = await fetch(randomMemeAPI, {
         method: 'GET',
         header: 'application/json'
-      })
-      const memeData = await response.json();
+      }).then(response => response.json());
     
       if(memeData.status_code >= 400) {
         const errorMsg = command.toLowerCase() === '/reddit'
           ? `Gomenasai... that subreddit doesn't exist ya konoyero! ${emojis.smilingColdSweatFace}`
           : `${emojis.sadFace2} Gomen senpai... couldn't find memes for that subreddit!`;
+
         bot.sendMessage(msg.chat.id, errorMsg);
       } else {
         bot.sendMessage(msg.chat.id, `${memeData.title}: \n${memeData.url}`);
@@ -528,8 +516,7 @@ bot.onText(/^\/weebify .+$/i, async(msg, match) => {
       },
       body: JSON.stringify([{'text': japaneseText}]),
       json: true
-    })
-    .then(data => data.json());
+    }).then(data => data.json());
     bot.sendMessage(msg.chat.id, `In weeb: ${response[0].text}`);
   } catch(err) {
       console.log(err);
