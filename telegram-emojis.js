@@ -33,6 +33,9 @@ module.exports = emojis = {
     monkeyBlockingEyes: '\u{1F648}',
     blueScreamingFace: '\u{1F631}',
     thumbsUp: '\u{1F44D}',
+    faceWithHandOverMouth: '\u{1F92D}',
+    devil: '\u{1F608}',
+    partyFace: '\u{1F973}',
 
     train: '\u{1F684}',
     bus: '\u{1F68C}',
