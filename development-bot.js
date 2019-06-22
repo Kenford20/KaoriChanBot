@@ -11,8 +11,8 @@ const botTag = '@qqm_development_bot';
 const fetch = require('node-fetch');
 const emojis = require('./telegram-emojis');
 let profanityMode = false;
-const bannedUsers = [];
-const bannedNames = [];
+let bannedUsers = [];
+let bannedNames = [];
 
 // handles command autocompletion through the commands list (adds the bot's tag name to the regexp)
 // i.e: /help@bot_tag_name
@@ -231,7 +231,7 @@ bot.onText(/\bwaifu\b/i, (msg, match) => {
   bot.sendMessage(msg.chat.id, `W-wata..shi?? K-kimi no waifu?! ${emojis.blushFace}`);
 });
 
-bot.onText(/\b(|tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|clit(oris)?|pussy|pussies|vaginas?|nips?|nipples?|penis(es)?|ass(es)?|booty|butts?|nuts?|balls|testicles|69)\b/i, async(msg, match) => {
+bot.onText(/\b(tits?|titties|deeks?|dicks?|boobs?|boobies|breasts?|cocks?|cawks?|clit(oris)?|pussy|pussies|vaginas?|nips?|nipples?|penis(es)?|ass(es)?|booty|butts?|nuts?|balls|testicles|69)\b/i, async(msg, match) => {
   if(profanityMode) {
     const user = msg.from.id
     const member = await bot.getChatMember(msg.chat.id, user);
@@ -641,40 +641,82 @@ for(let i = 0; i < QQM_users.length; i++) {
   namesToUsernames[QQM_users[i]] = QQM_usernames[i].replace(/@/, '');
 }
 bot.onText(/^\/rekt .+$/i, async(msg, match) => {
-  if(process.env.QQM_MASTER_DONOS.includes(msg.from.username)) {
-    let userToBeBanned = match[0].slice(match[0].indexOf(' ')+1)
-    userToBeBanned = userToBeBanned[0].toUpperCase() + userToBeBanned.slice(1).toLowerCase();
+  if(!bannedUsers.includes(msg.from.username)) {
+    if(process.env.QQM_MASTER_DONOS.includes(msg.from.username)) {
+      let userToBeBanned = match[0].slice(match[0].indexOf(' ')+1)
+      userToBeBanned = userToBeBanned[0].toUpperCase() + userToBeBanned.slice(1).toLowerCase();
 
-    if(QQM_users.includes(userToBeBanned)) {
-      if(!bannedNames.includes(userToBeBanned)) {
-        bannedUsers.push(namesToUsernames[userToBeBanned]);
-        bannedNames.push(userToBeBanned);
-        bot.sendMessage(msg.chat.id, `${emojis.faceWithHandOverMouth} Gomen ${userToBeBanned}-senpai, no moar kaori abusing! \nUse command /rektlist to see rekt users.`);
+      if(userToBeBanned === 'Kenny') {
+        bot.sendMessage(msg.chat.id, `You can't rekt watashi no Kenford-sama! He is the master-dono of all masters! ${emojis.nerdFace}`);
+        return;
+      } else if(msg.from.username !== 'Kenford' && process.env.QQM_MASTER_DONOS.includes(namesToUsernames[userToBeBanned])) {
+        bot.sendMessage(msg.chat.id, `You can't rekt another master-dono, ya konoyero ${emojis.smilingColdSweatFace}`);
+        return;
+      }
+
+      if(QQM_users.includes(userToBeBanned)) {
+        if(!bannedNames.includes(userToBeBanned)) {
+          bannedUsers.push(namesToUsernames[userToBeBanned]);
+          bannedNames.push(userToBeBanned);
+          bot.sendMessage(msg.chat.id, `${emojis.faceWithHandOverMouth} Gomen ${userToBeBanned}-senpai, no moar kaori abusing! \nUse command /rektlist to see rekt users.`);
+        } else {
+          bot.sendMessage(msg.chat.id, `This user is already rekt, baaaka! ${emojis.smilingColdSweatFace}`);
+        }
       } else {
-        bot.sendMessage(msg.chat.id, `This user is already rekt, baaaka! ${emojis.smilingColdSweatFace}`);
+        bot.sendMessage(msg.chat.id, `This user is not in this group silly! ${emojis.smilingColdSweatFace}`);
       }
     } else {
-      bot.sendMessage(msg.chat.id, `This user is not in this group silly! ${emojis.smilingColdSweatFace}`);
-    }
+      bot.sendMessage(msg.chat.id, `${msg.from.first_name}-kun.. only a Master-dono can ban users! ${emojis.sadFace}`);
+    } 
   } else {
-    bot.sendMessage(msg.chat.id, `${msg.from.first_name}-kun.. only a Master-dono can ban users! ${emojis.sadFace}`);
-  } 
+    bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama... you banned fam! ${emojis.redMadFace} \nSubmit to the QQM Master-donos for mercy...`);
+  }
 });
 
 bot.onText(/^\/unrekt .+$/i, async(msg, match) => {
-  if(process.env.QQM_MASTER_DONOS.includes(msg.from.username)) {
-    let userToBeUnbanned = match[0].slice(match[0].indexOf(' ')+1);
-    userToBeUnbanned = userToBeUnbanned[0].toUpperCase() + userToBeUnbanned.slice(1).toLowerCase();
-    if(bannedNames.includes(userToBeUnbanned)) {
-      bannedUsers.splice(bannedUsers.indexOf(namesToUsernames[userToBeUnbanned]), 1);
-      bannedNames.splice(bannedNames.indexOf(userToBeUnbanned));
-      bot.sendMessage(msg.chat.id, `Alright ${userToBeUnbanned}-senpai, take it easy on me now, okay? ${emojis.winkyTongueFace}. \nUse command /rektlist to see rekt users.`);
+  if(!bannedUsers.includes(msg.from.username)) {
+    if(process.env.QQM_MASTER_DONOS.includes(msg.from.username)) {
+      let userToBeUnbanned = match[0].slice(match[0].indexOf(' ')+1);
+      userToBeUnbanned = userToBeUnbanned[0].toUpperCase() + userToBeUnbanned.slice(1).toLowerCase();
+      if(bannedNames.includes(userToBeUnbanned)) {
+        bannedUsers.splice(bannedUsers.indexOf(namesToUsernames[userToBeUnbanned]), 1);
+        bannedNames.splice(bannedNames.indexOf(userToBeUnbanned));
+        bot.sendMessage(msg.chat.id, `Alright ${userToBeUnbanned}-senpai, take it easy on me now, okay? ${emojis.winkyTongueFace}. \nUse command /rektlist to see rekt users.`);
+      } else {
+        bot.sendMessage(msg.chat.id, `This user isn't even rekt, baaaka! ${emojis.smilingColdSweatFace}`);
+      }
     } else {
-      bot.sendMessage(msg.chat.id, `This user isn't even rekt, baaaka! ${emojis.smilingColdSweatFace}`);
+      bot.sendMessage(msg.chat.id, `${msg.from.first_name}-san.. only a Master-dono can unban users! ${emojis.sadFace}`);
+    } 
+  } else {
+    bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama... you banned fam! ${emojis.redMadFace} \nSubmit to the QQM Master-donos for mercy...`);
+  }
+});
+
+bot.onText(generateRegExp('^\/rektall'), (msg, match) => {
+  if(!bannedUsers.includes(msg.from.username)) {
+    if(process.env.QQM_MASTER_DONOS.includes(msg.from.username)) {
+      QQM_users.map(user => {
+        if(!process.env.QQM_MASTER_DONOS.includes(namesToUsernames[user])) {
+          bannedNames.push(user);
+          bannedUsers.push(namesToUsernames[user]);
+        }
+      });
     }
   } else {
-    bot.sendMessage(msg.chat.id, `${msg.from.first_name}-san.. only a Master-dono can unban users! ${emojis.sadFace}`);
-  } 
+    bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama... you banned fam! ${emojis.redMadFace} \nSubmit to the QQM Master-donos for mercy...`);
+  }
+});
+
+bot.onText(generateRegExp('^\/unrektall'), (msg, match) => {
+  if(!bannedUsers.includes(msg.from.username)) {
+    if(process.env.QQM_MASTER_DONOS.includes(msg.from.username)) {
+      bannedNames = [];
+      bannedUsers = [];
+    }
+  } else {
+    bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama... you banned fam! ${emojis.redMadFace} \nSubmit to the QQM Master-donos for mercy...`);
+  }
 });
 
 bot.onText(generateRegExp('^\/rektlist'), (msg, match) => {
