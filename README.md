@@ -108,6 +108,18 @@ Big thanks to the following:
 `/weebify (text)`  
 ![weebify command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/weebify.PNG)
   
+* ban/unban users from using her commands (only accessible by 'admins')  
+  * (list of admins are declared as an environment variable controlled by me)  
+`/rekt (user)`  
+`/rektall`  
+`/unrekt (user)`  
+`/unrektall`  
+* display the list of banned users  
+`/rektlist`  
+![rekt command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/rekt.PNG)  
+![rekt command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/rekt2.PNG)  
+![rekt command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/rekt3.PNG)  
+
 * and some weeb stuff ;)
 
 ## How does she work?

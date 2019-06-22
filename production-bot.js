@@ -59,6 +59,11 @@ bot.onText(/(^\/taskete(@qqm_weeb_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
 /meme (subreddit - optional) = posts a random meme from meme related subreddits
 /reddit (subreddit) = posts a random post from a specified subreddit
 /weebify (text) = transliterates english into japanese
+/rekt (user) = bans a user and restricts them from using kaori's commands (master-dono status required)
+/rektall = bans all peasant users (master-dono status required)
+/unrekt (user) = unbans a user (master-dono status required)
+/unrektall = unbans all users in the rektlist (master-dono status required)
+/rektlist = displays a list of all the banned bad boiz
 and some weeb stuff
   `);
 });
@@ -668,6 +673,7 @@ bot.onText(generateRegExp('^\/rektall'), (msg, match) => {
           bannedUsers.push(namesToUsernames[user]);
         }
       });
+      bot.sendMessage(msg.chat.id, `Rekting all the senpais, g-gom..enas..s-sai ${emojis.sadFace2}`);
     }
   } else {
     bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama... you banned fam! ${emojis.redMadFace} \nSubmit to the QQM Master-donos for mercy...`);
@@ -679,6 +685,7 @@ bot.onText(generateRegExp('^\/unrektall'), (msg, match) => {
     if(process.env.QQM_MASTER_DONOS.includes(msg.from.username)) {
       bannedNames = [];
       bannedUsers = [];
+      bot.sendMessage(msg.chat.id, `Meena-san.. you're free, so be good now, okay? ${emojis.blushSmiley}`);
     }
   } else {
     bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama... you banned fam! ${emojis.redMadFace} \nSubmit to the QQM Master-donos for mercy...`);
