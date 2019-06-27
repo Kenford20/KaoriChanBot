@@ -30,7 +30,7 @@ Big thanks to the following:
 
 * tell you herself of course!  
 `/taskete`  
-![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/taskete.PNG)
+![help command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/taskete2.PNG)
 
 * tag everyone in the group  
 `/meena`  
@@ -109,11 +109,12 @@ Big thanks to the following:
 ![weebify command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/weebify.PNG)
   
 * ban/unban users from using her commands (only accessible by 'admins')  
-  * (list of admins are declared as an environment variable controlled by me)  
 `/rekt (user)`  
 `/rektall`  
 `/unrekt (user)`  
 `/unrektall`  
+  * (list of admins are declared as an environment variable controlled by me)  
+  
 * display the list of banned users  
 `/rektlist`  
 ![rekt command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/rekt.PNG)  
@@ -142,7 +143,9 @@ Telegram gives developers a very easy and user friendly way to create your own c
 
 ## *Add Kaori-chan*
 Bot username: `@qqm-weeb-bot`  
-If you'd like you try this bot out yourself, install the Telegram application on your desktop or download it from the app store on mobile. To add a bot to your group chat, click add members and search for the bot's username in the input box. Once Kaori-chan is added to your group, you can type /help to get a list of commands that she offers. You may also just directly message her to start a conversation!
+If you'd like you try this bot out yourself, install the Telegram application on your desktop or download it from the app store on mobile. To add a bot to your group chat, click add members and search for the bot's username in the input box. Once Kaori-chan is added to your group, you can type /help to get a list of commands that she offers. You may also just directly message her to start a conversation!  
+  
+If you have any questions/concerns regarding Kaori-chan or have any suggestions for me, feel free to reach out at kzhou0066@gmail.com.
 
 ## *License*
 MIT © [Kenny Zhou](https://github.com/Kenford20/my-telegram-bot/blob/master/LICENSE.md)

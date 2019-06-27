@@ -50,6 +50,13 @@ bot.onText(/(^\/taskete(@qqm_weeb_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
 /spotify (search query) = allows user to search key words from spotify and returns top result
 /translate (text) = translates your text for you into a target language
 /freshmix = gives you a fresh scboiz mix
+
+/morecommands to see additional commands.
+`);
+});
+
+bot.onText(/^\/morecommands$/, (msg, match) => {
+  bot.sendMessage(msg.chat.id, `
 /remindmeto (task) = kaori-chan will remind you to do something at a time you specify
 /remindmeena (task) = kaori-chan will remind everyone in the group to do something at a time you specify
 /nextbus (bus number) (bus stop name) = get the arrival time of next bus you specified. Numbered streets and named street intersections are separated with a / ex: 35th/Archer
