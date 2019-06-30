@@ -756,7 +756,6 @@ bot.onText(/^\/doko .+$/i, async(msg, match) => {
     if(response.status === 'OK') {
       const placePhoto = await fetchPlacePhoto(placeData.photos[0].photo_reference);
       const today = (new Date().getDay() + 6) % 7; // getDay goes from sunday(0) - saturday(6), weekday_hours goes from monday(0) to sunday(6)
-      console.log(placeData.opening_hours);
       const hoursToday = placeData.hasOwnProperty('opening_hours') ? placeData.opening_hours.weekday_text[today] : 'N/A';
       const isOpen = placeData.hasOwnProperty('opening_hours') ? placeData.opening_hours.open_now : 'N/A';
 
@@ -765,7 +764,7 @@ bot.onText(/^\/doko .+$/i, async(msg, match) => {
 Place: ${placeData.name}
 Doko: ${placeData.formatted_address}
 Phone: ${placeData.formatted_phone_number || 'N/A'}
-Hours today - ${hoursToday}
+Hours today: ${hoursToday.slice(hoursToday.indexOf(':')+1)}
 Open now? - ${isOpen === 'N/A' ? 'N/A' : isOpen ? `Yes ${emojis.smiley}` : `No ${emojis.sadFace2}`}
 Rating: ${placeData.rating} / 5
 
@@ -774,6 +773,37 @@ Map: https://www.google.com/maps/search/${placeData.name.replace(/[\’|\'|\"]/g
     } else {
       bot.sendMessage(msg.chat.id, `Go-m-men.. could not get data about your place! ${emojis.sadFace} \n ${response.status}`);
     }
+  } else {
+    bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama... you banned fam! ${emojis.redMadFace} \nSubmit to the QQM Master-donos for mercy...`);
+  }
+});
+
+bot.onText(generateRegExp('^\/gps'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, `${msg.from.first_name}-kun, you didn't specify any locations goofy! ${emojis.smilingColdSweatFace}`);
+});
+
+bot.onText(/^\/gps .+$/i, async(msg, match) => {
+  if(!bannedUsers.includes(msg.from.username)) {
+    const [origin, destination] = match[0].slice(match[0].indexOf(' ')+1).split(/\sto\s/);
+
+    if(!origin || !destination) {
+      bot.sendMessage(msg.chat.id, `O-one..gai, I need a start AND end point senpai! ${emojis.sadFace2}`);
+      return;
+    }
+
+    const travelModeOptions = {
+      reply_markup: JSON.stringify({ 
+        inline_keyboard: [
+          [{text:"walking", callback_data:`walking|${origin}|${destination}`}],
+          [{text:"bicycling", callback_data:`bicycling|${origin}|${destination}`}],
+          [{text:"driving", callback_data:`driving|${origin}|${destination}`}],
+          [{text:"transit", callback_data:`transit|${origin}|${destination}`}]
+        ]
+      })
+    };
+    bot.sendMessage(msg.chat.id, "How will you be traveling, s-sen..pai?", travelModeOptions);
+  } else {
+    bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama... you banned fam! ${emojis.redMadFace} \nSubmit to the QQM Master-donos for mercy...`);
   }
 });
 
@@ -792,6 +822,9 @@ bot.on('callback_query', async(callbackQuery) => {
   } else if(callbackQuery.message.text === "Select a train station!") {
     const CTA_trainHandler = require('./callback-query-handlers/cta-train-handler');
     CTA_trainHandler(callbackQuery, bot);
+  } else if(callbackQuery.message.text === "How will you be traveling, s-sen..pai?") {
+    const GPS_Handler = require('./callback-query-handlers/gps-handler');
+    GPS_Handler(callbackQuery, bot);
   } else {
     console.log('callback query handler error');
   }
