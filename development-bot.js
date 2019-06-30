@@ -20,21 +20,6 @@ function generateRegExp(reg) {
   return new RegExp(`${reg}(${botTag})?$`);
 }
 
-//https://api.telegram.org/bot{my_bot_token}/setWebhook?url={url_to_send_updates_to}
-
-// Matches "/echo [whatever]"
-bot.onText(/\/echo (.+)/, (msg, match) => {
-  // 'msg' is the received Message from Telegram
-  // 'match' is the result of executing the regexp above on the text content
-  // of the message
-
-  const chatId = msg.chat.id;
-  const resp = match[1]; // the captured "whatever"
-
-  // send back the matched "whatever" to the chat
-  bot.sendMessage(chatId, resp);
-});
-
 // sends user a list of commands
 bot.onText(/(^\/taskete(@qqm_weeb_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
   bot.sendMessage(msg.chat.id, `
@@ -88,7 +73,7 @@ bot.onText(generateRegExp('^\/meena'), (msg, match) => {
 bot.onText(generateRegExp('^\/roll( [0-9]*)?'), (msg, match) => {
   if(!bannedUsers.includes(msg.from.username)) {
     let threshold = match[0].split(' ')[1]; // grabs optional parameter defined by user i.e: /roll 100
-    //generateRegExp('^\/roll( [0-9]*)?');
+
     if(!threshold) {
       threshold = 6; // default die roll
     }
@@ -520,6 +505,12 @@ bot.onText(/^\/exchange .+$/i, async(msg, match) => {
       header: {"Content-Type": "application/json"}
     }).then(response => response.json());
     console.log(currencyData);
+
+    if(currencyData.error) {
+      bot.sendMessage(msg.chat.id, currencyData.error);
+      return;
+    }
+
     bot.sendMessage(msg.chat.id, `
       As of ${currencyData.date}, 
       \nThe exchange rate from ${baseCurrency} to ${targetCurrency} is ${currencyData.rates[targetCurrency]}
@@ -740,6 +731,49 @@ bot.onText(generateRegExp('^\/rektlist'), (msg, match) => {
     const banList = bannedNames.map(user => `\n${user}-senpai`);
     console.log(bannedUsers);
     bot.sendMessage(msg.chat.id, `${emojis.devil} Here are the warui boiz: ${banList}`);
+  }
+});
+
+bot.onText(generateRegExp('^\/doko'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, `${msg.from.first_name}-kun, you didn't specify a place name goofy! ${emojis.smilingColdSweatFace}`);
+});
+
+const fetchPlacePhoto = require('./command-methods/fetch-place-photo');
+const fetchPlaceID = require('./command-methods/fetch-place-id');
+bot.onText(/^\/doko .+$/i, async(msg, match) => {
+  if(!bannedUsers.includes(msg.from.username)) {
+    const placeName = match[0].slice(match[0].indexOf(' ')+1).replace(/\s/g, '+');
+    const placeID = await fetchPlaceID(placeName);
+    const placesAPI = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeID}&fields=name,rating,formatted_phone_number,opening_hours,formatted_address,photo&key=${process.env.GOOGLE_TRANSLATE_API_KEY}`
+    console.log(`doko: ${placeName}`);
+
+    const response = await fetch(placesAPI, {
+        method: 'GET',
+        header: {"Content-Type": "application/json"}
+    }).then(response => response.json());
+    const placeData = response.result;
+
+    if(response.status === 'OK') {
+      const placePhoto = await fetchPlacePhoto(placeData.photos[0].photo_reference);
+      const today = (new Date().getDay() + 6) % 7; // getDay goes from sunday(0) - saturday(6), weekday_hours goes from monday(0) to sunday(6)
+      console.log(placeData.opening_hours);
+      const hoursToday = placeData.hasOwnProperty('opening_hours') ? placeData.opening_hours.weekday_text[today] : 'N/A';
+      const isOpen = placeData.hasOwnProperty('opening_hours') ? placeData.opening_hours.open_now : 'N/A';
+
+      bot.sendMessage(msg.chat.id, `
+      ${placePhoto}
+Place: ${placeData.name}
+Doko: ${placeData.formatted_address}
+Phone: ${placeData.formatted_phone_number || 'N/A'}
+Hours today - ${hoursToday}
+Open now? - ${isOpen === 'N/A' ? 'N/A' : isOpen ? `Yes ${emojis.smiley}` : `No ${emojis.sadFace2}`}
+Rating: ${placeData.rating} / 5
+
+Map: https://www.google.com/maps/search/${placeData.name.replace(/[\’|\'|\"]/g, '').replace(/\s/g, '+')}
+      `);
+    } else {
+      bot.sendMessage(msg.chat.id, `Go-m-men.. could not get data about your place! ${emojis.sadFace} \n ${response.status}`);
+    }
   }
 });
 
