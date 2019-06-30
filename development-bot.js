@@ -35,6 +35,8 @@ bot.onText(/(^\/taskete(@qqm_weeb_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
 /spotify (search query) = allows user to search key words from spotify and returns top result
 /translate (text) = translates your text for you into a target language
 /freshmix = gives you a fresh scboiz mix
+/remindmeto (task) = kaori-chan will remind you to do something at a time you specify
+/remindmeena (task) = kaori-chan will remind everyone in the group to do something at a time you specify
 
 /morecommands to see additional commands.
 `);
@@ -42,8 +44,6 @@ bot.onText(/(^\/taskete(@qqm_weeb_bot)?$)|(^\/h(e|a)lp$)/, (msg, match) => {
 
 bot.onText(/^\/morecommands$/, (msg, match) => {
   bot.sendMessage(msg.chat.id, `
-/remindmeto (task) = kaori-chan will remind you to do something at a time you specify
-/remindmeena (task) = kaori-chan will remind everyone in the group to do something at a time you specify
 /nextbus (bus number) (bus stop name) = get the arrival time of next bus you specified. Numbered streets and named street intersections are separated with a / ex: 35th/Archer
 /nexttrain (CTA train color) = get the arrival time of the next trains at a station
 /exchange (amount) (currency) to (currency) = convert a money amount from one currency to another (use 3 letter currency codes)
@@ -56,6 +56,8 @@ bot.onText(/^\/morecommands$/, (msg, match) => {
 /unrekt (user) = unbans a user (master-dono status required)
 /unrektall = unbans all users in the rektlist (master-dono status required)
 /rektlist = displays a list of all the banned bad boiz
+/doko (name of a place) = returns information about a place/establishment/attraction you specify
+/gps (start point) to (destination) = sets up a google maps url with your inputs as a clickable link
 and some weeb stuff
   `);
 });

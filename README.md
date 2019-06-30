@@ -18,6 +18,8 @@ Big thanks to the following:
 * [CTA Bus Tracker API](https://www.transitchicago.com/developers/bustracker/)
 * [CTA Train Tracker API](https://www.transitchicago.com/developers/ttdocs/)
 * [Google Cloud Translation API](https://cloud.google.com/translate/docs/apis)
+* [Google Places API](https://developers.google.com/places/web-service/intro)
+* [Google Maps URL](https://developers.google.com/maps/documentation/urls/guide)
 * [Microsoft Transliterate API](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-transliterate?tabs=curl)
 * [Spotify API](https://developer.spotify.com/documentation/web-api/)
 * [Currency Exchange API](https://exchangeratesapi.io/)
@@ -120,6 +122,16 @@ Big thanks to the following:
 ![rekt command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/rekt.PNG)  
 ![rekt command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/rekt2.PNG)  
 ![rekt command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/rekt3.PNG)  
+
+* provide a Google Maps URL with the start/end point you input  
+`/gps (start point) to (destination)`  
+![gps command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/gps.PNG)  
+![gps command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/gps2.PNG)  
+
+* give you information about a particular place/restaurant/attraction   
+`/doko (text)`  
+![doko command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/doko.PNG)  
+![doko command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/doko2.PNG)  
 
 * and some weeb stuff ;)
 
