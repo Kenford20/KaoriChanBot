@@ -9,6 +9,7 @@ const token = process.env.PRODUCTION_BOT_TOKEN;
 const bot = new TelegramBot(token, {polling: true});
 const botTag = '@qqm_weeb_bot';
 const fetch = require('node-fetch');
+const formatTime = require('./command-methods/format-time');
 const emojis = require('./telegram-emojis');
 let profanityMode = false;
 let bannedUsers = [];
@@ -775,6 +776,33 @@ bot.onText(/^\/gps .+$/i, async(msg, match) => {
   }
 });
 
+bot.onText(generateRegExp('^\/timeat'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, `${msg.from.first_name}-san, you didn't specify a location, kono bakayero! ${emojis.smilingColdSweatFace}`);
+});
+
+bot.onText(/^\/timeat .+$/i, async(msg, match) => {
+  if(!bannedUsers.includes(msg.from.username)) {
+    const location = match[0].slice(match[0].indexOf(' '));
+    const timeZoneAPI = `https://dev.virtualearth.net/REST/v1/TimeZone/?query=${location}&key=${process.env.BING_MAPS_API_KEY}`;
+
+    try {
+      const response = await fetch(timeZoneAPI, {
+        method: "GET",
+        header: {"Content-type": "application/json"}
+      }).then(response => response.json());
+      const timeZoneData = response.resourceSets[0].resources[0].timeZoneAtLocation[0];
+      const localTime = timeZoneData.timeZone[0].convertedTime.localTime;
+
+      bot.sendMessage(msg.chat.id, `The time in ${timeZoneData.placeName} is currently ${formatTime(localTime)}`);
+      console.log(timeZoneData);
+    } catch(err) {
+      console.log(err);
+      bot.sendMessage(msg.chat.id, `G-go..men, I couldn't get the time zone data ${emojis.sadFace2}`);
+    }
+  } else {
+    bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama... you banned fam! ${emojis.redMadFace} \nSubmit to the QQM Master-donos for mercy...`);
+  }
+});
 
 bot.on('callback_query', async(callbackQuery) => {
   bot.deleteMessage(callbackQuery.message.chat.id, callbackQuery.message.message_id);
