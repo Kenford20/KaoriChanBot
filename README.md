@@ -133,6 +133,10 @@ Big thanks to the following:
 ![doko command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/doko.PNG)  
 ![doko command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/doko2.PNG)  
 
+* give you the current local time at a specified location  
+`/timeat (location)`  
+![timeat command image](https://github.com/Kenford20/my-telegram-bot/blob/master/images/timeat.PNG)  
+
 * and some weeb stuff ;)
 
 ## How does she work?

@@ -59,6 +59,7 @@ bot.onText(/^\/morecommands$/, (msg, match) => {
 /rektlist = displays a list of all the banned bad boiz
 /doko (name of a place) = returns information about a place/establishment/attraction you specify
 /gps (start point) to (destination) = sets up a google maps url with your inputs as a clickable link
+/timeat (location) = gives you the current local time at a specified location
 and some weeb stuff
   `);
 });
