@@ -839,6 +839,19 @@ bot.onText(/^\/timeat .+$/i, async(msg, match) => {
   }
 });
 
+bot.onText(generateRegExp('^\/gambatte'), (msg, match) => {
+  const gambatteReplies = [
+    `Gambatte, ${msg.from.first_name}-kun!!! ${emojis.smiley}`,
+    `Anata wa subarashidesu, ${msg.from.first_name}-sama! ${emojis.pinkHearts}`,
+    `${emojis.blushFace} ${msg.from.first_name}-s..sen-pai~, kimi wa hontoni sugoi desu!!`,
+    `${emojis.blushSmiley} ${msg.from.first_name}-san.. g-gan..barou!`,
+    `${msg.from.first_name}-sama, anata wa saiko desu! ${emojis.thumbsUp}`,
+    `Kimi wa ichiban desu, ${msg.from.first_name}-senpai! ${emojis.winkyTongueFace}`
+  ];
+
+  bot.sendMessage(msg.chat.id, gambatteReplies[Math.floor(Math.random()*(gambatteReplies.length-1))]);
+});
+
 bot.on('callback_query', async(callbackQuery) => {
   bot.deleteMessage(callbackQuery.message.chat.id, callbackQuery.message.message_id);
 
