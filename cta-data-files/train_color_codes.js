@@ -5,8 +5,8 @@ module.exports = {
     "brown": "brn",
     "green": "g",
     "orange": "o",
-    "purple": "P",
-    "purpleX": "pexp",
+    //"purple": "P",
+    "purple": "pexp",
     "pink": "pnk",
     "yellow": "y"
 }
