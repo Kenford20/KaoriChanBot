@@ -10,7 +10,13 @@ async function fetchBusStopID(direction, route, stopNameInput) {
     }).then(response => response.json());
   
     if(busData["bustime-response"].stops) {
-      const userStopName = stopNameInput.toLowerCase().replace(/(\+|\&)/g, '').replace(/\s{2,}/g, ' ').split(' ').sort();
+      const userStopName = stopNameInput
+        .toLowerCase()
+        .replace(/\(.*\)/g, '') // removes train station part of a bus stop name, which is wrapped in parentheses ie (brown line) will be removed
+        .replace(/(\+|\&)/g, '')
+        .replace(/\s{2,}/g, ' ')
+        .split(' ')
+        .sort();
 
       const busStop = busData["bustime-response"].stops.find(stop => {
         // API returns inconsistent responses that contain '+' for one direction and '&' for other direction to separate intersection names
@@ -18,7 +24,14 @@ async function fetchBusStopID(direction, route, stopNameInput) {
         // So need to add the replace method to just compare the two street names 
         // Then I do a split and sort to just compare the street names in any order to give user more input flexibility so that it doesnt have to match the CTA stop name exactly
         // ex: '31st street halsted' would match the CTA stop name, 'Halsted & 31st Street', which is essentially what a user may mean without the hassle of typing an ampersand or plus sign
-        const CTA_stopName = stop.stpnm.toLowerCase().replace(/(\+|\&)/g, '').replace(/\s{2,}/g, ' ').split(' ').sort();
+        const CTA_stopName = stop.stpnm
+          .toLowerCase()
+          .replace(/\(.*\)/g, '') // removes train station part of a bus stop name, which is wrapped in parentheses ie (brown line) will be removed
+          .replace(/(\+|\&)/g, '')
+          .replace(/\s{2,}/g, ' ') 
+          .replace(/\s$/, '') // remove trailing whitespace
+          .split(' ')
+          .sort();
 
         if(userStopName.every((street, i) => street === CTA_stopName[i])) {
           console.log('found da stop');
