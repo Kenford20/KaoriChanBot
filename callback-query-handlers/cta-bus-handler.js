@@ -28,12 +28,13 @@ async function fetchBusStopID(direction, route, stopNameInput) {
           .toLowerCase()
           .replace(/\(.*\)/g, '') // removes train station part of a bus stop name, which is wrapped in parentheses ie (brown line) will be removed
           .replace(/(\+|\&)/g, '')
-          .replace(/\s{2,}/g, ' ') 
+          .replace(/\s{2,}/g, ' ')
+          .replace(/line station/, '')
           .replace(/\s$/, '') // remove trailing whitespace
           .split(' ')
           .sort();
 
-        if(userStopName.every((street, i) => street === CTA_stopName[i])) {
+        if(CTA_stopName.every((street, i) => street === userStopName[i])) {
           console.log('found da stop');
           console.log(CTA_stopName);
           return CTA_stopName;
