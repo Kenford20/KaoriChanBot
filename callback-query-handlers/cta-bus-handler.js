@@ -13,6 +13,7 @@ async function fetchBusStopID(direction, route, stopNameInput) {
       const userStopName = stopNameInput
         .toLowerCase()
         .replace(/\(.*\)/g, '') // removes train station part of a bus stop name, which is wrapped in parentheses ie (brown line) will be removed
+        .replace(/and /, '')
         .replace(/(\+|\&)/g, '')
         .replace(/\s{2,}/g, ' ')
         .split(' ')
@@ -30,6 +31,7 @@ async function fetchBusStopID(direction, route, stopNameInput) {
           .replace(/(\+|\&)/g, '')
           .replace(/\s{2,}/g, ' ')
           .replace(/line station/, '')
+          .replace(/street/, '')
           .replace(/\s$/, '') // remove trailing whitespace
           .split(' ')
           .sort();
