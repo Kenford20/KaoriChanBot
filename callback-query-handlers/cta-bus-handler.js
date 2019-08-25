@@ -31,7 +31,7 @@ async function fetchBusStopID(direction, route, stopNameInput) {
           .replace(/(\+|\&)/g, '')
           .replace(/\s{2,}/g, ' ')
           .replace(/line station/, '')
-          .replace(/street/, '')
+          .replace(/ street/, '')
           .replace(/\s$/, '') // remove trailing whitespace
           .split(' ')
           .sort();
@@ -76,7 +76,7 @@ module.exports = async function CTA_busHandler(callbackQuery, bot) {
           console.log(CTA_data.prd.filter(prediction => prediction.rtdir === direction).map(requestedPrediction => requestedPrediction.prdctdn));
           bot.sendMessage(
             chatId, 
-            `${emojis.bus} Next ${route} bus going ${direction} at ${stopName.toUpperCase()} is arriving in...  ${CTA_data.prd.find(prediction => prediction.rtdir === direction).prdctdn} minutes!` // prdctdn = prediction countdown which is the minutes until the bus arrives
+            `${emojis.bus} Next ${route} bus going ${direction} at ${busStopResponse.stpnm.toUpperCase()} is arriving in...  ${CTA_data.prd.find(prediction => prediction.rtdir === direction).prdctdn} minutes!` // prdctdn = prediction countdown which is the minutes until the bus arrives
           );
         } else {
           const errorMessage = CTA_data.error[0].msg === "No service scheduled" || CTA_data.error[0].msg === "No arrival times"
