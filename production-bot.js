@@ -277,7 +277,8 @@ bot.onText(generateRegExp('^\/freshmix'), (msg, match) => {
       // 'https://soundcloud.com/wayneechu/gravity/s-TbJYV'
       // 'https://soundcloud.com/ethenmusic/welcome-to-valhalla'
       // 'https://soundcloud.com/ethenmusic/illenium-ascend-tour-feels-mix-master'
-      'https://soundcloud.com/ethenmusic2/forever-and-infinity'
+      // 'https://soundcloud.com/ethenmusic2/forever-and-infinity'
+      'https://soundcloud.com/ethenmusic2/garden-of-ethen-1'
     ];
     
     bot.sendMessage(msg.chat.id, mixes[Math.floor(Math.random()*(mixes.length))]);
