@@ -37,7 +37,7 @@ module.exports = emojis = {
     devil: '\u{1F608}',
     partyFace: '\u{1F973}',
     nerdFace: '\u{1F913}',
-    tongue: '\U+1F445',
+    tongue: '\u{1F445}',
 
     train: '\u{1F684}',
     bus: '\u{1F68C}',
