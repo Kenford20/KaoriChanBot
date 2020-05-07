@@ -574,6 +574,10 @@ bot.onText(generateRegExp('^\/weebify'), (msg, match) => {
   bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama, you need to tell me what to translate, kono baaaaa-ka ${emojis.smilingColdSweatFace}`);
 });
 
+bot.onText(generateRegExp('^\/lick'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, '${emojis.tongue}');
+});
+
 bot.onText(/^\/weebify .+$/i, async(msg, match) => {
   if(!bannedUsers.includes(msg.from.username)) {
     const inputText = match[0].slice(match[0].indexOf(' ')+1);
