@@ -276,8 +276,13 @@ bot.onText(generateRegExp('^\/freshmix'), (msg, match) => {
       // 'https://soundcloud.com/wayneechu/seven-lions-sojourn-worlds-apart-wayne-edit',
       // 'https://soundcloud.com/wayneechu/gravity/s-TbJYV'
       //'https://soundcloud.com/ethenmusic/welcome-to-valhalla'
+<<<<<<< HEAD
       // 'https://soundcloud.com/ethenmusic/venture/s-0vGnc'
       'https://soundcloud.com/ethenmusic/venture-ii'
+=======
+      //'https://soundcloud.com/ethenmusic/venture/s-0vGnc'
+      'https://soundcloud.com/btocollective/bto-presents-ethen-x-ondre'
+>>>>>>> 00586cdeb5348beffc532058c89685e7ef511bbd
     ];
     
     bot.sendMessage(msg.chat.id, mixes[Math.floor(Math.random()*(mixes.length))]);
@@ -573,6 +578,10 @@ bot.onText(/^\/(meme|reddit) ?.*$/i, async(msg, match) => {
 
 bot.onText(generateRegExp('^\/weebify'), (msg, match) => {
   bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama, you need to tell me what to translate, kono baaaaa-ka ${emojis.smilingColdSweatFace}`);
+});
+
+bot.onText(generateRegExp('^\/lick'), (msg, match) => {
+  bot.sendMessage(msg.chat.id, '${emojis.tongue}');
 });
 
 bot.onText(/^\/weebify .+$/i, async(msg, match) => {
