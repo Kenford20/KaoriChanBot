@@ -115,7 +115,7 @@ bot.onText(/^\/(calc|convert) .+$/, async(msg, match) => {
       bot.sendMessage(msg.chat.id, `Result: ${result}`);
     } catch(err) {
       console.log(err);
-      bot.sendMessage(msg.chat.id, `Double check your expression ya konoyero!`);
+      bot.sendMessage(msg.chat.id, `Double check your expression ya konoyero!\n${err}`);
     }
   } else {
     bot.sendMessage(msg.chat.id, `${msg.from.first_name}-sama... you banned fam! ${emojis.redMadFace} \nSubmit to the QQM Master-donos for mercy...`);
